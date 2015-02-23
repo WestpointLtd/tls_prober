@@ -1,0 +1,3 @@
+[submodule "pytls"]
+	path = pytls
+	url = https://github.com/WestpointLtd/pytls.git
