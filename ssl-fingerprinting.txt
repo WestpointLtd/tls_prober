@@ -1,0 +1,26 @@
+Stuff we can detect
+===================
+
+heartbeat support
+heartbleed bug
+SNI support
+Early CCS [done]
+EC ciphers [done]
+TLS 1.2 support
+Behaviour for high TLS version numbers [done]
+Max length of SNI name
+OCSP stapling
+CVE-2011-4619: make sure we really are receiving a client hello before rejecting multiple SGC restarts?
+CVE-2011-0014: Fix parsing of OCSP stapling ClientHello extension.
+BEAST mitigation policy - zero frags, 1/n-1,
+Secure reneg 
+
+Notes
+=====
+
+--port
+--add <server>          Add the analysis to the database
+--debug                 Explain what we're doing
+--probe <probename>     Run a single probe
+--list                  Analyse the server and print out the probe results
+
