@@ -10,7 +10,10 @@ import os
 
 from optparse import OptionParser
 
+# Ensure we can see the pytls/tls subdir for the pytls submodule
+sys.path.insert(1, 'pytls')
 from tls import *
+
 from prober_utils import *
 import probe_db
 
