@@ -23,7 +23,7 @@ class Probe(object):
     # Reusable standard elements
     #
 
-    def connect(self, ipaddress, port):
+    def connect(self, ipaddress, port, starttls_mode):
         # Check if we're using socks
         if os.environ.has_key('socks_proxy'):
             socks_host, socks_port = os.environ['socks_proxy'].split(':')
@@ -34,6 +34,9 @@ class Probe(object):
 
         s.settimeout(5)
         s.connect((ipaddress, port))
+
+        # Do starttls if relevant
+        starttls(s, port, starttls_mode)
             
         return s.makefile('rw', 0)
 
@@ -104,8 +107,8 @@ class Probe(object):
 
         return response
     
-    def probe(self, ipaddress, port):
-        sock = self.connect(ipaddress, port)
+    def probe(self, ipaddress, port, starttls):
+        sock = self.connect(ipaddress, port, starttls)
         result = self.test(sock)
         if result:
             return result
@@ -453,7 +456,7 @@ probes = [
     DoubleClientHello()
 ]
 
-def probe(ipaddress, port, specified_probe):
+def probe(ipaddress, port, starttls, specified_probe):
 
     results = {}
 
@@ -462,7 +465,7 @@ def probe(ipaddress, port, specified_probe):
             continue
 
         logging.info('Probing... %s', type(probe).__name__)
-        result = probe.probe(ipaddress, port)
+        result = probe.probe(ipaddress, port, starttls)
         results[type(probe).__name__] = result
 
     return results
@@ -476,6 +479,10 @@ def main():
     options.add_option('-d', '--debug', action='store_true', dest='debug',
                        default=False,
                        help='Print debugging messages')
+    options.add_option( '-s', '--starttls', dest='starttls',
+                       type='choice', action='store', default='auto',
+                       choices=['auto','smtp','ftp','pop3','imap'],
+                       help='Enable a starttls mode. The available modes are: auto, smtp, ftp, pop3, imap' )
     options.add_option('-t', '--probe', dest='probe',
                        type='string',
                        help='Run the specified probe')
@@ -494,7 +501,7 @@ def main():
         logging.basicConfig(level=logging.DEBUG)
 
     # Probe the server
-    results = probe(args[0], opts.port, opts.probe)
+    results = probe(args[0], opts.port, opts.starttls, opts.probe)
 
     # Add a fingerprint to the db
     if opts.add:
