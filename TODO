@@ -2,7 +2,7 @@
   captured as the same error.
 
 - More fingerprints
-- starttls support
 - http proxy support (CONNECT method)
 - command line option for proxies
 - make -l not print the matches
+

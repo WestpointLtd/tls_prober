@@ -512,6 +512,7 @@ def main():
     if opts.list:
         for key in results.keys():
             print '%20s\t%s' % (key, results[key])
+        return
     
     # Print the matches
     matches = probe_db.find_matches(results)
