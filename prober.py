@@ -472,7 +472,14 @@ class SplitHelloRecords(Probe):
         logging.debug('Sending split hello...')
         part_one, part_two = self.make_split_hello()
         sock.write(part_one)
-        sock.write(part_two)
+        try:
+            sock.write(part_two)
+        except socket.timeout, e:
+            result = 'writeerror:timeout'
+            return result
+        except socket.error, e:
+            result = 'writeerror:%s|' % errno.errorcode[e.errno]
+            return result
 
 class SplitHelloPackets(Probe):
     
