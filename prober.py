@@ -470,6 +470,10 @@ def probe(ipaddress, port, starttls, specified_probe):
 
     return results
 
+def list_probes():
+    for probe in probes:
+        print type(probe).__name__
+
 def main():
     options = OptionParser(usage='%prog server [options]',
                            description='Test for Python SSL')
@@ -490,8 +494,14 @@ def main():
                        help='Add the specified fingerprint to the database')
     options.add_option('-l', '--list', dest='list', action='store_true',
                        help='List the fingerprints of the target')
+    options.add_option('--list-probes', dest='list_probes', action='store_true',
+                       help='List the available probe')
 
     opts, args = options.parse_args()
+
+    if opts.list_probes:
+        list_probes()
+        return
 
     if len(args) < 1:
         options.print_help()
