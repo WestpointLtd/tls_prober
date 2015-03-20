@@ -433,7 +433,56 @@ class RecordLengthUnderflow(Probe):
             result = 'writeerror:%s|' % errno.errorcode[e.errno]
             return result
 
+class EmptyRecord(Probe):
+    
+    def make_empty_record(self):
+        record = TLSRecord.create(content_type=TLSRecord.Handshake,
+                                  version=0x301,
+                                  message='')
 
+        #hexdump(record.bytes)
+        return record.bytes
+
+    def test(self, sock):
+        logging.debug('Sending empty record...')
+        sock.write(self.make_empty_record())
+        sock.write(make_hello())
+
+class SplitHelloRecords(Probe):
+
+    def make_split_hello(self):
+        hello = ClientHelloMessage.create(0x301,
+                                          '01234567890123456789012345678901',
+                                          DEFAULT_CIPHERS)
+
+        first = hello.bytes[:10]
+        second = hello.bytes[10:]
+    
+        record_one = TLSRecord.create(content_type=TLSRecord.Handshake,
+                                      version=0x301,
+                                      message=first)
+        record_two = TLSRecord.create(content_type=TLSRecord.Handshake,
+                                      version=0x301,
+                                      message=second)
+
+        #hexdump(record.bytes)
+        return record_one, record_two
+
+    def test(self, sock):
+        logging.debug('Sending split hello...')
+        part_one, part_two = self.make_split_hello()
+        sock.write(part_one)
+        sock.write(part_two)
+
+class SplitHelloPackets(Probe):
+    
+    def test(self, sock):
+        logging.debug('Sending Client Hello part one...')
+        record = make_hello()
+        sock.write(record[:10])
+        sock.flush()
+        logging.debug('Sending Client Hello part two...')
+        sock.write(record[10:])
 
 
 # List all the probes we have
@@ -453,7 +502,10 @@ probes = [
     Heartbeat(),
     Heartbleed(),
     BadHandshakeMessage(),
-    DoubleClientHello()
+    DoubleClientHello(),
+    EmptyRecord(),
+    SplitHelloRecords(),
+    SplitHelloPackets()
 ]
 
 def probe(ipaddress, port, starttls, specified_probe):
