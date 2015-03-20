@@ -140,6 +140,19 @@ class ChangeCipherSuite(Probe):
         sock.write(make_ccs())
 
 
+class EmptyChangeCipherSuite(Probe):
+    
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        sock.write(make_hello())
+        logging.debug('Sending Empty ChangeCipherSpec...')
+
+        record = TLSRecord.create(content_type=TLSRecord.ChangeCipherSpec,
+                                  version=TLSRecord.TLS1_0,
+                                  message='')
+        sock.write(record.bytes)
+
+
 class BadHandshakeMessage(Probe):
     
     def make_bad_handshake(self):
@@ -433,6 +446,7 @@ class RecordLengthUnderflow(Probe):
             result = 'writeerror:%s|' % errno.errorcode[e.errno]
             return result
 
+
 class EmptyRecord(Probe):
     
     def make_empty_record(self):
@@ -447,6 +461,7 @@ class EmptyRecord(Probe):
         logging.debug('Sending empty record...')
         sock.write(self.make_empty_record())
         sock.write(make_hello())
+
 
 class SplitHelloRecords(Probe):
 
@@ -481,6 +496,7 @@ class SplitHelloRecords(Probe):
             result = 'writeerror:%s|' % errno.errorcode[e.errno]
             return result
 
+
 class SplitHelloPackets(Probe):
     
     def test(self, sock):
@@ -490,6 +506,25 @@ class SplitHelloPackets(Probe):
         sock.flush()
         logging.debug('Sending Client Hello part two...')
         sock.write(record[10:])
+
+
+class NoCiphers(Probe):
+    
+    def make_no_ciphers_hello(self):
+        hello = ClientHelloMessage.create(0x301,
+                                          '01234567890123456789012345678901',
+                                          [])
+    
+        record = TLSRecord.create(content_type=TLSRecord.Handshake,
+                                  version=0x301,
+                                  message=hello.bytes)
+
+        #hexdump(record.bytes)
+        return record.bytes
+
+    def test(self, sock):
+        logging.debug('Sending No ciphers Hello...')
+        sock.write(self.make_no_ciphers_hello())
 
 
 # List all the probes we have
@@ -512,7 +547,9 @@ probes = [
     DoubleClientHello(),
     EmptyRecord(),
     SplitHelloRecords(),
-    SplitHelloPackets()
+    SplitHelloPackets(),
+    NoCiphers(),
+    EmptyChangeCipherSuite()
 ]
 
 def probe(ipaddress, port, starttls, specified_probe):
