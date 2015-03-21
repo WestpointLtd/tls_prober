@@ -22,8 +22,9 @@ __author__ = 'Richard J. Moore'
 __email__ = 'rich@kde.org'
 
 settings = {
-    'default_hello_version': 0x301,
-    'default_record_version': 0x301
+    # Note that changing these will invalidate many of the fingerprints
+    'default_hello_version': TLSRecord.TLS1_0,
+    'default_record_version': TLSRecord.TLS1_0
 }
 
 class Probe(object):
