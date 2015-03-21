@@ -21,6 +21,11 @@ __version__ = '0.0.2'
 __author__ = 'Richard J. Moore'
 __email__ = 'rich@kde.org'
 
+settings = {
+    'default_hello_version': 0x301,
+    'default_record_version': 0x301
+}
+
 class Probe(object):
 
     #
@@ -274,7 +279,7 @@ class Heartbleed(Probe):
 class HighTLSVersion(Probe):
     
     def make_high_tls_hello(self):
-        hello = ClientHelloMessage.create(0x301,
+        hello = ClientHelloMessage.create(settings['default_hello_version'],
                                           '01234567890123456789012345678901',
                                           DEFAULT_CIPHERS)
     
@@ -293,7 +298,7 @@ class HighTLSVersion(Probe):
 class VeryHighTLSVersion(Probe):
     
     def make_very_high_tls_hello(self):
-        hello = ClientHelloMessage.create(0x301,
+        hello = ClientHelloMessage.create(settings['default_hello_version'],
                                           '01234567890123456789012345678901',
                                           DEFAULT_CIPHERS)
     
@@ -312,7 +317,7 @@ class VeryHighTLSVersion(Probe):
 class ZeroTLSVersion(Probe):
     
     def make_zero_tls_hello(self):
-        hello = ClientHelloMessage.create(0x301,
+        hello = ClientHelloMessage.create(settings['default_hello_version'],
                                           '01234567890123456789012345678901',
                                           DEFAULT_CIPHERS)
     
@@ -336,7 +341,7 @@ class HighHelloVersion(Probe):
                                           DEFAULT_CIPHERS)
     
         record = TLSRecord.create(content_type=TLSRecord.Handshake,
-                                  version=0x301,
+                                  version=settings['default_record_version'],
                                   message=hello.bytes)
 
         #hexdump(record.bytes)
@@ -355,7 +360,7 @@ class VeryHighHelloVersion(Probe):
                                           DEFAULT_CIPHERS)
     
         record = TLSRecord.create(content_type=TLSRecord.Handshake,
-                                  version=0x301,
+                                  version=settings['default_record_version'],
                                   message=hello.bytes)
 
         #hexdump(record.bytes)
@@ -374,7 +379,7 @@ class ZeroHelloVersion(Probe):
                                           DEFAULT_CIPHERS)
     
         record = TLSRecord.create(content_type=TLSRecord.Handshake,
-                                  version=0x301,
+                                  version=settings['default_record_version'],
                                   message=hello.bytes)
 
         #hexdump(record.bytes)
@@ -388,12 +393,12 @@ class ZeroHelloVersion(Probe):
 class BadContentType(Probe):
     
     def make_bad_content_type(self):
-        hello = ClientHelloMessage.create(0x301,
+        hello = ClientHelloMessage.create(settings['default_hello_version'],
                                           '01234567890123456789012345678901',
                                           DEFAULT_CIPHERS)
     
         record = TLSRecord.create(content_type=17,
-                                  version=0x301,
+                                  version=settings['default_record_version'],
                                   message=hello.bytes)
 
         #hexdump(record.bytes)
@@ -407,12 +412,12 @@ class BadContentType(Probe):
 class RecordLengthOverflow(Probe):
     
     def make_record_length_overflow(self):
-        hello = ClientHelloMessage.create(0x301,
+        hello = ClientHelloMessage.create(settings['default_hello_version'],
                                           '01234567890123456789012345678901',
                                           DEFAULT_CIPHERS)
     
         record = TLSRecord.create(content_type=TLSRecord.Handshake,
-                                  version=0x301,
+                                  version=settings['default_record_version'],
                                   message=hello.bytes,
                                   length=0x0001)
 
@@ -427,12 +432,12 @@ class RecordLengthOverflow(Probe):
 class RecordLengthUnderflow(Probe):
     
     def make_record_length_underflow(self):
-        hello = ClientHelloMessage.create(0x301,
+        hello = ClientHelloMessage.create(settings['default_hello_version'],
                                           '01234567890123456789012345678901',
                                           DEFAULT_CIPHERS)
     
         record = TLSRecord.create(content_type=TLSRecord.Handshake,
-                                  version=0x301,
+                                  version=settings['default_record_version'],
                                   message=hello.bytes,
                                   length=0xffff)
 
@@ -455,7 +460,7 @@ class EmptyRecord(Probe):
     
     def make_empty_record(self):
         record = TLSRecord.create(content_type=TLSRecord.Handshake,
-                                  version=0x301,
+                                  version=settings['default_record_version'],
                                   message='')
 
         #hexdump(record.bytes)
@@ -470,7 +475,7 @@ class EmptyRecord(Probe):
 class SplitHelloRecords(Probe):
 
     def make_split_hello(self):
-        hello = ClientHelloMessage.create(0x301,
+        hello = ClientHelloMessage.create(settings['default_hello_version'],
                                           '01234567890123456789012345678901',
                                           DEFAULT_CIPHERS)
 
@@ -478,7 +483,7 @@ class SplitHelloRecords(Probe):
         second = hello.bytes[10:]
     
         record_one = TLSRecord.create(content_type=TLSRecord.Handshake,
-                                      version=0x301,
+                                      version=settings['default_record_version'],
                                       message=first)
         record_two = TLSRecord.create(content_type=TLSRecord.Handshake,
                                       version=0x301,
@@ -515,12 +520,12 @@ class SplitHelloPackets(Probe):
 class NoCiphers(Probe):
     
     def make_no_ciphers_hello(self):
-        hello = ClientHelloMessage.create(0x301,
+        hello = ClientHelloMessage.create(settings['default_hello_version'],
                                           '01234567890123456789012345678901',
                                           [])
     
         record = TLSRecord.create(content_type=TLSRecord.Handshake,
-                                  version=0x301,
+                                  version=settings['default_record_version'],
                                   message=hello.bytes)
 
         #hexdump(record.bytes)
