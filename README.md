@@ -29,6 +29,9 @@ Simply clone the repository then run it!
 git clone <url goes here>
 ```
 
+TLS Prober requires python and has been tested using python 2.7, it is
+possible it may work with earlier versions too.
+
 Note that the current implementation will not work on Windows since it makes
 use of the select() system call which is not available on that platform.
 
