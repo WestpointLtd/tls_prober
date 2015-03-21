@@ -582,7 +582,8 @@ def main():
     options.add_option( '-s', '--starttls', dest='starttls',
                        type='choice', action='store', default='auto',
                        choices=['auto','smtp','ftp','pop3','imap','none'],
-                       help='Enable a starttls mode. The available modes are: auto, smtp, ftp, pop3, imap, none' )
+                       help=('Enable a starttls mode. '
+                             'The available modes are: auto, smtp, ftp, pop3, imap, none') )
     options.add_option('-t', '--probe', dest='probe',
                        type='string',
                        help='Run the specified probe')
