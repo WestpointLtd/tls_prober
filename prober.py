@@ -126,6 +126,7 @@ class Probe(object):
 
 
 class NormalHandshake(Probe):
+    '''A normal handshake'''
     
     def test(self, sock):
         logging.debug('Sending Client Hello...')
@@ -133,6 +134,7 @@ class NormalHandshake(Probe):
 
 
 class DoubleClientHello(Probe):
+    '''Two client hellos'''
     
     def test(self, sock):
         logging.debug('Sending Client Hello...')
@@ -142,6 +144,7 @@ class DoubleClientHello(Probe):
 
 
 class ChangeCipherSuite(Probe):
+    '''Send a hello then change cipher spec'''
     
     def test(self, sock):
         logging.debug('Sending Client Hello...')
@@ -151,6 +154,7 @@ class ChangeCipherSuite(Probe):
 
 
 class EmptyChangeCipherSuite(Probe):
+    '''Send a hello then an empty change cipher spec'''
     
     def test(self, sock):
         logging.debug('Sending Client Hello...')
@@ -164,6 +168,7 @@ class EmptyChangeCipherSuite(Probe):
 
 
 class BadHandshakeMessage(Probe):
+    '''An invalid handshake message'''
     
     def make_bad_handshake(self):
         content = 'Something'
@@ -183,6 +188,7 @@ class BadHandshakeMessage(Probe):
 
 
 class OnlyECCipherSuites(Probe):
+    '''Try connecting with ECC cipher suites only'''
     
     def make_ec_hello(self):
         hello = ClientHelloMessage.create(TLSRecord.TLS1_0,
@@ -208,6 +214,7 @@ class OnlyECCipherSuites(Probe):
 
 
 class Heartbeat(Probe):
+    '''Try to send a heartbeat message'''
     
     def make_hb_hello(self):
         hb_extension = HeartbeatExtension.create()
@@ -243,6 +250,7 @@ class Heartbeat(Probe):
 
 
 class Heartbleed(Probe):
+    '''Try to send a heartbleed attack'''
     
     def make_hb_hello(self):
         hb_extension = HeartbeatExtension.create()
@@ -278,6 +286,7 @@ class Heartbleed(Probe):
 
 
 class HighTLSVersion(Probe):
+    '''Set a high TLS version in the record'''
     
     def make_high_tls_hello(self):
         hello = ClientHelloMessage.create(settings['default_hello_version'],
@@ -297,6 +306,7 @@ class HighTLSVersion(Probe):
 
 
 class VeryHighTLSVersion(Probe):
+    '''Set a very high TLS version in the record'''
     
     def make_very_high_tls_hello(self):
         hello = ClientHelloMessage.create(settings['default_hello_version'],
@@ -316,6 +326,7 @@ class VeryHighTLSVersion(Probe):
 
 
 class ZeroTLSVersion(Probe):
+    '''Set a zero version in the record'''
     
     def make_zero_tls_hello(self):
         hello = ClientHelloMessage.create(settings['default_hello_version'],
@@ -335,6 +346,7 @@ class ZeroTLSVersion(Probe):
 
 
 class HighHelloVersion(Probe):
+    '''Set a high version in the hello'''
     
     def make_high_tls_hello(self):
         hello = ClientHelloMessage.create(0x400,
@@ -354,6 +366,7 @@ class HighHelloVersion(Probe):
 
 
 class VeryHighHelloVersion(Probe):
+    '''Set a very high version in the hello'''
     
     def make_high_tls_hello(self):
         hello = ClientHelloMessage.create(0xffff,
@@ -373,6 +386,7 @@ class VeryHighHelloVersion(Probe):
 
 
 class ZeroHelloVersion(Probe):
+    '''Set a zero version in the hello'''
     
     def make_zero_tls_hello(self):
         hello = ClientHelloMessage.create(0x000,
@@ -392,6 +406,7 @@ class ZeroHelloVersion(Probe):
 
 
 class BadContentType(Probe):
+    '''Use an invalid content type in the record'''
     
     def make_bad_content_type(self):
         hello = ClientHelloMessage.create(settings['default_hello_version'],
@@ -411,6 +426,7 @@ class BadContentType(Probe):
 
 
 class RecordLengthOverflow(Probe):
+    '''Make the record length exceed the stated one'''
     
     def make_record_length_overflow(self):
         hello = ClientHelloMessage.create(settings['default_hello_version'],
@@ -431,6 +447,7 @@ class RecordLengthOverflow(Probe):
 
 
 class RecordLengthUnderflow(Probe):
+    '''Make the record shorter than the specified length'''
     
     def make_record_length_underflow(self):
         hello = ClientHelloMessage.create(settings['default_hello_version'],
@@ -458,6 +475,7 @@ class RecordLengthUnderflow(Probe):
 
 
 class EmptyRecord(Probe):
+    '''Send an empty record then the hello'''
     
     def make_empty_record(self):
         record = TLSRecord.create(content_type=TLSRecord.Handshake,
@@ -474,6 +492,7 @@ class EmptyRecord(Probe):
 
 
 class SplitHelloRecords(Probe):
+    '''Split the hello over two records'''
 
     def make_split_hello(self):
         hello = ClientHelloMessage.create(settings['default_hello_version'],
@@ -508,6 +527,7 @@ class SplitHelloRecords(Probe):
 
 
 class SplitHelloPackets(Probe):
+    '''Split the hello over two packets'''
     
     def test(self, sock):
         logging.debug('Sending Client Hello part one...')
@@ -519,6 +539,7 @@ class SplitHelloPackets(Probe):
 
 
 class NoCiphers(Probe):
+    '''Send an empty cipher list'''
     
     def make_no_ciphers_hello(self):
         hello = ClientHelloMessage.create(settings['default_hello_version'],
@@ -578,7 +599,10 @@ def probe(ipaddress, port, starttls, specified_probe):
 
 def list_probes():
     for probe in probes:
-        print type(probe).__name__
+        if type(probe).__doc__ is None:
+            print type(probe).__name__
+        else:
+            print '%s: %s' % (type(probe).__name__, type(probe).__doc__)
 
 def main():
     options = OptionParser(usage='%prog server [options]',
