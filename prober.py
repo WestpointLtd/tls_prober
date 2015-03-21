@@ -41,7 +41,8 @@ probes = [
     NoCiphers(),
     EmptyChangeCipherSuite(),
     SNIWrongName(),
-    SNILongName()
+    SNILongName(),
+    SNIEmptyName()
 ]
 
 def probe(ipaddress, port, starttls, specified_probe):

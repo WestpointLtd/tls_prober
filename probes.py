@@ -568,23 +568,16 @@ class SNIWrongName(Probe):
         sock.write(self.make_sni_hello('thisisnotyourname'))
 
 
-class SNILongName(Probe):
+class SNILongName(SNIWrongName):
     '''Send a server name indication with a long name'''
     
-    def make_sni_hello(self, name):
-        sni_extension = ServerNameExtension.create(name)
-        hello = ClientHelloMessage.create(TLSRecord.TLS1_0,
-                                          '01234567890123456789012345678901',
-                                          DEFAULT_CIPHERS,
-                                          extensions = [ sni_extension ])
-    
-        record = TLSRecord.create(content_type=TLSRecord.Handshake,
-                                  version=TLSRecord.TLS1_0,
-                                  message=hello.bytes)
-
-        #hexdump(record.bytes)
-        return record.bytes
-
     def test(self, sock):
         logging.debug('Sending Client Hello...')
         sock.write(self.make_sni_hello('x'*500))
+
+class SNIEmptyName(SNIWrongName):
+    '''Send a server name indication with a long name'''
+    
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        sock.write(self.make_sni_hello(''))
