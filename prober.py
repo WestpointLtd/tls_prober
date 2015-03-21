@@ -614,6 +614,8 @@ def main():
     if opts.add:
         probe_db.add_fingerprint(opts.add, results)
         print 'Added %s to the database' % opts.add
+        print 'Please submit your new fingerprint for inclusion in the next release!'
+        return
     
     # Print the results of the probe
     if opts.list:
