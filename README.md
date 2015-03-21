@@ -26,6 +26,9 @@ Simply clone the repository then run it!
 git clone <url goes here>
 ```
 
+Note that the current implementation will not work on Windows since it makes
+use of the select() system call which is not available on that platform.
+
 ## Basic Usage
 
 Using TLS Prober is as easy as:
