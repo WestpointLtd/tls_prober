@@ -83,3 +83,8 @@ For details of the implementation see the included paper in the doc directory.
 # Author
 
 TLS Prober was written by Richard Moore <rich@kde.org>.
+
+# Credits
+
+Thanks to my colleagues at Westpoint for comments and suggestions,
+particularly Simon Ward.
