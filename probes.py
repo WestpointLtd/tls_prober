@@ -577,7 +577,7 @@ class SNILongName(SNIWrongName):
         sock.write(self.make_sni_hello('x'*500))
 
 class SNIEmptyName(SNIWrongName):
-    '''Send a server name indication with a long name'''
+    '''Send a server name indication with an empty name'''
     
     def test(self, sock):
         logging.debug('Sending Client Hello...')

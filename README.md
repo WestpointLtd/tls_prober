@@ -7,7 +7,8 @@ include:
 
  * Requires no knowledge of the server configuration.
 
- * Does not rely on the supported cipher suites (since administrators often change those).
+ * Does not rely on the supported cipher suites (since administrators often
+   change those).
 
  * Successfully identifies openssl, schannel, Java (JSSE), wolfSSL (previously
    CyaSSL), GnuTLS, MatrixSSL, mbedTLS (previously PolarSSL).
