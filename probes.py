@@ -13,6 +13,7 @@ settings = {
     # Note that changing these will invalidate many of the fingerprints
     'default_hello_version': TLSRecord.TLS1_0,
     'default_record_version': TLSRecord.TLS1_0
+    'socket_timeout': 5
 }
 
 class Probe(object):
@@ -30,7 +31,7 @@ class Probe(object):
         else:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        s.settimeout(5)
+        s.settimeout(settings['socket_timeout'])
         s.connect((ipaddress, port))
 
         # Do starttls if relevant
