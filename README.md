@@ -52,6 +52,14 @@ alternative port (the default is 443). You can also use *-s* to select a
 STARTTLS mode, however generally the default mode of 'auto' will do the right
 thing.
 
+TLS Prober supports operation over a socks proxy (for example the one provided
+by SSH). To use this feature you must set the *socks_proxy* environment
+variable, for example:
+
+```
+export socks_proxy=localhost:1080
+```
+
 # Adding a Signature
 
 Adding a new signature is easy, simply run TLS Prober like this:
@@ -62,6 +70,10 @@ Adding a new signature is easy, simply run TLS Prober like this:
 
 This will probe the server and add it to the fingerprint database. Please
 submit new fingerprints back so that they can be included in future releases.
+
+# Implementation
+
+For details of the implementation see the included paper in the doc directory.
 
 # Author
 
