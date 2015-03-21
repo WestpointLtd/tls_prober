@@ -592,7 +592,7 @@ def main():
     options.add_option('-l', '--list', dest='list', action='store_true',
                        help='List the fingerprints of the target')
     options.add_option('--list-probes', dest='list_probes', action='store_true',
-                       help='List the available probe')
+                       help='List the available probes')
 
     opts, args = options.parse_args()
 
