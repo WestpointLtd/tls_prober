@@ -17,6 +17,10 @@ from tls import *
 from prober_utils import *
 import probe_db
 
+__version__ = '0.0.2'
+__author__ = 'Richard J. Moore'
+__email__ = 'rich@kde.org'
+
 class Probe(object):
 
     #
@@ -572,7 +576,7 @@ def list_probes():
 
 def main():
     options = OptionParser(usage='%prog server [options]',
-                           description='Test for Python SSL')
+                           description='A tool to fingerprint SSL/TLS servers')
     options.add_option('-p', '--port',
                        type='int', default=443,
                        help='TCP port to test (default: 443)')
@@ -593,8 +597,14 @@ def main():
                        help='List the fingerprints of the target')
     options.add_option('--list-probes', dest='list_probes', action='store_true',
                        help='List the available probes')
+    options.add_option('-v', '--version', dest='version', action='store_true',
+                       help='Display the version information')
 
     opts, args = options.parse_args()
+
+    if opts.version:
+        print 'TLS Prober version %s, %s <%s>' % (__version__, __author__, __email__)
+        return
 
     if opts.list_probes:
         list_probes()
