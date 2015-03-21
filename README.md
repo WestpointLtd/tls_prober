@@ -15,6 +15,8 @@ include:
  * Supports both pure SSL/TLS protocols like HTTPS and those that use STARTTLS
    such as SMTP and POP3.
 
+ * Reslient against differences in the build options used by a given server.
+
  * Extensible - you can easily record the signatures of additional
    implementations.
 
