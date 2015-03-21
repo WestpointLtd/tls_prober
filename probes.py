@@ -12,7 +12,7 @@ from prober_utils import *
 settings = {
     # Note that changing these will invalidate many of the fingerprints
     'default_hello_version': TLSRecord.TLS1_0,
-    'default_record_version': TLSRecord.TLS1_0
+    'default_record_version': TLSRecord.TLS1_0,
     'socket_timeout': 5
 }
 
