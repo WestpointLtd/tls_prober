@@ -545,3 +545,46 @@ class NoCiphers(Probe):
         logging.debug('Sending No ciphers Hello...')
         sock.write(self.make_no_ciphers_hello())
 
+
+class SNIWrongName(Probe):
+    '''Send a server name indication for a non-matching name'''
+    
+    def make_sni_hello(self, name):
+        sni_extension = ServerNameExtension.create(name)
+        hello = ClientHelloMessage.create(TLSRecord.TLS1_0,
+                                          '01234567890123456789012345678901',
+                                          DEFAULT_CIPHERS,
+                                          extensions = [ sni_extension ])
+    
+        record = TLSRecord.create(content_type=TLSRecord.Handshake,
+                                  version=TLSRecord.TLS1_0,
+                                  message=hello.bytes)
+
+        #hexdump(record.bytes)
+        return record.bytes
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        sock.write(self.make_sni_hello('thisisnotyourname'))
+
+
+class SNILongName(Probe):
+    '''Send a server name indication with a long name'''
+    
+    def make_sni_hello(self, name):
+        sni_extension = ServerNameExtension.create(name)
+        hello = ClientHelloMessage.create(TLSRecord.TLS1_0,
+                                          '01234567890123456789012345678901',
+                                          DEFAULT_CIPHERS,
+                                          extensions = [ sni_extension ])
+    
+        record = TLSRecord.create(content_type=TLSRecord.Handshake,
+                                  version=TLSRecord.TLS1_0,
+                                  message=hello.bytes)
+
+        #hexdump(record.bytes)
+        return record.bytes
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        sock.write(self.make_sni_hello('x'*500))

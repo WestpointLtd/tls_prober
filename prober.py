@@ -39,7 +39,9 @@ probes = [
     SplitHelloRecords(),
     SplitHelloPackets(),
     NoCiphers(),
-    EmptyChangeCipherSuite()
+    EmptyChangeCipherSuite(),
+    SNIWrongName(),
+    SNILongName()
 ]
 
 def probe(ipaddress, port, starttls, specified_probe):
