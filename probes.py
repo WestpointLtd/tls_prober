@@ -132,7 +132,7 @@ class DoubleClientHello(Probe):
         sock.write(make_hello())
 
 
-class ChangeCipherSuite(Probe):
+class ChangeCipherSpec(Probe):
     '''Send a hello then change cipher spec'''
     
     def test(self, sock):
@@ -142,7 +142,7 @@ class ChangeCipherSuite(Probe):
         sock.write(make_ccs())
 
 
-class EmptyChangeCipherSuite(Probe):
+class EmptyChangeCipherSpec(Probe):
     '''Send a hello then an empty change cipher spec'''
     
     def test(self, sock):

@@ -20,7 +20,7 @@ __email__ = 'rich@kde.org'
 # List all the probes we have
 probes = [
     NormalHandshake(),
-    ChangeCipherSuite(),
+    ChangeCipherSpec(),
     OnlyECCipherSuites(),
     HighTLSVersion(),
     VeryHighTLSVersion(),
@@ -39,7 +39,7 @@ probes = [
     SplitHelloRecords(),
     SplitHelloPackets(),
     NoCiphers(),
-    EmptyChangeCipherSuite(),
+    EmptyChangeCipherSpec(),
     SNIWrongName(),
     SNILongName(),
     SNIEmptyName()
