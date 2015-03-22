@@ -114,8 +114,9 @@ def main():
 
     # Add a fingerprint to the db
     if opts.add:
-        probe_db.add_fingerprint(opts.add, results)
+        filename = probe_db.add_fingerprint(opts.add, results)
         print 'Added %s to the database' % opts.add
+        print 'The fingerprint is located at:', filename
         print 'Please submit your new fingerprint for inclusion in the next release!'
         return
     

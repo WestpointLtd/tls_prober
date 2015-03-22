@@ -85,6 +85,8 @@ def add_fingerprint(description, probes):
         f.write('%s: %s\n' % (probe, probes[probe]))
     f.close()
 
+    return os.path.join(fingerprint_dir, filename)
+
 if __name__ == '__main__':
     database = read_database()
 
