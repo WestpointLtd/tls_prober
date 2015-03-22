@@ -91,4 +91,6 @@ TLS Prober was written by Richard Moore <rich@kde.org>.
 # Credits
 
 Thanks to my colleagues at Westpoint for comments and suggestions,
-particularly Simon Ward.
+particularly Simon Ward. Thanks also to Daniel Molkentin and Peter Hartmann
+for providing feedback.
+
