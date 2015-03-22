@@ -1,23 +1,26 @@
 Description: MatrixSSL 3.7.1
 
-HighHelloVersion: *(400)alert:ProtocolVersion:fatal|
-ZeroHelloVersion: *(0)alert:ProtocolVersion:fatal|
-BadHandshakeMessage: *(301)alert:DecodeError:fatal|
-SplitHelloPackets: *(301)alert:DecodeError:fatal|
-NoCiphers: *(301)alert:DecodeError:fatal|
-BadContentType: *(0)alert:UnexpectedMesage:fatal|
-VeryHighTLSVersion: *(301)alert:DecodeError:fatal|
-RecordLengthOverflow: *(0)alert:DecodeError:fatal|
-Heartbleed: *(301)alert:HandshakeFailure:fatal|
-SplitHelloRecords: *(0)alert:UnexpectedMesage:fatal|
-VeryHighHelloVersion: *(ff02)alert:DecodeError:fatal|
-EmptyChangeCipherSuite: *(301)alert:DecodeError:fatal|
-ChangeCipherSuite: *(301)alert:DecodeError:fatal|
-NormalHandshake: *(301)alert:DecodeError:fatal|
-Heartbeat: *(301)alert:HandshakeFailure:fatal|
-EmptyRecord: *(0)alert:IllegalParameter:fatal|
-ZeroTLSVersion: *(0)alert:IllegalParameter:fatal|
-OnlyECCipherSuites: *(301)alert:HandshakeFailure:fatal|
-HighTLSVersion: *(301)alert:DecodeError:fatal|
-RecordLengthUnderflow: writeerror:ECONNRESET|
-DoubleClientHello: *(301)alert:DecodeError:fatal|
+ZeroHelloVersion: error:Unexpected EOF receiving record header - server closed connection|
+BadContentType: error:Unexpected EOF receiving record header - server closed connection|
+SNIEmptyName: error:Unexpected EOF receiving record header - server closed connection|
+SplitHelloRecords: writeerror:EPIPE|
+EmptyRecord: writeerror:EPIPE|
+RecordLengthUnderflow: writeerror:EPIPE|
+Heartbleed: writeerror:EPIPE|
+BadHandshakeMessage: writeerror:EPIPE|
+NormalHandshake: error:Unexpected EOF receiving record header - server closed connection|
+OnlyECCipherSuites: error:Unexpected EOF receiving record header - server closed connection|
+NoCiphers: error:Unexpected EOF receiving record header - server closed connection|
+VeryHighTLSVersion: error:Unexpected EOF receiving record header - server closed connection|
+VeryHighHelloVersion: error:Unexpected EOF receiving record header - server closed connection|
+DoubleClientHello: writeerror:EPIPE|
+Heartbeat: writeerror:EPIPE|
+HighTLSVersion: error:Unexpected EOF receiving record header - server closed connection|
+HighHelloVersion: error:Unexpected EOF receiving record header - server closed connection|
+SplitHelloPackets: writeerror:EPIPE|
+EmptyChangeCipherSpec: writeerror:EPIPE|
+RecordLengthOverflow: error:Unexpected EOF receiving record header - server closed connection|
+ChangeCipherSpec: writeerror:EPIPE|
+SNIWrongName: error:Unexpected EOF receiving record header - server closed connection|
+SNILongName: error:Unexpected EOF receiving record header - server closed connection|
+ZeroTLSVersion: error:Unexpected EOF receiving record header - server closed connection|
