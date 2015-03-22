@@ -11,15 +11,22 @@ function probe
     name=`basename $1`
     command="$1 s_server -www -accept $port -cert $cert -key $key"
 
+    echo "Launching $command"
+
     $command &
     pid=$!
 
-    ./prober.py -a "$name default source build (no-ec)" -p $port $ip
+    sleep 1
+
+    ./prober.py -a "$name default source build" -p $port $ip
 
     kill $pid
 }
 
 for openssl in ~/src/all-openssl-versions/binaries/openssl-*
 do
+    echo "Trying $openssl"
     probe $openssl
+    sleep 1
 done
+
