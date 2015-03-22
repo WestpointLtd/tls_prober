@@ -108,7 +108,15 @@ class Probe(object):
     
     def probe(self, ipaddress, port, starttls):
         sock = self.connect(ipaddress, port, starttls)
-        result = self.test(sock)
+        try:
+            result = self.test(sock)
+        except socket.timeout, e:
+            result = 'writeerror:timeout'
+            return result
+        except socket.error, e:
+            result = 'writeerror:%s|' % errno.errorcode[e.errno]
+            return result
+
         if result:
             return result
         return self.process_response(sock)
