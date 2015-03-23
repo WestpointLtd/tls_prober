@@ -82,7 +82,8 @@ submit new fingerprints back so that they can be included in future releases.
 
 # Implementation
 
-For details of the implementation see the included paper in the doc directory.
+For details of the implementation see the [included paper](doc/tls_prober.md)
+in the doc directory.
 
 # Author
 
