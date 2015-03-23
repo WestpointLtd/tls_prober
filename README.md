@@ -26,7 +26,7 @@ include:
 Simply clone the repository then run it!
 
 ```
-git clone <url goes here>
+git clone https://github.com/WestpointLtd/tls_prober.git
 ```
 
 TLS Prober requires python and has been tested using python 2.7, it is
