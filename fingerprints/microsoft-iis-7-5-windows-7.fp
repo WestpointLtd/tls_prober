@@ -8,7 +8,7 @@ VeryHighTLSVersion: *(301)handshake:ServerHello(301)|handshake:Certificate|hands
 RecordLengthOverflow: error:ECONNRESET|
 Heartbleed: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|error:ECONNRESET|
 VeryHighHelloVersion: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|
-ChangeCipherSuite: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|error:ECONNRESET|
+ChangeCipherSpec: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|error:ECONNRESET|
 NormalHandshake: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|
 Heartbeat: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|error:ECONNRESET|
 ZeroTLSVersion: error:ECONNRESET|

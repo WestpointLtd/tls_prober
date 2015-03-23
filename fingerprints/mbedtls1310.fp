@@ -10,7 +10,7 @@ RecordLengthOverflow: error:Unexpected EOF receiving record header - server clos
 Heartbleed: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|*(301)alert:UnexpectedMesage:fatal|
 SplitHelloRecords: writeerror:EPIPE|
 VeryHighHelloVersion: *(303)handshake:ServerHello(303)|*(303)handshake:Certificate|*(303)handshake:ServerHelloDone|
-ChangeCipherSuite: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|error:Unexpected EOF receiving record header - server closed connection|
+ChangeCipherSpec: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|error:Unexpected EOF receiving record header - server closed connection|
 NormalHandshake: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|
 Heartbeat: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|*(301)alert:UnexpectedMesage:fatal|
 EmptyRecord: error:Unexpected EOF receiving record header - server closed connection|

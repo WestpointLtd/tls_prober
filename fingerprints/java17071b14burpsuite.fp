@@ -11,8 +11,8 @@ RecordLengthOverflow: error:timeout
 Heartbleed: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|
 SplitHelloRecords: error:timeout
 VeryHighHelloVersion: *(303)handshake:ServerHello(303)|handshake:Certificate|handshake:ServerHelloDone|
-EmptyChangeCipherSuite: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|*(301)alert:UnexpectedMesage:fatal|
-ChangeCipherSuite: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|*(301)alert:UnexpectedMesage:fatal|
+EmptyChangeCipherSpec: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|*(301)alert:UnexpectedMesage:fatal|
+ChangeCipherSpec: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|*(301)alert:UnexpectedMesage:fatal|
 NormalHandshake: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|
 Heartbeat: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|
 EmptyRecord: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|

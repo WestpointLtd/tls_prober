@@ -8,7 +8,7 @@ VeryHighTLSVersion: *(301)handshake:ServerHello(301)|handshake:Certificate|hands
 RecordLengthOverflow: error:Unexpected EOF receiving record header - server closed connection|
 Heartbleed: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|error:Unexpected EOF receiving record header - server closed connection|
 VeryHighHelloVersion: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|
-ChangeCipherSuite: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|error:Unexpected EOF receiving record header - server closed connection|
+ChangeCipherSpec: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|error:Unexpected EOF receiving record header - server closed connection|
 NormalHandshake: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|
 Heartbeat: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|error:Unexpected EOF receiving record header - server closed connection|
 ZeroTLSVersion: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|

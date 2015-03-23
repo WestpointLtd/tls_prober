@@ -8,7 +8,7 @@ VeryHighTLSVersion: *(301)handshake:ServerHello(301)|handshake:Certificate|hands
 RecordLengthOverflow: error:timeout
 Heartbleed: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|
 VeryHighHelloVersion: *(302)handshake:ServerHello(302)|handshake:Certificate|handshake:ServerHelloDone|
-ChangeCipherSuite: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|*(301)alert:UnexpectedMesage:fatal|
+ChangeCipherSpec: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|*(301)alert:UnexpectedMesage:fatal|
 NormalHandshake: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|
 Heartbeat: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|
 ZeroTLSVersion: *(301)alert:UnexpectedMesage:fatal|
