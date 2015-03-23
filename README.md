@@ -23,10 +23,11 @@ include:
 
 # Installation
 
-Simply clone the repository then run it!
+Clone the repository and the pytls submoduel then run it!
 
 ```
 git clone https://github.com/WestpointLtd/tls_prober.git
+git submodule update --init
 ```
 
 TLS Prober requires python and has been tested using python 2.7, it is
