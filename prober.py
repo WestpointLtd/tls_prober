@@ -72,6 +72,10 @@ def main():
     options.add_option('-p', '--port',
                        type='int', default=443,
                        help='TCP port to test (default: 443)')
+    options.add_option('-m', '--matches', dest='matches',
+                       type='int', default=0,
+                       help=('Only display the first N matching scores'
+                             '(default: 0 which displays them all)') )
     options.add_option('-d', '--debug', action='store_true', dest='debug',
                        default=False,
                        help='Print debugging messages')
@@ -128,7 +132,16 @@ def main():
     
     # Print the matches
     matches = probe_db.find_matches(results)
+    count = 0
+    prev_score = None
     for server, score in matches:
+        if opts.matches:
+            if score != prev_score:
+                prev_score = score
+                count += 1
+            if count > opts.matches:
+                break
+
         print '%20s\t%s' % (server, score)
 
 if __name__ == '__main__':
