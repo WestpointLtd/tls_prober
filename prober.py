@@ -12,7 +12,7 @@ from tls import *
 from probes import *
 import probe_db
 
-__version__ = '0.0.3'
+__version__ = '0.0.4'
 __author__ = 'Richard J. Moore'
 __email__ = 'rich@kde.org'
 
