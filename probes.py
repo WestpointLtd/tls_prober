@@ -1,11 +1,22 @@
 #!/usr/bin/python
 
 import socket
-import select
 import errno
 import logging
-import socks
 import os
+import platform
+
+if platform.system() != 'Java':
+    from select import select
+else:
+    from select import cpython_compatible_select as select
+
+# Disable socks support in Jython
+if platform.system() != 'Java':
+    import socks
+else:
+    if os.environ.has_key('socks_proxy'):
+        logging.warn('Unable to honour socks_proxy environment variable, unsupported in Jython')
 
 from prober_utils import *
 
@@ -52,7 +63,7 @@ class Probe(object):
             if got_done:
                 # If no data then we're done (the server hasn't sent anything further)
                 # we allow 500ms to give the followup time to arrive
-                if not select.select([sock.fileno(),],[],[],0.5)[0]:
+                if not select([sock.fileno(),],[],[],0.5)[0]:
                     break
 
             try:
