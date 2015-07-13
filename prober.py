@@ -2,11 +2,12 @@
 
 import sys
 import logging
+import os.path
 
 from optparse import OptionParser
 
 # Ensure we can see the pytls/tls subdir for the pytls submodule
-sys.path.insert(1, 'pytls')
+sys.path.insert(1, os.path.join(os.path.dirname(__file__), 'pytls'))
 from tls import *
 
 from probes import *

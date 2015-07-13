@@ -5,7 +5,7 @@ import glob
 import string
 import os.path
 
-fingerprint_dir = 'fingerprints'
+fingerprint_dir = os.path.join(os.path.dirname(__file__), 'fingerprints')
 
 class Fingerprint(object):
     def __init__(self, metadata, probes):
