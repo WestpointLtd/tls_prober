@@ -127,7 +127,7 @@ def main():
     # Print the results of the probe
     if opts.list:
         for key in results.keys():
-            print '%20s\t%s' % (key, results[key])
+            print '%20s:\t%s' % (key, results[key])
         return
     
     # Print the matches
