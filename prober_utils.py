@@ -33,6 +33,14 @@ def make_hello():
     #hexdump(record.bytes)
     return record.bytes
 
+def make_hello_request():
+    hello_req = HandshakeMessage.create(HandshakeMessage.HelloRequest,
+                                        b'')
+    record = TLSRecord.create(content_type=TLSRecord.Handshake,
+                              version=TLSRecord.TLS1_0,
+                              message=hello_req.bytes)
+    return record.bytes
+
 def make_ccs():
     ccs = '\1'
 

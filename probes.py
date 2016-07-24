@@ -161,6 +161,16 @@ class ChangeCipherSpec(Probe):
         sock.write(make_ccs())
 
 
+class HelloRequest(Probe):
+    '''Send a hello then hello request'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        sock.write(make_hello())
+        logging.debug('Sending Hello Request...')
+        sock.write(make_hello_request())
+
+
 class EmptyChangeCipherSpec(Probe):
     '''Send a hello then an empty change cipher spec'''
     
