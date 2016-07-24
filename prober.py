@@ -41,6 +41,7 @@ probes = [
     SplitHelloPackets(),
     NoCiphers(),
     EmptyChangeCipherSpec(),
+    HelloRequest(),
     SNIWrongName(),
     SNILongName(),
     SNIEmptyName()
