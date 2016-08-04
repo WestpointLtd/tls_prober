@@ -636,3 +636,12 @@ class SecureRenegoOverflow(Probe):
         # length of the array of bytes in it, but don't provide the
         # required amount
         sock.write(self.make_secure_renego_ext('\x0c0123456789'))
+
+class SecureRenegoUnderflow(SecureRenegoOverflow):
+    '''Send secure renegotiation with data length lower than stated size'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # again, first byte specifies zero-length array, rest of bytes
+        # are just padding to make the extension large
+        sock.write(self.make_secure_renego_ext('\x00\x00\x00\x00\x00'))
