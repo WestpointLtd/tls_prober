@@ -645,3 +645,12 @@ class SecureRenegoUnderflow(SecureRenegoOverflow):
         # again, first byte specifies zero-length array, rest of bytes
         # are just padding to make the extension large
         sock.write(self.make_secure_renego_ext('\x00\x00\x00\x00\x00'))
+
+class SecureRenegoNonEmpty(SecureRenegoOverflow):
+    '''Send secure renegotiation with renegotiation payload'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # send a correctly formatted extension, but with a non-empty
+        # payload (indicating renegotiated connection)
+        sock.write(self.make_secure_renego_ext('\x0c012345678901'))
