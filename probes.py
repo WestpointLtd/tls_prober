@@ -611,3 +611,28 @@ class SNIEmptyName(SNIWrongName):
     def test(self, sock):
         logging.debug('Sending Client Hello...')
         sock.write(self.make_sni_hello(''))
+
+class SecureRenegoOverflow(Probe):
+    '''Send secure renegotiation with data length exceeding stated size'''
+
+    def make_secure_renego_ext(self, payload):
+        secure_renego = Extension.create(
+            extension_type=Extension.RenegotiationInfo,
+            data=payload)
+        hello = ClientHelloMessage.create(settings['default_hello_version'],
+                                          '01234567890123456789012345678901',
+                                          DEFAULT_CIPHERS,
+                                          extensions=[secure_renego])
+
+        record = TLSRecord.create(content_type=TLSRecord.Handshake,
+                                  version=settings['default_record_version'],
+                                  message=hello.bytes)
+
+        return record.bytes
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # first byte of secure renegotiation extension specifies the
+        # length of the array of bytes in it, but don't provide the
+        # required amount
+        sock.write(self.make_secure_renego_ext('\x0c0123456789'))

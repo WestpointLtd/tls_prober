@@ -49,3 +49,17 @@ def make_ccs():
                               message=ccs)
 
     return record.bytes
+
+class Extension(TLSExtension):
+    @classmethod
+    def create(cls, extension_type, data, length=-1):
+        self = cls()
+
+        if length < 0:
+            length = len(data)
+
+        self.bytes = struct.pack('!HH%ds' % (len(data)),
+                                 extension_type,
+                                 length,
+                                 data)
+        return self
