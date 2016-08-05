@@ -47,7 +47,8 @@ probes = [
     SNIEmptyName(),
     SecureRenegoOverflow(),
     SecureRenegoUnderflow(),
-    SecureRenegoNonEmpty()
+    SecureRenegoNonEmpty(),
+    SecureRenegoNull()
 ]
 
 def probe(ipaddress, port, starttls, specified_probe):

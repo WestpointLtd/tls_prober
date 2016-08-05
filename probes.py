@@ -654,3 +654,12 @@ class SecureRenegoNonEmpty(SecureRenegoOverflow):
         # send a correctly formatted extension, but with a non-empty
         # payload (indicating renegotiated connection)
         sock.write(self.make_secure_renego_ext('\x0c012345678901'))
+
+class SecureRenegoNull(SecureRenegoOverflow):
+    '''Send secure renegotiation extension that is completely empty'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # While the proper formatting is to send an empty array, and not
+        # no array, some servers still accept it
+        sock.write(self.make_secure_renego_ext(''))
