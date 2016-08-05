@@ -128,8 +128,8 @@ def main():
     
     # Print the results of the probe
     if opts.list:
-        for key in results.keys():
-            print '%20s:\t%s' % (key, results[key])
+        for key, val in sorted(results.items()):
+            print '%24s:\t%s' % (key, val)
         return
     
     # Print the matches
