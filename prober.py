@@ -55,7 +55,8 @@ probes = [
     TrustedCANull(),
     TrustedCAOverflow(),
     TrustedCAUnderflow(),
-    TruncatedHMACNotNull()
+    TruncatedHMACNotNull(),
+    OCSPNull()
 ]
 
 def probe(ipaddress, port, starttls, specified_probe):

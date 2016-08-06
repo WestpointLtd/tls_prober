@@ -797,3 +797,27 @@ class TruncatedHMACNotNull(Probe):
         logging.debug('Sending Client Hello...')
         # properly formatted extension has no data at all
         sock.write(self.make_hello('\x0c'))
+
+class OCSPNull(Probe):
+    '''Send status request extension with empty payload'''
+
+    def make_hello(self, payload):
+        status_request = Extension.create(
+            extension_type=Extension.StatusRequest,
+            data=payload)
+        hello = ClientHelloMessage.create(settings['default_hello_version'],
+                                          '01234567890123456789012345678901',
+                                          DEFAULT_CIPHERS,
+                                          extensions=[status_request])
+
+        record = TLSRecord.create(content_type=TLSRecord.Handshake,
+                                  version=settings['default_record_version'],
+                                  message=hello.bytes)
+
+        return record.bytes
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normally the status request is a complex structure, don't include
+        # it
+        sock.write(self.make_hello(''))
