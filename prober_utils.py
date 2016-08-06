@@ -21,6 +21,58 @@ DEFAULT_CIPHERS = [TLS_RSA_WITH_RC4_128_MD5,
                    # TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,
                    # TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256]
 
+DEFAULT_PFS_CIPHERS = [TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
+                       TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+                       TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384,
+                       TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,
+                       TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,
+                       TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,
+                       TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+                       TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
+                       TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,
+                       TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,
+                       TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,
+                       TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
+                       TLS_DHE_RSA_WITH_AES_256_GCM_SHA384,
+                       TLS_DHE_RSA_WITH_AES_128_GCM_SHA256,
+                       TLS_DHE_RSA_WITH_AES_256_CBC_SHA256,
+                       TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,
+                       TLS_DHE_RSA_WITH_AES_256_CBC_SHA,
+                       TLS_DHE_RSA_WITH_AES_128_CBC_SHA,
+                       # ChaCha20
+                       0xCCA9,  # ECDHE_ECDSA [ietf]
+                       0xCCA2,  # ECDHE_ECDSA [nmav]
+                       0xCC14,  # ECDHE_ECDSA [agl]
+                       0xCCA8,  # ECDHE_RSA [ietf]
+                       0xCCA1,  # ECDHE_RSA [nmav]
+                       0xCC13,  # ECDHE_RSA [agl]
+                       0xCCAA,  # DHE_RSA [ietf]
+                       0xCCA3,  # DHE_RSA [nmav]
+                       0xCC15,  # DHE_RSA [agl]
+                       # IoT stuff (maybe)
+                       TLS_ECDHE_ECDSA_WITH_AES_256_CCM,
+                       TLS_ECDHE_ECDSA_WITH_AES_128_CCM,
+                       TLS_ECDHE_ECDSA_WITH_AES_256_CCM_8,
+                       TLS_ECDHE_ECDSA_WITH_AES_128_CCM_8,
+                       TLS_DHE_RSA_WITH_AES_256_CCM,
+                       TLS_DHE_RSA_WITH_AES_128_CCM,
+                       TLS_DHE_RSA_WITH_AES_256_CCM_8,
+                       TLS_DHE_RSA_WITH_AES_128_CCM_8,
+                       # uncommon stuff:
+                       TLS_ECDHE_ECDSA_WITH_RC4_128_SHA,
+                       TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA,
+                       TLS_ECDHE_ECDSA_WITH_CAMELLIA_256_CBC_SHA384,
+                       TLS_ECDHE_ECDSA_WITH_ARIA_128_CBC_SHA256,
+                       TLS_ECDHE_RSA_WITH_RC4_128_SHA,
+                       TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA,
+                       TLS_ECDHE_RSA_WITH_CAMELLIA_256_CBC_SHA384,
+                       TLS_ECDHE_RSA_WITH_ARIA_256_CBC_SHA384,
+                       TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA,
+                       TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA,
+                       TLS_DHE_RSA_WITH_SEED_CBC_SHA,
+                       TLS_DHE_RSA_WITH_ARIA_128_CBC_SHA256
+                       ]
+
 def make_hello():
     hello = ClientHelloMessage.create(TLSRecord.TLS1_0,
                                       '01234567890123456789012345678901',
@@ -32,6 +84,20 @@ def make_hello():
 
     #hexdump(record.bytes)
     return record.bytes
+
+
+def make_pfs_hello():
+    hello = ClientHelloMessage.create(TLSRecord.TLS1_0,
+                                      '01234567890123456789012345678901',
+                                      DEFAULT_PFS_CIPHERS)
+
+    record = TLSRecord.create(content_type=TLSRecord.Handshake,
+                              version=TLSRecord.TLS1_0,
+                              message=hello.bytes)
+
+    #hexdump(record.bytes)
+    return record.bytes
+
 
 def make_hello_request():
     hello_req = HandshakeMessage.create(HandshakeMessage.HelloRequest,
