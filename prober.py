@@ -52,7 +52,8 @@ probes = [
     MaxFragmentNull(),
     MaxFragmentInvalid(),
     ClientCertURLsNotNull(),
-    TrustedCANull()
+    TrustedCANull(),
+    TrustedCAOverflow()
 ]
 
 def probe(ipaddress, port, starttls, specified_probe):

@@ -747,3 +747,14 @@ class TrustedCANull(Probe):
         logging.debug('Sending Client Hello...')
         # normal formatting is a complex structure
         sock.write(self.make_hello(''))
+
+
+class TrustedCAOverflow(TrustedCANull):
+    '''Send trusted CA keys extension smaller than length inside indicates'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # in a normal structure, the first two bytes are the overall length
+        # of list with extension data
+        # a typical payload includes type (1B) and sha1 hash (20B)
+        sock.write(self.make_hello('\x00\x15'))
