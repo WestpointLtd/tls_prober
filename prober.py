@@ -58,7 +58,8 @@ probes = [
     TruncatedHMACNotNull(),
     OCSPNull(),
     OCSPOverflow(),
-    OCSPUnderflow()
+    OCSPUnderflow(),
+    DoubleExtension()
 ]
 
 def probe(ipaddress, port, starttls, specified_probe):

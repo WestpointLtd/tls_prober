@@ -840,3 +840,29 @@ class OCSPUnderflow(OCSPNull):
         logging.debug('Sending Client Hello...')
         # correctly formed request, two extra zero bytes
         sock.write(self.make_hello('\x01' + '\x00' * 6))
+
+
+class DoubleExtension(Probe):
+    '''Duplicate secure renegotiation extension'''
+
+    def make_hello(self):
+        secure_renego = Extension.create(
+            extension_type=Extension.RenegotiationInfo,
+            data='\x00')
+        hello = ClientHelloMessage.create(settings['default_hello_version'],
+                                          '01234567890123456789012345678901',
+                                          DEFAULT_CIPHERS,
+                                          extensions=[secure_renego,
+                                                      secure_renego])
+
+        record = TLSRecord.create(content_type=TLSRecord.Handshake,
+                                  version=settings['default_record_version'],
+                                  message=hello.bytes)
+
+        return record.bytes
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # correct Client Hello messages must not contain two extensions
+        # of the same type
+        sock.write(self.make_hello())
