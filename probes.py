@@ -670,6 +670,19 @@ class SNIWithDifferentType(Probe):
         sock.write(self.make_sni_hello(server_names))
 
 
+class SNIDifferentTypeRev(SNIWithDifferentType):
+    '''Send hello like in SNIWithDifferentType but reverse order of names'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        server_names = []
+        # only type 0 (HostName) is defined, any other should be ignored
+        server_names += [(4, '<binary-data>')]
+        server_names += [(ServerNameExtension.HostName, self.ipaddress)]
+
+        sock.write(self.make_sni_hello(server_names))
+
+
 class SecureRenegoOverflow(Probe):
     '''Send secure renegotiation with data length exceeding stated size'''
 
