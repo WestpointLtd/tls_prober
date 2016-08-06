@@ -46,6 +46,7 @@ probes = [
     SNILongName(),
     SNIEmptyName(),
     SNIOneWrong(),
+    SNIWithDifferentType(),
     SecureRenegoOverflow(),
     SecureRenegoUnderflow(),
     SecureRenegoNonEmpty(),
