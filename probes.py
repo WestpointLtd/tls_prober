@@ -758,3 +758,18 @@ class TrustedCAOverflow(TrustedCANull):
         # of list with extension data
         # a typical payload includes type (1B) and sha1 hash (20B)
         sock.write(self.make_hello('\x00\x15'))
+
+
+class TrustedCAUnderflow(TrustedCANull):
+    '''Send trusted CA keys extension larger than length inside indicates'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+
+        # type key_sha1_hash + sha1 hash (20 bytes)
+        authority = '\x01' + 'a'*20
+        # payload has a 2 byte length and then an array of items,
+        # add null byte at end to cause the underflow
+        ext_data = struct.pack('!H', len(authority)) + authority + '\x00'
+
+        sock.write(self.make_hello(ext_data))
