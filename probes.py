@@ -32,8 +32,11 @@ class Probe(object):
     #
     # Reusable standard elements
     #
+    def __init__(self):
+        self.ipaddress = None
 
     def connect(self, ipaddress, port, starttls_mode):
+        self.ipaddress = ipaddress
         # Check if we're using socks
         if os.environ.has_key('socks_proxy'):
             socks_host, socks_port = os.environ['socks_proxy'].split(':')
@@ -611,6 +614,27 @@ class SNIEmptyName(SNIWrongName):
     def test(self, sock):
         logging.debug('Sending Client Hello...')
         sock.write(self.make_sni_hello(''))
+
+class SNIOneWrong(Probe):
+    '''Send server name indication with two names, one wrong'''
+
+    def make_sni_hello(self, name):
+        sni_extension = ServerNameExtension.create(None,
+                                                   (name, 'thisisnotyourname'))
+        hello = ClientHelloMessage.create(settings['default_hello_version'],
+                                          '01234567890123456789012345678901',
+                                          DEFAULT_CIPHERS,
+                                          extensions=[sni_extension])
+
+        record = TLSRecord.create(content_type=TLSRecord.Handshake,
+                                  version=settings['default_record_version'],
+                                  message=hello.bytes)
+
+        return record.bytes
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        sock.write(self.make_sni_hello(self.ipaddress))
 
 class SecureRenegoOverflow(Probe):
     '''Send secure renegotiation with data length exceeding stated size'''
