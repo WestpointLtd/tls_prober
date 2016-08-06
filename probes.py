@@ -831,3 +831,12 @@ class OCSPOverflow(OCSPNull):
         # the request has three fields - type (one byte) and two arrays
         # with 2 byte long headers, truncate the second length header
         sock.write(self.make_hello('\x01\x00\x00\x00'))
+
+
+class OCSPUnderflow(OCSPNull):
+    '''Send status request ext larger than the length inside indicate'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # correctly formed request, two extra zero bytes
+        sock.write(self.make_hello('\x01' + '\x00' * 6))
