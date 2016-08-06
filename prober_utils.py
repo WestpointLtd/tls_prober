@@ -137,6 +137,19 @@ def make_12_hello():
     return record.bytes
 
 
+def make_12_pfs_hello():
+    hello = ClientHelloMessage.create(TLSRecord.TLS1_2,
+                                      '01234567890123456789012345678901',
+                                      DEFAULT_PFS_CIPHERS)
+
+    record = TLSRecord.create(content_type=TLSRecord.Handshake,
+                              version=TLSRecord.TLS1_0,
+                              message=hello.bytes)
+
+    #hexdump(record.bytes)
+    return record.bytes
+
+
 def make_hello_request():
     hello_req = HandshakeMessage.create(HandshakeMessage.HelloRequest,
                                         b'')

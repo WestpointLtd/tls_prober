@@ -23,6 +23,7 @@ probes = [
     NormalHandshake(),
     NormalHandshakePFS(),
     NormalHandshake12(),
+    NormalHandshake12PFS(),
     ChangeCipherSpec(),
     OnlyECCipherSuites(),
     HighTLSVersion(),
