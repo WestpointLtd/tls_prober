@@ -663,3 +663,28 @@ class SecureRenegoNull(SecureRenegoOverflow):
         # While the proper formatting is to send an empty array, and not
         # no array, some servers still accept it
         sock.write(self.make_secure_renego_ext(''))
+
+
+class MaxFragmentNull(Probe):
+    '''Send maximum fragment length extension that is completely empty'''
+
+    def make_hello(self, payload):
+        max_fragment = Extension.create(
+            extension_type=Extension.MaxFragmentLength,
+            data=payload)
+
+        hello = ClientHelloMessage.create(settings['default_hello_version'],
+                                          '01234567890123456789012345678901',
+                                          DEFAULT_CIPHERS,
+                                          extensions=[max_fragment])
+
+        record = TLSRecord.create(content_type=TLSRecord.Handshake,
+                                  version=settings['default_record_version'],
+                                  message=hello.bytes)
+
+        return record.bytes
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal extension needs a single byte value, don't provide it
+        sock.write(self.make_hello(''))

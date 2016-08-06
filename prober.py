@@ -48,7 +48,8 @@ probes = [
     SecureRenegoOverflow(),
     SecureRenegoUnderflow(),
     SecureRenegoNonEmpty(),
-    SecureRenegoNull()
+    SecureRenegoNull(),
+    MaxFragmentNull()
 ]
 
 def probe(ipaddress, port, starttls, specified_probe):
