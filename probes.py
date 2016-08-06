@@ -168,6 +168,26 @@ class NormalHandshake12PFS(Probe):
         sock.write(make_12_pfs_hello())
 
 
+class NormalHandshake12PFSw13(Probe):
+    '''TLSv1.2 with PFS ciphers with a TLSv1.3 version (invalid TLSv1.3)'''
+
+    def make_hello(self):
+        hello = ClientHelloMessage.create(TLSRecord.TLS1_3,
+                                          '01234567890123456789012345678901',
+                                          DEFAULT_PFS_CIPHERS)
+
+        record = TLSRecord.create(content_type=TLSRecord.Handshake,
+                                  version=TLSRecord.TLS1_0,
+                                  message=hello.bytes)
+
+        #hexdump(record.bytes)
+        return record.bytes
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        sock.write(self.make_hello())
+
+
 class DoubleClientHello(Probe):
     '''Two client hellos'''
     
