@@ -722,3 +722,28 @@ class ClientCertURLsNotNull(Probe):
         logging.debug('Sending Client Hello...')
         # correctly formatted does not include any data
         sock.write(self.make_hello('\x08\x00'))
+
+
+class TrustedCANull(Probe):
+    '''Send trusted CA keys extension with completely empty payload'''
+
+    def make_hello(self, payload):
+        trusted_ca_ext = Extension.create(
+            extension_type=Extension.TrustedCAKeys,
+            data=payload)
+
+        hello = ClientHelloMessage.create(settings['default_hello_version'],
+                                          '01234567890123456789012345678901',
+                                          DEFAULT_CIPHERS,
+                                          extensions=[trusted_ca_ext])
+
+        record = TLSRecord.create(content_type=TLSRecord.Handshake,
+                                  version=settings['default_record_version'],
+                                  message=hello.bytes)
+
+        return record.bytes
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal formatting is a complex structure
+        sock.write(self.make_hello(''))
