@@ -683,6 +683,32 @@ class SNIDifferentTypeRev(SNIWithDifferentType):
         sock.write(self.make_sni_hello(server_names))
 
 
+class SNIOverflow(Probe):
+    '''Send server name indication with data length exceeding stated size'''
+
+    def make_sni_hello(self, name):
+        sni_extension = ServerNameExtension.create(name)
+        # first four bytes are the header, last one we truncate to exceed size
+        ext_data = sni_extension.bytes[4:-1]
+        sni_extension = Extension.create(extension_type=Extension.ServerName,
+                                         data=ext_data)
+
+        hello = ClientHelloMessage.create(TLSRecord.TLS1_0,
+                                          '01234567890123456789012345678901',
+                                          DEFAULT_CIPHERS,
+                                          extensions=[sni_extension])
+
+        record = TLSRecord.create(content_type=TLSRecord.Handshake,
+                                  version=TLSRecord.TLS1_0,
+                                  message=hello.bytes)
+
+        return record.bytes
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        sock.write(self.make_sni_hello(self.ipaddress))
+
+
 class SecureRenegoOverflow(Probe):
     '''Send secure renegotiation with data length exceeding stated size'''
 
