@@ -821,3 +821,13 @@ class OCSPNull(Probe):
         # normally the status request is a complex structure, don't include
         # it
         sock.write(self.make_hello(''))
+
+
+class OCSPOverflow(OCSPNull):
+    '''Send status request ext smaller than the length inside indicates'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # the request has three fields - type (one byte) and two arrays
+        # with 2 byte long headers, truncate the second length header
+        sock.write(self.make_hello('\x01\x00\x00\x00'))
