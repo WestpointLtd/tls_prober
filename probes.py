@@ -697,3 +697,28 @@ class MaxFragmentInvalid(MaxFragmentNull):
         logging.debug('Sending Client Hello...')
         # valid values are between 1 and 4 inclusive
         sock.write(self.make_hello('\x08'))
+
+
+class ClientCertURLsNotNull(Probe):
+    '''Send client certificate URL indication extension that is not empty'''
+
+    def make_hello(self, payload):
+        client_cert_url_ext = Extension.create(
+            extension_type=Extension.ClientCertificateUrl,
+            data=payload)
+
+        hello = ClientHelloMessage.create(settings['default_hello_version'],
+                                          '01234567890123456789012345678901',
+                                          DEFAULT_CIPHERS,
+                                          extensions=[client_cert_url_ext])
+
+        record = TLSRecord.create(content_type=TLSRecord.Handshake,
+                                  version=settings['default_record_version'],
+                                  message=hello.bytes)
+
+        return record.bytes
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # correctly formatted does not include any data
+        sock.write(self.make_hello('\x08\x00'))
