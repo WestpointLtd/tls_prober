@@ -152,6 +152,14 @@ class NormalHandshakePFS(Probe):
         sock.write(make_pfs_hello())
 
 
+class NormalHandshake12(Probe):
+    '''Normal TLSv1.2 handshake'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        sock.write(make_12_hello())
+
+
 class DoubleClientHello(Probe):
     '''Two client hellos'''
     

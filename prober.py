@@ -22,6 +22,7 @@ __email__ = 'rich@kde.org'
 probes = [
     NormalHandshake(),
     NormalHandshakePFS(),
+    NormalHandshake12(),
     ChangeCipherSpec(),
     OnlyECCipherSuites(),
     HighTLSVersion(),
