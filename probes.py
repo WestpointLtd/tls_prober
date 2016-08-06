@@ -688,3 +688,12 @@ class MaxFragmentNull(Probe):
         logging.debug('Sending Client Hello...')
         # normal extension needs a single byte value, don't provide it
         sock.write(self.make_hello(''))
+
+
+class MaxFragmentInvalid(MaxFragmentNull):
+    '''Send maximum fragment length extension with invalid value'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # valid values are between 1 and 4 inclusive
+        sock.write(self.make_hello('\x08'))
