@@ -773,3 +773,27 @@ class TrustedCAUnderflow(TrustedCANull):
         ext_data = struct.pack('!H', len(authority)) + authority + '\x00'
 
         sock.write(self.make_hello(ext_data))
+
+
+class TruncatedHMACNotNull(Probe):
+    '''Send a truncated HMAC extension with a non empty payload'''
+
+    def make_hello(self, payload):
+        truncated_hmac = Extension.create(
+            extension_type=Extension.TruncateHMAC,
+            data=payload)
+        hello = ClientHelloMessage.create(settings['default_hello_version'],
+                                          '01234567890123456789012345678901',
+                                          DEFAULT_CIPHERS,
+                                          extensions=[truncated_hmac])
+
+        record = TLSRecord.create(content_type=TLSRecord.Handshake,
+                                  version=settings['default_record_version'],
+                                  message=hello.bytes)
+
+        return record.bytes
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # properly formatted extension has no data at all
+        sock.write(self.make_hello('\x0c'))
