@@ -98,11 +98,13 @@ DEFAULT_PFS_CIPHERS = [TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
                        TLS_DHE_RSA_WITH_ARIA_128_CBC_SHA256
                        ]
 
-def make_hello():
+
+def make_hello(extensions=tuple()):
     hello = ClientHelloMessage.create(TLSRecord.TLS1_0,
                                       '01234567890123456789012345678901',
-                                      DEFAULT_CIPHERS)
-    
+                                      DEFAULT_CIPHERS,
+                                      extensions=extensions)
+
     record = TLSRecord.create(content_type=TLSRecord.Handshake,
                               version=TLSRecord.TLS1_0,
                               message=hello.bytes)
@@ -111,10 +113,11 @@ def make_hello():
     return record.bytes
 
 
-def make_pfs_hello():
+def make_pfs_hello(extensions=tuple()):
     hello = ClientHelloMessage.create(TLSRecord.TLS1_0,
                                       '01234567890123456789012345678901',
-                                      DEFAULT_PFS_CIPHERS)
+                                      DEFAULT_PFS_CIPHERS,
+                                      extensions=extensions)
 
     record = TLSRecord.create(content_type=TLSRecord.Handshake,
                               version=TLSRecord.TLS1_0,
@@ -124,10 +127,11 @@ def make_pfs_hello():
     return record.bytes
 
 
-def make_12_hello():
+def make_12_hello(extensions=tuple()):
     hello = ClientHelloMessage.create(TLSRecord.TLS1_2,
                                       '01234567890123456789012345678901',
-                                      DEFAULT_12_CIPHERS)
+                                      DEFAULT_12_CIPHERS,
+                                      extensions=extensions)
 
     record = TLSRecord.create(content_type=TLSRecord.Handshake,
                               version=TLSRecord.TLS1_0,
@@ -137,10 +141,11 @@ def make_12_hello():
     return record.bytes
 
 
-def make_12_pfs_hello():
+def make_12_pfs_hello(extensions=tuple()):
     hello = ClientHelloMessage.create(TLSRecord.TLS1_2,
                                       '01234567890123456789012345678901',
-                                      DEFAULT_PFS_CIPHERS)
+                                      DEFAULT_PFS_CIPHERS,
+                                      extensions=extensions)
 
     record = TLSRecord.create(content_type=TLSRecord.Handshake,
                               version=TLSRecord.TLS1_0,
