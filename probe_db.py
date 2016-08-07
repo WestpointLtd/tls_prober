@@ -4,6 +4,7 @@ import sys
 import glob
 import string
 import os.path
+from operator import itemgetter
 
 fingerprint_dir = os.path.join(os.path.dirname(__file__), 'fingerprints')
 
@@ -53,15 +54,12 @@ def find_matches(probes):
 
     database = read_database()
     for f in database:
-        for key in probes.keys():
-            if f.probes.has_key(key) and f.probes[key] == probes[key]:
+        for key, probe_result in probes.items():
+            if key in f.probes and f.probes[key] == probe_result:
                 scores[f.description()] = scores.get(f.description(), 0)+1
 
-    # Convert the matches to a list
-    results = []
-    matches = sorted(scores, key=scores.__getitem__, reverse=True)
-    for match in matches:
-        results += [ [match, scores[match]] ]
+    # Convert the matches to a sorted list
+    results = sorted(scores.items(), key=itemgetter(1), reverse=True)
 
     return results
 
