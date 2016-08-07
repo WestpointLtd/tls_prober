@@ -40,6 +40,8 @@ probes = [
     Heartbleed(),
     BadHandshakeMessage(),
     DoubleClientHello(),
+    DoubleClientHello12(),
+    DoubleClientHello12PFS(),
     EmptyRecord(),
     TwoInvalidPackets(),
     SplitHelloRecords(),

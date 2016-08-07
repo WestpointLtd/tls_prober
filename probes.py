@@ -202,6 +202,16 @@ class DoubleClientHello(NormalHandshake):
         sock.write(self.make_hello())
 
 
+class DoubleClientHello12(DoubleClientHello, NormalHandshake12):
+    '''Two client hellos, TLSv1.2'''
+    pass
+
+
+class DoubleClientHello12PFS(DoubleClientHello, NormalHandshake12PFS):
+    '''Two client hellos, TLSv1.2 w/PFS ciphers'''
+    pass
+
+
 class ChangeCipherSpec(Probe):
     '''Send a hello then change cipher spec'''
     

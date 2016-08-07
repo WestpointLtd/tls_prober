@@ -220,6 +220,30 @@ class TestDoubleClientHello(unittest.TestCase):
                          [MAKE_HELLO_EMPTY_EXT, MAKE_HELLO_EMPTY_EXT])
 
 
+class TestDoubleClientHello12(unittest.TestCase):
+    def test_test(self):
+        probe = DoubleClientHello12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [MAKE_12_HELLO_EMPTY_STR,
+                          MAKE_12_HELLO_EMPTY_STR])
+
+
+class TestDoubleClientHello12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = DoubleClientHello12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [MAKE_12_PFS_HELLO_EMPTY_STR,
+                          MAKE_12_PFS_HELLO_EMPTY_STR])
+
+
 class TestChangeCipherSpec(unittest.TestCase):
     def test_test(self):
         probe = ChangeCipherSpec()
