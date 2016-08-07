@@ -318,6 +318,31 @@ class TestSplitHelloPackets(unittest.TestCase):
                          [MAKE_HELLO_EMPTY_EXT[:10],
                           MAKE_HELLO_EMPTY_EXT[10:]])
 
+
+class TestSplitHelloPackets12(unittest.TestCase):
+    def test_test(self):
+        probe = SplitHelloPackets12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [MAKE_12_HELLO_EMPTY_STR[:10],
+                          MAKE_12_HELLO_EMPTY_STR[10:]])
+
+
+class TestSplitHelloPackets12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = SplitHelloPackets12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [MAKE_12_PFS_HELLO_EMPTY_STR[:10],
+                          MAKE_12_PFS_HELLO_EMPTY_STR[10:]])
+
+
 class TestTwoInvalidPackets(unittest.TestCase):
     def test_test(self):
         probe = TwoInvalidPackets()

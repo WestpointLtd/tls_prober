@@ -529,7 +529,7 @@ class RecordLengthUnderflow(Probe):
 
 class EmptyRecord(Probe):
     '''Send an empty record then the hello'''
-    
+
     def make_empty_record(self):
         record = TLSRecord.create(content_type=TLSRecord.Handshake,
                                   version=settings['default_record_version'],
@@ -596,16 +596,27 @@ class SplitHelloRecords(Probe):
             result = 'writeerror:%s|' % errno.errorcode[e.errno]
             return result
 
-class SplitHelloPackets(Probe):
+
+class SplitHelloPackets(NormalHandshake):
     '''Split the hello over two packets'''
-    
+
     def test(self, sock):
         logging.debug('Sending Client Hello part one...')
-        record = make_hello()
+        record = self.make_hello()
         sock.write(record[:10])
         sock.flush()
         logging.debug('Sending Client Hello part two...')
         sock.write(record[10:])
+
+
+class SplitHelloPackets12(SplitHelloPackets, NormalHandshake12):
+    '''Split the TLS1.2 hello over two packets'''
+    pass
+
+
+class SplitHelloPackets12PFS(SplitHelloPackets, NormalHandshake12PFS):
+    '''Split the TLS1.2 PFS hello over two packets'''
+    pass
 
 
 class NoCiphers(Probe):
