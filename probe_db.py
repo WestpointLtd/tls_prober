@@ -57,11 +57,6 @@ def find_matches(probes):
             if f.probes.has_key(key) and f.probes[key] == probes[key]:
                 scores[f.description()] = scores.get(f.description(), 0)+1
 
-    # Remove entries that don't match at all
-    for desc in scores.keys():
-        if scores[desc] == 0:
-            del scores[desc]
-
     # Convert the matches to a list
     results = []
     matches = sorted(scores, key=scores.__getitem__, reverse=True)
