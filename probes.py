@@ -138,34 +138,38 @@ class Probe(object):
 
 class NormalHandshake(Probe):
     '''A normal handshake'''
-    
+
+    def __init__(self):
+        super(NormalHandshake, self).__init__()
+        self.make_hello = make_hello
+
     def test(self, sock):
         logging.debug('Sending Client Hello...')
-        sock.write(make_hello())
+        sock.write(self.make_hello())
 
 
-class NormalHandshakePFS(Probe):
+class NormalHandshakePFS(NormalHandshake):
     '''Normal handshake with PFS ciphersuites'''
 
-    def test(self, sock):
-        logging.debug('Sending Client Hello...')
-        sock.write(make_pfs_hello())
+    def __init__(self):
+        super(NormalHandshakePFS, self).__init__()
+        self.make_hello = make_pfs_hello
 
 
-class NormalHandshake12(Probe):
+class NormalHandshake12(NormalHandshake):
     '''Normal TLSv1.2 handshake'''
 
-    def test(self, sock):
-        logging.debug('Sending Client Hello...')
-        sock.write(make_12_hello())
+    def __init__(self):
+        super(NormalHandshake12, self).__init__()
+        self.make_hello = make_12_hello
 
 
-class NormalHandshake12PFS(Probe):
+class NormalHandshake12PFS(NormalHandshake):
     '''Normal TLSv1.2 handshake with PFS ciphersuites'''
 
-    def test(self, sock):
-        logging.debug('Sending Client Hello...')
-        sock.write(make_12_pfs_hello())
+    def __init__(self):
+        super(NormalHandshake12PFS, self).__init__()
+        self.make_hello = make_12_pfs_hello
 
 
 class NormalHandshake12PFSw13(Probe):
@@ -188,14 +192,14 @@ class NormalHandshake12PFSw13(Probe):
         sock.write(self.make_hello())
 
 
-class DoubleClientHello(Probe):
+class DoubleClientHello(NormalHandshake):
     '''Two client hellos'''
-    
+
     def test(self, sock):
         logging.debug('Sending Client Hello...')
-        sock.write(make_hello())
+        sock.write(self.make_hello())
         logging.debug('Sending Client Hello...')
-        sock.write(make_hello())
+        sock.write(self.make_hello())
 
 
 class ChangeCipherSpec(Probe):
