@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+from __future__ import division
+
 import sys
 import glob
 import string
@@ -57,6 +59,8 @@ def find_matches(probes):
         for key, probe_result in probes.items():
             if key in f.probes and f.probes[key] == probe_result:
                 scores[f.description()] = scores.get(f.description(), 0)+1
+        if f.description() in scores:
+            scores[f.description()] /= len(f.probes)
 
     # Convert the matches to a sorted list
     results = sorted(scores.items(), key=itemgetter(1), reverse=True)
