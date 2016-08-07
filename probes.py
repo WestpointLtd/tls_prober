@@ -283,18 +283,7 @@ class Heartbeat(Probe):
     
     def make_hb_hello(self):
         hb_extension = HeartbeatExtension.create()
-        hello = ClientHelloMessage.create(TLSRecord.TLS1_0,
-                                          '01234567890123456789012345678901',
-                                          DEFAULT_CIPHERS,
-                                          extensions = [ hb_extension ])
-
-    
-        record = TLSRecord.create(content_type=TLSRecord.Handshake,
-                                  version=TLSRecord.TLS1_0,
-                                  message=hello.bytes)
-
-        #hexdump(record.bytes)
-        return record.bytes
+        return make_hello([hb_extension])
 
     def make_heartbeat(self):
         heartbeat = HeartbeatMessage.create(HeartbeatMessage.HeartbeatRequest,
@@ -314,23 +303,8 @@ class Heartbeat(Probe):
         sock.write(self.make_heartbeat())
 
 
-class Heartbleed(Probe):
+class Heartbleed(Heartbeat):
     '''Try to send a heartbleed attack'''
-    
-    def make_hb_hello(self):
-        hb_extension = HeartbeatExtension.create()
-        hello = ClientHelloMessage.create(TLSRecord.TLS1_0,
-                                          '01234567890123456789012345678901',
-                                          DEFAULT_CIPHERS,
-                                          extensions = [ hb_extension ])
-
-    
-        record = TLSRecord.create(content_type=TLSRecord.Handshake,
-                                  version=TLSRecord.TLS1_0,
-                                  message=hello.bytes)
-
-        #hexdump(record.bytes)
-        return record.bytes
 
     def make_heartbleed(self):
         heartbeat = HeartbeatMessage.create(HeartbeatMessage.HeartbeatRequest,
@@ -642,20 +616,10 @@ class NoCiphers(Probe):
 
 class SNIWrongName(Probe):
     '''Send a server name indication for a non-matching name'''
-    
+
     def make_sni_hello(self, name):
         sni_extension = ServerNameExtension.create(name)
-        hello = ClientHelloMessage.create(TLSRecord.TLS1_0,
-                                          '01234567890123456789012345678901',
-                                          DEFAULT_CIPHERS,
-                                          extensions = [ sni_extension ])
-    
-        record = TLSRecord.create(content_type=TLSRecord.Handshake,
-                                  version=TLSRecord.TLS1_0,
-                                  message=hello.bytes)
-
-        #hexdump(record.bytes)
-        return record.bytes
+        return make_hello([sni_extension])
 
     def test(self, sock):
         logging.debug('Sending Client Hello...')
@@ -802,16 +766,7 @@ class SecureRenegoOverflow(Probe):
         secure_renego = Extension.create(
             extension_type=Extension.RenegotiationInfo,
             data=payload)
-        hello = ClientHelloMessage.create(settings['default_hello_version'],
-                                          '01234567890123456789012345678901',
-                                          DEFAULT_CIPHERS,
-                                          extensions=[secure_renego])
-
-        record = TLSRecord.create(content_type=TLSRecord.Handshake,
-                                  version=settings['default_record_version'],
-                                  message=hello.bytes)
-
-        return record.bytes
+        return make_hello([secure_renego])
 
     def test(self, sock):
         logging.debug('Sending Client Hello...')
