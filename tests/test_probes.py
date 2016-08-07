@@ -378,6 +378,49 @@ class TestSplitHelloRecords(unittest.TestCase):
                           b'\x00\x00'])
 
 
+class TestSplitHelloRecords12(unittest.TestCase):
+    def test_test(self):
+        probe = SplitHelloRecords12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00\n'
+                          b'\x01\x00\x00O'
+                          b'\x03\x03' +
+                          RANDOM_STR[:4],
+                          b'\x16\x03\x01\x00I' +
+                          RANDOM_STR[4:] +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x00'])
+
+
+class TestSplitHelloRecords12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = SplitHelloRecords12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00\n'
+                          b'\x01\x00\x00\x87'
+                          b'\x03\x03' +
+                          RANDOM_STR[:4],
+                          b'\x16\x03\x01\x00\x81' +
+                          RANDOM_STR[4:] +
+                          b'\x00'
+                          b'\x00^' +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x00'])
+
+
 class TestOnlyECCipherSuites(unittest.TestCase):
     def test_test(self):
         probe = OnlyECCipherSuites()

@@ -597,6 +597,50 @@ class SplitHelloRecords(Probe):
             return result
 
 
+class SplitHelloRecords12(SplitHelloRecords):
+    '''Split the TLS1.2 hello over two records'''
+
+    def make_split_hello(self):
+        hello = ClientHelloMessage.create(TLSRecord.TLS1_2,
+                                          '01234567890123456789012345678901',
+                                          DEFAULT_12_CIPHERS)
+
+        first = hello.bytes[:10]
+        second = hello.bytes[10:]
+
+        record_one = TLSRecord.create(content_type=TLSRecord.Handshake,
+                                      version=settings['default_record_version'],
+                                      message=first)
+        record_two = TLSRecord.create(content_type=TLSRecord.Handshake,
+                                      version=settings['default_record_version'],
+                                      message=second)
+
+        #hexdump(record.bytes)
+        return record_one.bytes, record_two.bytes
+
+
+class SplitHelloRecords12PFS(SplitHelloRecords):
+    '''Split the TLS1.2 PFS hello over two records'''
+
+    def make_split_hello(self):
+        hello = ClientHelloMessage.create(TLSRecord.TLS1_2,
+                                          '01234567890123456789012345678901',
+                                          DEFAULT_PFS_CIPHERS)
+
+        first = hello.bytes[:10]
+        second = hello.bytes[10:]
+
+        record_one = TLSRecord.create(content_type=TLSRecord.Handshake,
+                                      version=settings['default_record_version'],
+                                      message=first)
+        record_two = TLSRecord.create(content_type=TLSRecord.Handshake,
+                                      version=settings['default_record_version'],
+                                      message=second)
+
+        #hexdump(record.bytes)
+        return record_one.bytes, record_two.bytes
+
+
 class SplitHelloPackets(NormalHandshake):
     '''Split the hello over two packets'''
 

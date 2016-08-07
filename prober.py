@@ -45,6 +45,8 @@ probes = [
     EmptyRecord(),
     TwoInvalidPackets(),
     SplitHelloRecords(),
+    SplitHelloRecords12(),
+    SplitHelloRecords12PFS(),
     SplitHelloPackets(),
     SplitHelloPackets12(),
     SplitHelloPackets12PFS(),
