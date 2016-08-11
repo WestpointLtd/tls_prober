@@ -419,6 +419,24 @@ class TestSplitHelloPackets12PFS(unittest.TestCase):
                           MAKE_12_PFS_HELLO_EMPTY_STR[10:]])
 
 
+class TestNoCiphers(unittest.TestCase):
+    def test_test(self):
+        probe = NoCiphers()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00-'
+                          b'\x01\x00\x00)'
+                          b'\x03\x01' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00\x00'
+                          b'\x01\x00'
+                          b'\x00\x00'])
+
+
 class TestTwoInvalidPackets(unittest.TestCase):
     def test_test(self):
         probe = TwoInvalidPackets()
@@ -829,6 +847,127 @@ class TestZeroTLSVersion12PFS(unittest.TestCase):
                           DEFAULT_PFS_CIPHERS_STR +
                           b'\x01\x00'
                           b'\x00\x00'])
+
+
+class TestHighHelloVersion(unittest.TestCase):
+    def test_test(self):
+        probe = HighHelloVersion()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00;'
+                          b'\x01\x00\x007'
+                          b'\x04\x00' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00\x0e' +
+                          DEFAULT_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x00'])
+
+
+class TestVeryHighHelloVersion(unittest.TestCase):
+    def test_test(self):
+        probe = VeryHighHelloVersion()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00;'
+                          b'\x01\x00\x007'
+                          b'\xff\xff' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00\x0e' +
+                          DEFAULT_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x00'])
+
+
+class TestZeroHelloVersion(unittest.TestCase):
+    def test_test(self):
+        probe = ZeroHelloVersion()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00;'
+                          b'\x01\x00\x007'
+                          b'\x00\x00' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00\x0e' +
+                          DEFAULT_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x00'])
+
+
+class TestBadContentType(unittest.TestCase):
+    def test_test(self):
+        probe = BadContentType()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x11\x03\x01\x00;'
+                          b'\x01\x00\x007'
+                          b'\x03\x01' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00\x0e' +
+                          DEFAULT_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x00'])
+
+
+class TestRecordLengthOverflow(unittest.TestCase):
+    def test_test(self):
+        probe = RecordLengthOverflow()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00\x01'
+                          b'\x01'])
+
+
+class TestRecordLengthUnderflow(unittest.TestCase):
+    def test_test(self):
+        probe = RecordLengthUnderflow()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(len(sock.sent_data[0]), 65540)
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\xff\xff'
+                          b'\x01\x00\x007'
+                          b'\x03\x01' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00\x0e' +
+                          DEFAULT_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x00' +
+                          b'\x00' * (65540 - 64)])
+
+
+class TestEmptyRecord(unittest.TestCase):
+    def test_test(self):
+        probe = EmptyRecord()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00\x00',
+                          MAKE_HELLO_EMPTY_EXT])
 
 
 class TestSNIWrongName(unittest.TestCase):
