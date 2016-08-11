@@ -507,12 +507,17 @@ class ZeroTLSVersion12PFS(HighTLSVersion12PFS, ZeroTLSVersion):
 
 class HighHelloVersion(Probe):
     '''Set a high version in the hello'''
-    
+
+    def __init__(self):
+        super(HighHelloVersion, self).__init__()
+        self.hello_version = 0x400
+        self.hello_ciphers = DEFAULT_CIPHERS
+
     def make_high_tls_hello(self):
-        hello = ClientHelloMessage.create(0x400,
+        hello = ClientHelloMessage.create(self.hello_version,
                                           '01234567890123456789012345678901',
-                                          DEFAULT_CIPHERS)
-    
+                                          self.hello_ciphers)
+
         record = TLSRecord.create(content_type=TLSRecord.Handshake,
                                   version=settings['default_record_version'],
                                   message=hello.bytes)
