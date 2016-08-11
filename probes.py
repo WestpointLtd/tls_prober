@@ -802,12 +802,16 @@ class SplitHelloPackets12PFS(SplitHelloPackets, NormalHandshake12PFS):
 
 class NoCiphers(Probe):
     '''Send an empty cipher list'''
-    
+
+    def __init__(self):
+        super(NoCiphers, self).__init__()
+        self.hello_version = settings['default_hello_version']
+
     def make_no_ciphers_hello(self):
-        hello = ClientHelloMessage.create(settings['default_hello_version'],
+        hello = ClientHelloMessage.create(self.hello_version,
                                           '01234567890123456789012345678901',
                                           [])
-    
+
         record = TLSRecord.create(content_type=TLSRecord.Handshake,
                                   version=settings['default_record_version'],
                                   message=hello.bytes)
