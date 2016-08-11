@@ -1371,6 +1371,49 @@ class TestSecureRenegoUnderflow(unittest.TestCase):
                           b'\x00\x00\x00\x00\x00'])
 
 
+class TestSecureRenegoUnderflow12(unittest.TestCase):
+    def test_test(self):
+        probe = SecureRenegoUnderflow12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00\\'
+                          b'\x01\x00\x00X'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\t'
+                          b'\xff\x01\x00\x05'
+                          b'\x00\x00\x00\x00\x00'])
+
+
+class TestSecureRenegoUnderflow12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = SecureRenegoUnderflow12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00\x94'
+                          b'\x01\x00\x00\x90'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00^' +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\t'
+                          b'\xff\x01\x00\x05'
+                          b'\x00\x00\x00\x00\x00'])
+
+
 class TestSecureRenegoNonEmpty(unittest.TestCase):
     def test_test(self):
         probe = SecureRenegoNonEmpty()

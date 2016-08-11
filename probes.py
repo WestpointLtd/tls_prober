@@ -1045,6 +1045,17 @@ class SecureRenegoUnderflow(SecureRenegoOverflow):
         # are just padding to make the extension large
         sock.write(self.make_secure_renego_ext('\x00\x00\x00\x00\x00'))
 
+
+class SecureRenegoUnderflow12(SecureRenegoUnderflow, NormalHandshake12):
+    '''As with SecureRenegoUnderflow, inside TLSv1.2 hello'''
+    pass
+
+
+class SecureRenegoUnderflow12PFS(SecureRenegoUnderflow, NormalHandshake12PFS):
+    '''As with SecureRenegoUnderflow, inside PFS TLSv1.2 hello'''
+    pass
+
+
 class SecureRenegoNonEmpty(SecureRenegoOverflow):
     '''Send secure renegotiation with renegotiation payload'''
 

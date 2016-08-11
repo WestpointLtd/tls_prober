@@ -94,6 +94,8 @@ probes = [
     SecureRenegoOverflow12(),
     SecureRenegoOverflow12PFS(),
     SecureRenegoUnderflow(),
+    SecureRenegoUnderflow12(),
+    SecureRenegoUnderflow12PFS(),
     SecureRenegoNonEmpty(),
     SecureRenegoNull(),
     MaxFragmentNull(),
