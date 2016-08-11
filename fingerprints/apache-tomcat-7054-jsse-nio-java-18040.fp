@@ -3,7 +3,7 @@ Description: Apache Tomcat 7.0.54 (JSSE; NIO; Java 1.8.0_40)
 ZeroHelloVersion: error:Unexpected EOF receiving record header - server closed connection|
 BadContentType: error:Unexpected EOF receiving record header - server closed connection|
 SNIEmptyName: error:Unexpected EOF receiving record header - server closed connection|
-SplitHelloRecords: error:Unexpected EOF receiving record header - server closed connection|
+TwoInvalidPackets: error:Unexpected EOF receiving record header - server closed connection|
 EmptyRecord: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|
 RecordLengthUnderflow: error:Unexpected EOF receiving record header - server closed connection|
 Heartbleed: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|

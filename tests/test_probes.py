@@ -134,6 +134,20 @@ class TestSplitHelloPackets(unittest.TestCase):
                          [MAKE_HELLO_EMPTY_EXT[:10],
                           MAKE_HELLO_EMPTY_EXT[10:]])
 
+class TestTwoInvalidPackets(unittest.TestCase):
+    def test_test(self):
+        probe = TwoInvalidPackets()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        # this is broken because it is replicating the behaviour of old
+        # incorrect code
+        self.assertEqual(bytes(sock.sent_data[0])[:32],
+                         b'<tls.record.TLSRecord object at ')
+        self.assertEqual(bytes(sock.sent_data[1])[:32],
+                         b'<tls.record.TLSRecord object at ')
+
 class TestSplitHelloRecords(unittest.TestCase):
     def test_test(self):
         probe = SplitHelloRecords()
@@ -141,9 +155,15 @@ class TestSplitHelloRecords(unittest.TestCase):
 
         probe.test(sock)
 
-        # XXX this is broken, but can't change it as it would invalidate
-        # probes
-        self.assertEqual(bytes(sock.sent_data[0])[:32],
-                         b'<tls.record.TLSRecord object at ')
-        self.assertEqual(bytes(sock.sent_data[1])[:32],
-                         b'<tls.record.TLSRecord object at ')
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00\n'
+                          b'\x01\x00\x007'
+                          b'\x03\x01'
+                          b'0123',
+                          b'\x16\x03\x01\x001'
+                          b'4567890123456789012345678901'
+                          b'\x00'
+                          b'\x00\x0e'
+                          b'\x00\x04\x00\x05\x00\n\x00/\x005\x00<\x00='
+                          b'\x01\x00'
+                          b'\x00\x00'])

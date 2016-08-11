@@ -556,6 +556,24 @@ class EmptyRecord(Probe):
         sock.write(make_hello())
 
 
+class TwoInvalidPackets(Probe):
+    '''Send two invalid messages'''
+
+    def test(self, sock):
+        logging.debug('Sending split hello...')
+        part_one = '<tls.record.TLSRecord object at 0x7fd2dc0906d0>'
+        part_two = '<tls.record.TLSRecord object at 0x7fd2dc090690>'
+        sock.write(part_one)
+        try:
+            sock.write(part_two)
+        except socket.timeout, e:
+            result = 'writeerror:timeout'
+            return result
+        except socket.error, e:
+            result = 'writeerror:%s|' % errno.errorcode[e.errno]
+            return result
+
+
 class SplitHelloRecords(Probe):
     '''Split the hello over two records'''
 
@@ -575,7 +593,7 @@ class SplitHelloRecords(Probe):
                                       message=second)
 
         #hexdump(record.bytes)
-        return record_one, record_two
+        return record_one.bytes, record_two.bytes
 
     def test(self, sock):
         logging.debug('Sending split hello...')
@@ -589,7 +607,6 @@ class SplitHelloRecords(Probe):
         except socket.error, e:
             result = 'writeerror:%s|' % errno.errorcode[e.errno]
             return result
-
 
 class SplitHelloPackets(Probe):
     '''Split the hello over two packets'''

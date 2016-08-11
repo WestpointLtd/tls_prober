@@ -9,7 +9,7 @@ BadContentType: error:timeout
 VeryHighTLSVersion: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|
 RecordLengthOverflow: error:timeout
 Heartbleed: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|
-SplitHelloRecords: error:timeout
+TwoInvalidPackets: error:timeout
 VeryHighHelloVersion: *(303)handshake:ServerHello(303)|handshake:Certificate|handshake:ServerHelloDone|
 EmptyChangeCipherSpec: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|*(301)alert:UnexpectedMesage:fatal|
 ChangeCipherSpec: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|*(301)alert:UnexpectedMesage:fatal|

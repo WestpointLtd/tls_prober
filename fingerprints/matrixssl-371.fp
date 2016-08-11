@@ -3,7 +3,7 @@ Description: MatrixSSL 3.7.1
 ZeroHelloVersion: error:Unexpected EOF receiving record header - server closed connection|
 BadContentType: error:Unexpected EOF receiving record header - server closed connection|
 SNIEmptyName: error:Unexpected EOF receiving record header - server closed connection|
-SplitHelloRecords: writeerror:EPIPE|
+TwoInvalidPackets: writeerror:EPIPE|
 EmptyRecord: writeerror:EPIPE|
 RecordLengthUnderflow: writeerror:EPIPE|
 Heartbleed: writeerror:EPIPE|

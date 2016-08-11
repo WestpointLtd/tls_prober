@@ -3,7 +3,7 @@ Description: F5 FirePass 6.1.0 URM-6.10-20091009
 ZeroHelloVersion: error:ECONNRESET|
 BadContentType: error:ECONNRESET|
 SNIEmptyName: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|
-SplitHelloRecords: error:ECONNRESET|
+TwoInvalidPackets: error:ECONNRESET|
 EmptyRecord: error:ECONNRESET|
 RecordLengthUnderflow: *(301)alert:RecordOveflow:fatal|
 Heartbleed: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|

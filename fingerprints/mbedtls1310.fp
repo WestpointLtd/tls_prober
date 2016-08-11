@@ -8,7 +8,7 @@ BadContentType: error:Unexpected EOF receiving record header - server closed con
 VeryHighTLSVersion: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|
 RecordLengthOverflow: error:Unexpected EOF receiving record header - server closed connection|
 Heartbleed: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|*(301)alert:UnexpectedMesage:fatal|
-SplitHelloRecords: writeerror:EPIPE|
+TwoInvalidPackets: writeerror:EPIPE|
 VeryHighHelloVersion: *(303)handshake:ServerHello(303)|*(303)handshake:Certificate|*(303)handshake:ServerHelloDone|
 ChangeCipherSpec: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|error:Unexpected EOF receiving record header - server closed connection|
 NormalHandshake: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|

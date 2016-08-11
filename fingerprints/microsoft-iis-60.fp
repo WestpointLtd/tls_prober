@@ -3,7 +3,7 @@ Description: Microsoft IIS 6.0
 ZeroHelloVersion: error:Unexpected EOF receiving record header - server closed connection|
 BadContentType: error:Unexpected EOF receiving record header - server closed connection|
 SNIEmptyName: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|
-SplitHelloRecords: error:timeout
+TwoInvalidPackets: error:timeout
 EmptyRecord: error:Unexpected EOF receiving record header - server closed connection|
 RecordLengthUnderflow: error:Unexpected EOF receiving record header - server closed connection|
 Heartbleed: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|error:Unexpected EOF receiving record header - server closed connection|

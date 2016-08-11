@@ -3,7 +3,7 @@ Description: GnuTLS 3.2.18 disable cert request
 ZeroHelloVersion: *(303)handshake:ServerHello(303)|*(303)handshake:Certificate|*(303)handshake:ServerHelloDone|
 BadContentType: *(303)alert:UnexpectedMesage:fatal|
 SNIEmptyName: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|
-SplitHelloRecords: *(303)alert:UnexpectedMesage:fatal|
+TwoInvalidPackets: *(303)alert:UnexpectedMesage:fatal|
 EmptyRecord: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|
 RecordLengthUnderflow: writeerror:EPIPE|
 Heartbleed: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|*(301)alert:UnexpectedMesage:fatal|

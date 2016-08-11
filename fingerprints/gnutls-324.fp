@@ -9,7 +9,7 @@ BadContentType: *(303)alert:UnexpectedMesage:fatal|
 VeryHighTLSVersion: *(303)alert:ProtocolVersion:fatal|
 RecordLengthOverflow: *(303)alert:RecordOveflow:fatal|
 Heartbleed: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:CertificateRequest|*(301)handshake:ServerHelloDone|*(301)alert:UnexpectedMesage:fatal|
-SplitHelloRecords: writeerror:EPIPE|
+TwoInvalidPackets: writeerror:EPIPE|
 VeryHighHelloVersion: *(303)handshake:ServerHello(303)|*(303)handshake:Certificate|*(303)handshake:CertificateRequest|*(303)handshake:ServerHelloDone|
 EmptyChangeCipherSpec: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:CertificateRequest|*(301)handshake:ServerHelloDone|
 ChangeCipherSpec: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:CertificateRequest|*(301)handshake:ServerHelloDone|*(301)alert:UnexpectedMesage:fatal|

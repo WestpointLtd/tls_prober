@@ -41,6 +41,7 @@ probes = [
     BadHandshakeMessage(),
     DoubleClientHello(),
     EmptyRecord(),
+    TwoInvalidPackets(),
     SplitHelloRecords(),
     SplitHelloPackets(),
     NoCiphers(),

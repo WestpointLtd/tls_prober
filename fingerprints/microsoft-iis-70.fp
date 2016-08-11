@@ -3,7 +3,7 @@ Description: Microsoft IIS 7.0
 ZeroHelloVersion: error:ECONNRESET|
 BadContentType: error:timeout
 SNIEmptyName: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|
-SplitHelloRecords: error:timeout
+TwoInvalidPackets: error:timeout
 EmptyRecord: error:ECONNRESET|
 RecordLengthUnderflow: error:timeout
 Heartbleed: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|error:ECONNRESET|

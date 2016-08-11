@@ -3,7 +3,7 @@ Description: Apache Tomcat 7.0.54 (JSSE; BIO; Java 1.8.0_40)
 ZeroHelloVersion: *(303)alert:HandshakeFailure:fatal|
 BadContentType: *(303)alert:UnexpectedMesage:fatal|
 SNIEmptyName: *(303)alert:UnexpectedMesage:fatal|
-SplitHelloRecords: *(303)alert:UnexpectedMesage:fatal|
+TwoInvalidPackets: *(303)alert:UnexpectedMesage:fatal|
 EmptyRecord: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|
 RecordLengthUnderflow: writeerror:ECONNRESET|
 Heartbleed: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|

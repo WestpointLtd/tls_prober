@@ -3,7 +3,7 @@ Description: OpenSSL 1.0.1f Debian 7 nginx
 ZeroHelloVersion: error:ECONNRESET|
 BadContentType: *(5454)record:type(48)|error:Unexpected EOF receiving record header - server closed connection|
 SNIEmptyName: *(301)alert:DecodeError:fatal|
-SplitHelloRecords: *(5454)record:type(48)|error:Unexpected EOF receiving record header - server closed connection|
+TwoInvalidPackets: *(5454)record:type(48)|error:Unexpected EOF receiving record header - server closed connection|
 EmptyRecord: error:ECONNRESET|
 RecordLengthUnderflow: writeerror:ECONNRESET|
 Heartbleed: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|

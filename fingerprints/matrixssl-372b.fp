@@ -3,7 +3,7 @@ Description: MatrixSSL 3.7.2b
 ZeroHelloVersion: *(0)alert:ProtocolVersion:fatal|
 BadContentType: *(0)alert:UnexpectedMesage:fatal|
 SNIEmptyName: *(301)alert:IllegalParameter:fatal|
-SplitHelloRecords: *(0)alert:UnexpectedMesage:fatal|
+TwoInvalidPackets: *(0)alert:UnexpectedMesage:fatal|
 EmptyRecord: *(0)alert:IllegalParameter:fatal|
 RecordLengthUnderflow: *(0)alert:IllegalParameter:fatal|
 Heartbleed: *(301)alert:HandshakeFailure:fatal|
