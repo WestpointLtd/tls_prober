@@ -437,6 +437,26 @@ class HighTLSVersion(Probe):
         sock.write(self.make_high_tls_hello())
 
 
+class HighTLSVersion12(HighTLSVersion):
+    '''Set a high TLS version in the record of TLSv1.2 hello'''
+
+    def make_hello(self):
+        hello = ClientHelloMessage.create(TLSRecord.TLS1_2,
+                                          '01234567890123456789012345678901',
+                                          DEFAULT_12_CIPHERS)
+        return hello
+
+
+class HighTLSVersion12PFS(HighTLSVersion):
+    '''Set a high TLS version in the record of PFS TLSv1.2 hello'''
+
+    def make_hello(self):
+        hello = ClientHelloMessage.create(TLSRecord.TLS1_2,
+                                          '01234567890123456789012345678901',
+                                          DEFAULT_PFS_CIPHERS)
+        return hello
+
+
 class VeryHighTLSVersion(Probe):
     '''Set a very high TLS version in the record'''
     

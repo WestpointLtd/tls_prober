@@ -30,6 +30,8 @@ probes = [
     ChangeCipherSpec12PFS(),
     OnlyECCipherSuites(),
     HighTLSVersion(),
+    HighTLSVersion12(),
+    HighTLSVersion12PFS(),
     VeryHighTLSVersion(),
     ZeroTLSVersion(),
     HighHelloVersion(),
