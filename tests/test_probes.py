@@ -1110,6 +1110,52 @@ class TestSNIWrongName(unittest.TestCase):
                           b'\x11thisisnotyourname'])
 
 
+class TestSNIWrongName12(unittest.TestCase):
+    def test_test(self):
+        probe = SNIWrongName12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00m'
+                          b'\x01\x00\x00i'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x1a'
+                          b'\x00\x00\x00\x16'
+                          b'\x00\x14\x00\x00'
+                          b'\x11thisisnotyourname'])
+
+
+class TestSNIWrongName12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = SNIWrongName12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00\xa5'
+                          b'\x01\x00\x00\xa1'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00^' +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x1a'
+                          b'\x00\x00\x00\x16'
+                          b'\x00\x14\x00\x00'
+                          b'\x11thisisnotyourname'])
+
+
 class TestSNILongName(unittest.TestCase):
     def test_test(self):
         probe = SNILongName()

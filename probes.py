@@ -844,6 +844,16 @@ class SNIWrongName(NormalHandshake):
         sock.write(self.make_sni_hello('thisisnotyourname'))
 
 
+class SNIWrongName12(NormalHandshake12, SNIWrongName):
+    '''Send a server name indication for non-matching name in TLSv1.2 hello'''
+    pass
+
+
+class SNIWrongName12PFS(NormalHandshake12PFS, SNIWrongName):
+    '''Send a SNI extension for non-matching name in PFS TLSv1.2 hello'''
+    pass
+
+
 class SNILongName(SNIWrongName):
     '''Send a server name indication with a long name'''
     

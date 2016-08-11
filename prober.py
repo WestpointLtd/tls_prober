@@ -77,6 +77,8 @@ probes = [
     HelloRequest12(),
     HelloRequest12PFS(),
     SNIWrongName(),
+    SNIWrongName12(),
+    SNIWrongName12PFS(),
     SNILongName(),
     SNIEmptyName(),
     SNIOneWrong(),
