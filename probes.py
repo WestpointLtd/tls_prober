@@ -828,14 +828,14 @@ class SNIUnderflow(Probe):
         logging.debug('Sending Client Hello...')
         sock.write(self.make_sni_hello(self.ipaddress))
 
-class SecureRenegoOverflow(Probe):
+class SecureRenegoOverflow(NormalHandshake):
     '''Send secure renegotiation with data length exceeding stated size'''
 
     def make_secure_renego_ext(self, payload):
         secure_renego = Extension.create(
             extension_type=Extension.RenegotiationInfo,
             data=payload)
-        return make_hello([secure_renego])
+        return self.make_hello([secure_renego])
 
     def test(self, sock):
         logging.debug('Sending Client Hello...')
@@ -843,6 +843,17 @@ class SecureRenegoOverflow(Probe):
         # length of the array of bytes in it, but don't provide the
         # required amount
         sock.write(self.make_secure_renego_ext('\x0c0123456789'))
+
+
+class SecureRenegoOverflow12(SecureRenegoOverflow, NormalHandshake12):
+    '''As with SecureRenegotOverflow, inside TLSv1.2 hello'''
+    pass
+
+
+class SecureRenegoOverflow12PFS(SecureRenegoOverflow, NormalHandshake12PFS):
+    '''As with SecureRenegoOverflow, inside TLSv1.2 PFS hello'''
+    pass
+
 
 class SecureRenegoUnderflow(SecureRenegoOverflow):
     '''Send secure renegotiation with data length lower than stated size'''

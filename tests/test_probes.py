@@ -629,6 +629,49 @@ class TestSecureRenegoOverflow(unittest.TestCase):
                           b'\x0c0123456789'])
 
 
+class TestSecureRenegoOverflow12(unittest.TestCase):
+    def test_test(self):
+        probe = SecureRenegoOverflow12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00b'
+                          b'\x01\x00\x00^'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x0f'
+                          b'\xff\x01\x00\x0b'
+                          b'\x0c0123456789'])
+
+
+class TestSecureRenegoOverflow12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = SecureRenegoOverflow12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00\x9a'
+                          b'\x01\x00\x00\x96'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00^' +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x0f'
+                          b'\xff\x01\x00\x0b'
+                          b'\x0c0123456789'])
+
+
 class TestSecureRenegoUnderflow(unittest.TestCase):
     def test_test(self):
         probe = SecureRenegoUnderflow()
