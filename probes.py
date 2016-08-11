@@ -495,6 +495,16 @@ class ZeroTLSVersion(HighTLSVersion):
         return record.bytes
 
 
+class ZeroTLSVersion12(HighTLSVersion12, ZeroTLSVersion):
+    '''Set a zero version in the record of TLSv1.2 hello'''
+    pass
+
+
+class ZeroTLSVersion12PFS(HighTLSVersion12PFS, ZeroTLSVersion):
+    '''Set a zero version in the record of PFS TLSv1.2 hello'''
+    pass
+
+
 class HighHelloVersion(Probe):
     '''Set a high version in the hello'''
     

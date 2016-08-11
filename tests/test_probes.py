@@ -792,6 +792,45 @@ class TestZeroTLSVersion(unittest.TestCase):
                           b'\x00\x00'])
 
 
+class TestZeroTLSVersion12(unittest.TestCase):
+    def test_test(self):
+        probe = ZeroTLSVersion12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x00\x00\x00S'
+                          b'\x01\x00\x00O'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x00'])
+
+
+class TestZeroTLSVersion12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = ZeroTLSVersion12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x00\x00\x00\x8b'
+                          b'\x01\x00\x00\x87'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00^' +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x00'])
+
+
 class TestSNIWrongName(unittest.TestCase):
     def test_test(self):
         probe = SNIWrongName()
