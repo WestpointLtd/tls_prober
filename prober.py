@@ -33,6 +33,8 @@ probes = [
     HighTLSVersion12(),
     HighTLSVersion12PFS(),
     VeryHighTLSVersion(),
+    VeryHighTLSVersion12(),
+    VeryHighTLSVersion12PFS(),
     ZeroTLSVersion(),
     HighHelloVersion(),
     VeryHighHelloVersion(),

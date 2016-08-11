@@ -471,6 +471,16 @@ class VeryHighTLSVersion(HighTLSVersion):
         return record.bytes
 
 
+class VeryHighTLSVersion12(HighTLSVersion12, VeryHighTLSVersion):
+    '''Set a very high TLS version in the record of TLSv1.2 hello'''
+    pass
+
+
+class VeryHighTLSVersion12PFS(HighTLSVersion12PFS, VeryHighTLSVersion):
+    '''Set a very high TLS version in the record of PFS TLSv1.2 hello'''
+    pass
+
+
 class ZeroTLSVersion(Probe):
     '''Set a zero version in the record'''
     
