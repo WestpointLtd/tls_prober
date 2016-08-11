@@ -54,6 +54,8 @@ probes = [
     SplitHelloPackets12PFS(),
     NoCiphers(),
     EmptyChangeCipherSpec(),
+    EmptyChangeCipherSpec12(),
+    EmptyChangeCipherSpec12PFS(),
     HelloRequest(),
     HelloRequest12(),
     HelloRequest12PFS(),

@@ -334,6 +334,30 @@ class TestEmptyChangeCipherSpec(unittest.TestCase):
                           b'\x14\x03\x01\x00\x00'])
 
 
+class TestEmptyChangeCipherSpec12(unittest.TestCase):
+    def test_test(self):
+        probe = EmptyChangeCipherSpec12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [MAKE_12_HELLO_EMPTY_STR,
+                          b'\x14\x03\x03\x00\x00'])
+
+
+class TestEmptyChangeCipherSpec12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = EmptyChangeCipherSpec12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [MAKE_12_PFS_HELLO_EMPTY_STR,
+                          b'\x14\x03\x03\x00\x00'])
+
+
 class TestBadHandshakeMessage(unittest.TestCase):
     def test_test(self):
         probe = BadHandshakeMessage()

@@ -286,6 +286,20 @@ class EmptyChangeCipherSpec(NormalHandshake):
         sock.write(record.bytes)
 
 
+class EmptyChangeCipherSpec12(EmptyChangeCipherSpec, NormalHandshake12):
+    '''Send TLSv1.2 hello then an empty change cipher spec'''
+
+    def __init__(self):
+        super(EmptyChangeCipherSpec12, self).__init__()
+        self.record_version = TLSRecord.TLS1_2
+
+
+class EmptyChangeCipherSpec12PFS(NormalHandshake12PFS,
+                                 EmptyChangeCipherSpec12):
+    '''Send PFS TLSv1.2 hello then an empty change cipher spec'''
+    pass
+
+
 class BadHandshakeMessage(Probe):
     '''An invalid handshake message'''
     
