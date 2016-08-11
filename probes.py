@@ -832,12 +832,12 @@ class NoCiphers12(NoCiphers):
         self.hello_version = TLSRecord.TLS1_2
 
 
-class SNIWrongName(Probe):
+class SNIWrongName(NormalHandshake):
     '''Send a server name indication for a non-matching name'''
 
     def make_sni_hello(self, name):
         sni_extension = ServerNameExtension.create(name)
-        return make_hello([sni_extension])
+        return self.make_hello([sni_extension])
 
     def test(self, sock):
         logging.debug('Sending Client Hello...')
