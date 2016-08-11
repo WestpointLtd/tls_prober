@@ -1086,6 +1086,16 @@ class SecureRenegoNull(SecureRenegoOverflow):
         sock.write(self.make_secure_renego_ext(''))
 
 
+class SecureRenegoNull12(SecureRenegoNull, NormalHandshake12):
+    '''As with SecureRenegoNull, but in TLSv1.2 hello'''
+    pass
+
+
+class SecureRenegoNull12PFS(SecureRenegoNull, NormalHandshake12PFS):
+    '''As with SecureRenegoNull, but in PFS TLSv1.2 hello'''
+    pass
+
+
 class MaxFragmentNull(Probe):
     '''Send maximum fragment length extension that is completely empty'''
 
