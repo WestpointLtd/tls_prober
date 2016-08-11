@@ -42,6 +42,8 @@ probes = [
     Heartbeat12(),
     Heartbeat12PFS(),
     Heartbleed(),
+    Heartbleed12(),
+    Heartbleed12PFS(),
     BadHandshakeMessage(),
     DoubleClientHello(),
     DoubleClientHello12(),

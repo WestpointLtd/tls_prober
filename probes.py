@@ -403,6 +403,16 @@ class Heartbleed(Heartbeat):
         return record.bytes
 
 
+class Heartbleed12(Heartbeat12, Heartbleed):
+    '''Try to send a heartbleed attack in TLSv1.2'''
+    pass
+
+
+class Heartbleed12PFS(Heartbeat12PFS, Heartbleed):
+    '''Try to send a heartbleed attack in TLSv1.2'''
+    pass
+
+
 class HighTLSVersion(Probe):
     '''Set a high TLS version in the record'''
     
