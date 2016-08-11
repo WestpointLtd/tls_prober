@@ -268,16 +268,20 @@ class HelloRequest12PFS(NormalHandshake12PFS, HelloRequest12):
     pass
 
 
-class EmptyChangeCipherSpec(Probe):
+class EmptyChangeCipherSpec(NormalHandshake):
     '''Send a hello then an empty change cipher spec'''
-    
+
+    def __init__(self):
+        super(EmptyChangeCipherSpec, self).__init__()
+        self.record_version = TLSRecord.TLS1_0
+
     def test(self, sock):
         logging.debug('Sending Client Hello...')
-        sock.write(make_hello())
+        sock.write(self.make_hello())
         logging.debug('Sending Empty ChangeCipherSpec...')
 
         record = TLSRecord.create(content_type=TLSRecord.ChangeCipherSpec,
-                                  version=TLSRecord.TLS1_0,
+                                  version=self.record_version,
                                   message='')
         sock.write(record.bytes)
 
