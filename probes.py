@@ -227,6 +227,19 @@ class ChangeCipherSpec(NormalHandshake):
         sock.write(self.make_ccs(self.record_version))
 
 
+class ChangeCipherSpec12(ChangeCipherSpec, NormalHandshake12):
+    '''Send TLSv1.2 hello then change cipher spec'''
+
+    def __init__(self):
+        super(ChangeCipherSpec12, self).__init__()
+        self.record_version = TLSRecord.TLS1_2
+
+
+class ChangeCipherSpec12PFS(NormalHandshake12PFS, ChangeCipherSpec12):
+    '''Send PFS TLSv1.2 hello then change cipher spec'''
+    pass
+
+
 class HelloRequest(Probe):
     '''Send a hello then hello request'''
 
