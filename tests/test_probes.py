@@ -29,7 +29,79 @@ class MockSock(object):
 
 DEFAULT_CIPHERS_STR = b'\x00\x04\x00\x05\x00\n\x00/\x005\x00<\x00='
 
+
+DEFAULT_PFS_CIPHERS_STR = (b"\xc0,"
+                           b"\xc0+"
+                           b"\xc0$"
+                           b"\xc0#"
+                           b"\xc0\n"
+                           b"\xc0\t"
+                           b"\xc00"
+                           b"\xc0/"
+                           b"\xc0("
+                           b"\xc0'"
+                           b"\xc0\x14"
+                           b"\xc0\x13"
+                           b"\x00\x9f"
+                           b"\x00\x9e"
+                           b"\x00k"
+                           b"\x00g"
+                           b"\x009"
+                           b"\x003"
+                           b"\xcc\xa9"
+                           b"\xcc\xa2"
+                           b"\xcc\x14"
+                           b"\xcc\xa8"
+                           b"\xcc\xa1"
+                           b"\xcc\x13"
+                           b"\xcc\xaa"
+                           b"\xcc\xa3"
+                           b"\xcc\x15"
+                           b"\xc0\xad"
+                           b"\xc0\xac"
+                           b"\xc0\xaf"
+                           b"\xc0\xae"
+                           b"\xc0\x9f"
+                           b"\xc0\x9e"
+                           b"\xc0\xa3"
+                           b"\xc0\xa2"
+                           b"\xc0\x07"
+                           b"\xc0\x08"
+                           b"\xc0s"
+                           b"\xc0H"
+                           b"\xc0\x11"
+                           b"\xc0\x12"
+                           b"\xc0w"
+                           b"\xc0M"
+                           b"\x00\x88"
+                           b"\x00\x16"
+                           b"\x00\x9a"
+                           b"\xc0D")
+
+
+DEFAULT_12_CIPHERS_STR = (b'\x00\x04'
+                          b'\x00\x05'
+                          b'\x00\n'
+                          b'\x00/'
+                          b'\x005'
+                          b'\x00<'
+                          b'\x00='
+                          b'\x00\x9c'
+                          b'\x00\x9d'
+                          b'\xcc\xa0'
+                          b'\xc0\x9c'
+                          b'\xc0\x9d'
+                          b'\xc0\xa0'
+                          b'\xc0\xa1'
+                          b'\x00A'
+                          b'\x00\x84'
+                          b'\x00\xba'
+                          b'\xc0<'
+                          b'\x00\x96')
+
+
 RANDOM_STR = b'01234567890123456789012345678901'
+
 
 MAKE_HELLO_EMPTY_EXT = (b'\x16\x03\x01\x00;'
                         b'\x01\x00\x007\x03\x01' +
@@ -41,6 +113,39 @@ MAKE_HELLO_EMPTY_EXT = (b'\x16\x03\x01\x00;'
                         b'\x00\x00')
 
 
+MAKE_PFS_HELLO_EMPTY_EXT = (b"\x16\x03\x01\x00\x8b"
+                            b"\x01\x00\x00\x87"
+                            b"\x03\x01" +
+                            RANDOM_STR +
+                            b"\x00"
+                            b"\x00^" +
+                            DEFAULT_PFS_CIPHERS_STR +
+                            b"\x01\x00"
+                            b"\x00\x00")
+
+
+MAKE_12_HELLO_EMPTY_STR = (b'\x16\x03\x01\x00S'
+                           b'\x01\x00\x00O'
+                           b'\x03\x03' +
+                           RANDOM_STR +
+                           b'\x00'
+                           b'\x00&' +
+                           DEFAULT_12_CIPHERS_STR +
+                           b'\x01\x00'
+                           b'\x00\x00')
+
+
+MAKE_12_PFS_HELLO_EMPTY_STR = (b"\x16\x03\x01\x00\x8b"
+                               b"\x01\x00\x00\x87"
+                               b"\x03\x03" +
+                               RANDOM_STR +
+                               b"\x00"
+                               b"\x00^" +
+                               DEFAULT_PFS_CIPHERS_STR +
+                               b"\x01\x00"
+                               b"\x00\x00")
+
+
 class TestNormalHandshake(unittest.TestCase):
     def test_test(self):
         probe = NormalHandshake()
@@ -50,6 +155,58 @@ class TestNormalHandshake(unittest.TestCase):
 
         self.assertEqual(sock.sent_data,
                          [MAKE_HELLO_EMPTY_EXT])
+
+
+class TestNormalHandshakePFS(unittest.TestCase):
+    def test_test(self):
+        probe = NormalHandshakePFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [MAKE_PFS_HELLO_EMPTY_EXT])
+
+
+class TestNormalHandshake12(unittest.TestCase):
+    def test_test(self):
+        probe = NormalHandshake12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [MAKE_12_HELLO_EMPTY_STR])
+
+
+class TestNormalHandshake12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = NormalHandshake12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [MAKE_12_PFS_HELLO_EMPTY_STR])
+
+
+class Test(unittest.TestCase):
+    def test_test(self):
+        probe = NormalHandshake12PFSw13()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b"\x16\x03\x01\x00\x8b"
+                          b"\x01\x00\x00\x87"
+                          b"\x03\x04" +
+                          RANDOM_STR +
+                          b"\x00"
+                          b"\x00^" +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b"\x01\x00"
+                          b"\x00\x00"])
 
 
 class TestDoubleClientHello(unittest.TestCase):
