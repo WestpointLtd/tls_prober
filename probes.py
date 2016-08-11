@@ -415,12 +415,16 @@ class Heartbleed12PFS(Heartbeat12PFS, Heartbleed):
 
 class HighTLSVersion(Probe):
     '''Set a high TLS version in the record'''
-    
-    def make_high_tls_hello(self):
+
+    def make_hello(self):
         hello = ClientHelloMessage.create(settings['default_hello_version'],
                                           '01234567890123456789012345678901',
                                           DEFAULT_CIPHERS)
-    
+        return hello
+
+    def make_high_tls_hello(self):
+        hello = self.make_hello()
+
         record = TLSRecord.create(content_type=TLSRecord.Handshake,
                                   version=0x400,
                                   message=hello.bytes)
