@@ -212,14 +212,19 @@ class DoubleClientHello12PFS(DoubleClientHello, NormalHandshake12PFS):
     pass
 
 
-class ChangeCipherSpec(Probe):
+class ChangeCipherSpec(NormalHandshake):
     '''Send a hello then change cipher spec'''
-    
+
+    def __init__(self):
+        super(ChangeCipherSpec, self).__init__()
+        self.make_ccs = make_ccs
+        self.record_version = TLSRecord.TLS1_0
+
     def test(self, sock):
         logging.debug('Sending Client Hello...')
-        sock.write(make_hello())
+        sock.write(self.make_hello())
         logging.debug('Sending ChangeCipherSpec...')
-        sock.write(make_ccs())
+        sock.write(self.make_ccs(self.record_version))
 
 
 class HelloRequest(Probe):
