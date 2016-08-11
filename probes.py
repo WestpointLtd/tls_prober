@@ -457,24 +457,18 @@ class HighTLSVersion12PFS(HighTLSVersion):
         return hello
 
 
-class VeryHighTLSVersion(Probe):
+class VeryHighTLSVersion(HighTLSVersion):
     '''Set a very high TLS version in the record'''
-    
-    def make_very_high_tls_hello(self):
-        hello = ClientHelloMessage.create(settings['default_hello_version'],
-                                          '01234567890123456789012345678901',
-                                          DEFAULT_CIPHERS)
-    
+
+    def make_high_tls_hello(self):
+        hello = self.make_hello()
+
         record = TLSRecord.create(content_type=TLSRecord.Handshake,
                                   version=0xffff,
                                   message=hello.bytes)
 
         #hexdump(record.bytes)
         return record.bytes
-
-    def test(self, sock):
-        logging.debug('Sending Client Hello...')
-        sock.write(self.make_very_high_tls_hello())
 
 
 class ZeroTLSVersion(Probe):
