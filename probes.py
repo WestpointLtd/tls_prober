@@ -824,6 +824,14 @@ class NoCiphers(Probe):
         sock.write(self.make_no_ciphers_hello())
 
 
+class NoCiphers12(NoCiphers):
+    '''Send and empty cipher list in TLSv1.2 hello'''
+
+    def __init__(self):
+        super(NoCiphers12, self).__init__()
+        self.hello_version = TLSRecord.TLS1_2
+
+
 class SNIWrongName(Probe):
     '''Send a server name indication for a non-matching name'''
 

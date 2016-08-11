@@ -437,6 +437,24 @@ class TestNoCiphers(unittest.TestCase):
                           b'\x00\x00'])
 
 
+class TestNoCiphers12(unittest.TestCase):
+    def test_test(self):
+        probe = NoCiphers12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00-'
+                          b'\x01\x00\x00)'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00\x00'
+                          b'\x01\x00'
+                          b'\x00\x00'])
+
+
 class TestTwoInvalidPackets(unittest.TestCase):
     def test_test(self):
         probe = TwoInvalidPackets()

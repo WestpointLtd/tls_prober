@@ -69,6 +69,7 @@ probes = [
     SplitHelloPackets12(),
     SplitHelloPackets12PFS(),
     NoCiphers(),
+    NoCiphers12(),
     EmptyChangeCipherSpec(),
     EmptyChangeCipherSpec12(),
     EmptyChangeCipherSpec12PFS(),
