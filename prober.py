@@ -80,6 +80,8 @@ probes = [
     SNIWrongName12(),
     SNIWrongName12PFS(),
     SNILongName(),
+    SNILongName12(),
+    SNILongName12PFS(),
     SNIEmptyName(),
     SNIOneWrong(),
     SNIWithDifferentType(),

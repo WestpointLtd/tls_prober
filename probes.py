@@ -861,6 +861,17 @@ class SNILongName(SNIWrongName):
         logging.debug('Sending Client Hello...')
         sock.write(self.make_sni_hello('x'*500))
 
+
+class SNILongName12(NormalHandshake12, SNILongName):
+    '''Send a server name indication with a long name in TLSv1.2 hello'''
+    pass
+
+
+class SNILongName12PFS(NormalHandshake12PFS, SNILongName):
+    '''Send a server name indication with a long name in PFS TLSv1.2 hello'''
+    pass
+
+
 class SNIEmptyName(SNIWrongName):
     '''Send a server name indication with an empty name'''
     
