@@ -925,6 +925,44 @@ class TestVeryHighHelloVersion(unittest.TestCase):
                           b'\x00\x00'])
 
 
+class TestVeryHighHelloVersionNew(unittest.TestCase):
+    def test_test(self):
+        probe = VeryHighHelloVersionNew()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00S'
+                          b'\x01\x00\x00O'
+                          b'\xff\xff' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x00'])
+
+
+class TestVeryHighHelloVersionPFS(unittest.TestCase):
+    def test_test(self):
+        probe = VeryHighHelloVersionPFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00\x8b'
+                          b'\x01\x00\x00\x87'
+                          b'\xff\xff' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00^' +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x00'])
+
+
 class TestZeroHelloVersion(unittest.TestCase):
     def test_test(self):
         probe = ZeroHelloVersion()

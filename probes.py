@@ -554,6 +554,16 @@ class VeryHighHelloVersion(HighHelloVersion):
         self.hello_version = 0xffff
 
 
+class VeryHighHelloVersionNew(HighHelloVersionNew, VeryHighHelloVersion):
+    '''Set a very high version in the hello with more ciphers'''
+    pass
+
+
+class VeryHighHelloVersionPFS(HighHelloVersionPFS, VeryHighHelloVersion):
+    '''Set a very high version in the hello with PFS ciphers'''
+    pass
+
+
 class ZeroHelloVersion(Probe):
     '''Set a zero version in the hello'''
     

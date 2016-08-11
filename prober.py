@@ -42,6 +42,8 @@ probes = [
     HighHelloVersionNew(),
     HighHelloVersionPFS(),
     VeryHighHelloVersion(),
+    VeryHighHelloVersionNew(),
+    VeryHighHelloVersionPFS(),
     ZeroHelloVersion(),
     BadContentType(),
     RecordLengthOverflow(),
