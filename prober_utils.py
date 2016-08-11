@@ -155,13 +155,14 @@ def make_12_pfs_hello(extensions=tuple()):
     return record.bytes
 
 
-def make_hello_request():
+def make_hello_request(version=TLSRecord.TLS1_0):
     hello_req = HandshakeMessage.create(HandshakeMessage.HelloRequest,
                                         b'')
     record = TLSRecord.create(content_type=TLSRecord.Handshake,
-                              version=TLSRecord.TLS1_0,
+                              version=version,
                               message=hello_req.bytes)
     return record.bytes
+
 
 def make_ccs(version=TLSRecord.TLS1_0):
     ccs = '\1'
