@@ -1065,6 +1065,17 @@ class SecureRenegoNonEmpty(SecureRenegoOverflow):
         # payload (indicating renegotiated connection)
         sock.write(self.make_secure_renego_ext('\x0c012345678901'))
 
+
+class SecureRenegoNonEmpty12(SecureRenegoNonEmpty, NormalHandshake12):
+    '''Send secure renegotiation with renegotiation payload in TLSv1.2 hello'''
+    pass
+
+
+class SecureRenegoNonEmpty12PFS(SecureRenegoNonEmpty, NormalHandshake12PFS):
+    '''As with SecureRenegoNonEmpty12, but with PFS ciphers'''
+    pass
+
+
 class SecureRenegoNull(SecureRenegoOverflow):
     '''Send secure renegotiation extension that is completely empty'''
 

@@ -1434,6 +1434,47 @@ class TestSecureRenegoNonEmpty(unittest.TestCase):
                           b'\x00\r\x0c012345678901'])
 
 
+class TestSecureRenegoNonEmpty12(unittest.TestCase):
+    def test_test(self):
+        probe = SecureRenegoNonEmpty12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00d'
+                          b'\x01\x00\x00`'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x11\xff\x01'
+                          b'\x00\r\x0c012345678901'])
+
+
+class TestSecureRenegoNonEmpty12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = SecureRenegoNonEmpty12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00\x9c'
+                          b'\x01\x00\x00\x98'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00^' +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x11\xff\x01'
+                          b'\x00\r\x0c012345678901'])
+
+
 class TestSecureRenegoNull(unittest.TestCase):
     def test_test(self):
         probe = SecureRenegoNull()
