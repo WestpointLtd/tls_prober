@@ -163,11 +163,11 @@ def make_hello_request():
                               message=hello_req.bytes)
     return record.bytes
 
-def make_ccs():
+def make_ccs(version=TLSRecord.TLS1_0):
     ccs = '\1'
 
     record = TLSRecord.create(content_type=TLSRecord.ChangeCipherSpec,
-                              version=TLSRecord.TLS1_0,
+                              version=version,
                               message=ccs)
 
     return record.bytes
