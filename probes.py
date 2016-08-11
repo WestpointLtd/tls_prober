@@ -879,6 +879,17 @@ class SNIEmptyName(SNIWrongName):
         logging.debug('Sending Client Hello...')
         sock.write(self.make_sni_hello(''))
 
+
+class SNIEmptyName12(NormalHandshake12, SNIEmptyName):
+    '''Send a server name indication with an empty name in TLSv1.2 hello'''
+    pass
+
+
+class SNIEmptyName12PFS(NormalHandshake12PFS, SNIEmptyName):
+    '''Send a server name indication with an empty name in PFS TLSv1.2 hello'''
+    pass
+
+
 class SNIOneWrong(Probe):
     '''Send server name indication with two names, one wrong'''
 
