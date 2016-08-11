@@ -671,6 +671,16 @@ class EmptyRecord(NormalHandshake):
         sock.write(self.make_hello())
 
 
+class EmptyRecord12(NormalHandshake12, EmptyRecord):
+    '''Send an empty record then TLSv1.2 hello'''
+    pass
+
+
+class EmptyRecord12PFS(NormalHandshake12PFS, EmptyRecord):
+    '''Send and empty record then PFS TLSv1.2 hello'''
+    pass
+
+
 class TwoInvalidPackets(Probe):
     '''Send two invalid messages'''
 

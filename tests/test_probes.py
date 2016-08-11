@@ -1046,6 +1046,30 @@ class TestEmptyRecord(unittest.TestCase):
                           MAKE_HELLO_EMPTY_EXT])
 
 
+class TestEmptyRecord12(unittest.TestCase):
+    def test_test(self):
+        probe = EmptyRecord12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00\x00',
+                          MAKE_12_HELLO_EMPTY_STR])
+
+
+class TestEmptyRecord12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = EmptyRecord12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00\x00',
+                          MAKE_12_PFS_HELLO_EMPTY_STR])
+
+
 class TestSNIWrongName(unittest.TestCase):
     def test_test(self):
         probe = SNIWrongName()
