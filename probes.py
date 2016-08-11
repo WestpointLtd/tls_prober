@@ -375,6 +375,19 @@ class Heartbeat(NormalHandshake):
         sock.write(self.make_heartbeat())
 
 
+class Heartbeat12(NormalHandshake12, Heartbeat):
+    '''Try to send a heartbeat message in TLSv1.2 connection'''
+
+    def __init__(self):
+        super(Heartbeat12, self).__init__()
+        self.record_version = TLSRecord.TLS1_2
+
+
+class Heartbeat12PFS(NormalHandshake12PFS, Heartbeat12):
+    '''Try to send a hearbeat message in PFS TLSv1.2 connection'''
+    pass
+
+
 class Heartbleed(Heartbeat):
     '''Try to send a heartbleed attack'''
 

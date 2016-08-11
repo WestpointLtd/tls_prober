@@ -540,6 +540,53 @@ class TestHeartbeat(unittest.TestCase):
                           b'\x01\x00\x04XXXX'])
 
 
+class TestHeartbeat12(unittest.TestCase):
+    def test_test(self):
+        probe = Heartbeat12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00X'
+                          b'\x01\x00\x00T'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x05'
+                          b'\x00\x0f'
+                          b'\x00\x01\x01',
+                          b'\x18\x03\x03\x00\x07'
+                          b'\x01\x00\x04XXXX'])
+
+
+class TestHeartbeat12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = Heartbeat12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00\x90'
+                          b'\x01\x00\x00\x8c'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00^' +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x05'
+                          b'\x00\x0f'
+                          b'\x00\x01\x01',
+                          b'\x18\x03\x03\x00\x07'
+                          b'\x01\x00\x04XXXX'])
+
+
 class TestHeartbleed(unittest.TestCase):
     def test_test(self):
         probe = Heartbleed()

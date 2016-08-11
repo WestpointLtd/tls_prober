@@ -39,6 +39,8 @@ probes = [
     RecordLengthOverflow(),
     RecordLengthUnderflow(),
     Heartbeat(),
+    Heartbeat12(),
+    Heartbeat12PFS(),
     Heartbleed(),
     BadHandshakeMessage(),
     DoubleClientHello(),
