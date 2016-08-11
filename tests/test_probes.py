@@ -296,6 +296,32 @@ class TestHelloRequest(unittest.TestCase):
                           b'\x00\x00\x00\x00'])
 
 
+class TestHelloRequest12(unittest.TestCase):
+    def test_test(self):
+        probe = HelloRequest12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [MAKE_12_HELLO_EMPTY_STR,
+                          b'\x16\x03\x03\x00\x04'
+                          b'\x00\x00\x00\x00'])
+
+
+class TestHelloRequest12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = HelloRequest12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [MAKE_12_PFS_HELLO_EMPTY_STR,
+                          b'\x16\x03\x03\x00\x04'
+                          b'\x00\x00\x00\x00'])
+
+
 class TestEmptyChangeCipherSpec(unittest.TestCase):
     def test_test(self):
         probe = EmptyChangeCipherSpec()

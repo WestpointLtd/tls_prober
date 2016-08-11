@@ -255,6 +255,19 @@ class HelloRequest(NormalHandshake):
         sock.write(self.make_hello_request(self.record_version))
 
 
+class HelloRequest12(HelloRequest, NormalHandshake12):
+    '''Send a TLSv1.2 hello then hello request'''
+
+    def __init__(self):
+        super(HelloRequest12, self).__init__()
+        self.record_version = TLSRecord.TLS1_2
+
+
+class HelloRequest12PFS(NormalHandshake12PFS, HelloRequest12):
+    '''Send a PFS TLSv1.2 hello then hello request'''
+    pass
+
+
 class EmptyChangeCipherSpec(Probe):
     '''Send a hello then an empty change cipher spec'''
     

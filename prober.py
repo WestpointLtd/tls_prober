@@ -55,6 +55,8 @@ probes = [
     NoCiphers(),
     EmptyChangeCipherSpec(),
     HelloRequest(),
+    HelloRequest12(),
+    HelloRequest12PFS(),
     SNIWrongName(),
     SNILongName(),
     SNIEmptyName(),
