@@ -253,6 +253,68 @@ class Test(unittest.TestCase):
                           b"\x00\x00"])
 
 
+class TestInvalidSessionID(unittest.TestCase):
+    def test_test(self):
+        probe = InvalidSessionID()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00c'
+                          b'\x01\x00\x00_'
+                          b'\x03\01' +
+                          RANDOM_STR +
+                          b'\x28' +
+                          b'0123456789' * 4 +
+                          b'\x00\x0e' +
+                          DEFAULT_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x00'])
+
+
+class TestInvalidSessionID12(unittest.TestCase):
+    def test_test(self):
+        probe = InvalidSessionID12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00{'
+                          b'\x01\x00\x00w'
+                          b'\x03\03' +
+                          RANDOM_STR +
+                          b'\x28' +
+                          b'0123456789' * 4 +
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x00'])
+
+
+class TestInvalidSessionID12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = InvalidSessionID12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00\xb3'
+                          b'\x01\x00\x00\xaf'
+                          b'\x03\03' +
+                          RANDOM_STR +
+                          b'\x28' +
+                          b'0123456789' * 4 +
+                          b'\x00^' +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x00'])
+
+
+
 class TestDoubleClientHello(unittest.TestCase):
     def test_test(self):
         probe = DoubleClientHello()
