@@ -653,7 +653,7 @@ class RecordLengthUnderflow(Probe):
             return result
 
 
-class EmptyRecord(Probe):
+class EmptyRecord(NormalHandshake):
     '''Send an empty record then the hello'''
 
     def make_empty_record(self):
@@ -667,7 +667,8 @@ class EmptyRecord(Probe):
     def test(self, sock):
         logging.debug('Sending empty record...')
         sock.write(self.make_empty_record())
-        sock.write(make_hello())
+        logging.debug('Sending Client Hello...')
+        sock.write(self.make_hello())
 
 
 class TwoInvalidPackets(Probe):
