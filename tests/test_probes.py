@@ -124,6 +124,28 @@ MAKE_PFS_HELLO_EMPTY_EXT = (b"\x16\x03\x01\x00\x8b"
                             b"\x00\x00")
 
 
+MAKE_11_HELLO_EMPTY_STR = (b'\x16\x03\x01\x00S'
+                           b'\x01\x00\x00O'
+                           b'\x03\x02' +
+                           RANDOM_STR +
+                           b'\x00'
+                           b'\x00&' +
+                           DEFAULT_12_CIPHERS_STR +
+                           b'\x01\x00'
+                           b'\x00\x00')
+
+
+MAKE_11_PFS_HELLO_EMPTY_STR = (b"\x16\x03\x01\x00\x8b"
+                               b"\x01\x00\x00\x87"
+                               b"\x03\x02" +
+                               RANDOM_STR +
+                               b"\x00"
+                               b"\x00^" +
+                               DEFAULT_PFS_CIPHERS_STR +
+                               b"\x01\x00"
+                               b"\x00\x00")
+
+
 MAKE_12_HELLO_EMPTY_STR = (b'\x16\x03\x01\x00S'
                            b'\x01\x00\x00O'
                            b'\x03\x03' +
@@ -166,6 +188,28 @@ class TestNormalHandshakePFS(unittest.TestCase):
 
         self.assertEqual(sock.sent_data,
                          [MAKE_PFS_HELLO_EMPTY_EXT])
+
+
+class TestNormalHandshake11(unittest.TestCase):
+    def test_test(self):
+        probe = NormalHandshake11()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [MAKE_11_HELLO_EMPTY_STR])
+
+
+class TestNormalHandshake11PFS(unittest.TestCase):
+    def test_test(self):
+        probe = NormalHandshake11PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [MAKE_11_PFS_HELLO_EMPTY_STR])
 
 
 class TestNormalHandshake12(unittest.TestCase):

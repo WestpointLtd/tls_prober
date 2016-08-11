@@ -156,6 +156,22 @@ class NormalHandshakePFS(NormalHandshake):
         self.make_hello = make_pfs_hello
 
 
+class NormalHandshake11(NormalHandshake):
+    '''Normal TLSv1.1 handshake'''
+
+    def __init__(self):
+        super(NormalHandshake11, self).__init__()
+        self.make_hello = make_11_hello
+
+
+class NormalHandshake11PFS(NormalHandshake):
+    '''Normal TLSv1.1 handshake'''
+
+    def __init__(self):
+        super(NormalHandshake11PFS, self).__init__()
+        self.make_hello = make_11_pfs_hello
+
+
 class NormalHandshake12(NormalHandshake):
     '''Normal TLSv1.2 handshake'''
 

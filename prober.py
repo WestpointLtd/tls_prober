@@ -22,6 +22,8 @@ __email__ = 'rich@kde.org'
 probes = [
     NormalHandshake(),
     NormalHandshakePFS(),
+    NormalHandshake11(),
+    NormalHandshake11PFS(),
     NormalHandshake12(),
     NormalHandshake12PFS(),
     NormalHandshake12PFSw13(),

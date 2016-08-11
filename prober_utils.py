@@ -127,6 +127,34 @@ def make_pfs_hello(extensions=tuple()):
     return record.bytes
 
 
+def make_11_hello(extensions=tuple()):
+    hello = ClientHelloMessage.create(TLSRecord.TLS1_1,
+                                      '01234567890123456789012345678901',
+                                      DEFAULT_12_CIPHERS,
+                                      extensions=extensions)
+
+    record = TLSRecord.create(content_type=TLSRecord.Handshake,
+                              version=TLSRecord.TLS1_0,
+                              message=hello.bytes)
+
+    #hexdump(record.bytes)
+    return record.bytes
+
+
+def make_11_pfs_hello(extensions=tuple()):
+    hello = ClientHelloMessage.create(TLSRecord.TLS1_1,
+                                      '01234567890123456789012345678901',
+                                      DEFAULT_PFS_CIPHERS,
+                                      extensions=extensions)
+
+    record = TLSRecord.create(content_type=TLSRecord.Handshake,
+                              version=TLSRecord.TLS1_0,
+                              message=hello.bytes)
+
+    #hexdump(record.bytes)
+    return record.bytes
+
+
 def make_12_hello(extensions=tuple()):
     hello = ClientHelloMessage.create(TLSRecord.TLS1_2,
                                       '01234567890123456789012345678901',
