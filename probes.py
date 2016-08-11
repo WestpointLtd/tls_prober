@@ -346,21 +346,25 @@ class OnlyECCipherSuites(Probe):
         sock.write(self.make_ec_hello())
 
 
-class Heartbeat(Probe):
+class Heartbeat(NormalHandshake):
     '''Try to send a heartbeat message'''
-    
+
+    def __init__(self):
+        super(Heartbeat, self).__init__()
+        self.record_version = TLSRecord.TLS1_0
+
     def make_hb_hello(self):
         hb_extension = HeartbeatExtension.create()
-        return make_hello([hb_extension])
+        return self.make_hello([hb_extension])
 
     def make_heartbeat(self):
         heartbeat = HeartbeatMessage.create(HeartbeatMessage.HeartbeatRequest,
                                             'XXXX')
 
         record = TLSRecord.create(content_type=TLSRecord.Heartbeat,
-                                  version=TLSRecord.TLS1_0,
+                                  version=self.record_version,
                                   message=heartbeat.bytes)
-        
+
         #hexdump(record.bytes)
         return record.bytes
 
