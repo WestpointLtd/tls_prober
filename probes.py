@@ -530,6 +530,22 @@ class HighHelloVersion(Probe):
         sock.write(self.make_high_tls_hello())
 
 
+class HighHelloVersionNew(HighHelloVersion):
+    '''Set a high version in a hello with more ciphers'''
+
+    def __init__(self):
+        super(HighHelloVersionNew, self).__init__()
+        self.hello_ciphers = DEFAULT_12_CIPHERS
+
+
+class HighHelloVersionPFS(HighHelloVersion):
+    '''Set a high version in a hello with PFS ciphers'''
+
+    def __init__(self):
+        super(HighHelloVersionPFS, self).__init__()
+        self.hello_ciphers = DEFAULT_PFS_CIPHERS
+
+
 class VeryHighHelloVersion(Probe):
     '''Set a very high version in the hello'''
     
