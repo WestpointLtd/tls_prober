@@ -921,6 +921,16 @@ class SNIOneWrong(NormalHandshake):
         sock.write(self.make_sni_hello(self.ipaddress))
 
 
+class SNIOneWrong12(SNIOneWrong, NormalHandshake12):
+    '''Send server name indication with two names, one wrong in TLS1.2 hello'''
+    pass
+
+
+class SNIOneWrong12PFS(SNIOneWrong, NormalHandshake12PFS):
+    '''As in SNIOneWrong but in PFS TLS1.2 hello'''
+    pass
+
+
 class SNIWithDifferentType(NormalHandshake):
     '''Send server name indication with two names, one not of host_name type'''
 

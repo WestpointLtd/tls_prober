@@ -1355,6 +1355,56 @@ class TestSNIOneWrong(unittest.TestCase):
                           b'\x00\x00\x11thisisnotyourname'])
 
 
+class TestSNIOneWrong12(unittest.TestCase):
+    def test_test(self):
+        probe = SNIOneWrong12()
+        probe.ipaddress = b'example.com'
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00{'
+                          b'\x01\x00\x00w'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00('
+                          b'\x00\x00\x00$'
+                          b'\x00"'
+                          b'\x00\x00\x0bexample.com'
+                          b'\x00\x00\x11thisisnotyourname'])
+
+
+class TestSNIOneWrong12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = SNIOneWrong12PFS()
+        probe.ipaddress = b'example.com'
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b"\x16\x03\x01\x00\xb3"
+                          b"\x01\x00\x00\xaf"
+                          b"\x03\x03" +
+                          RANDOM_STR +
+                          b"\x00"
+                          b"\x00^" +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b"\x01\x00"
+                          b'\x00('
+                          b'\x00\x00\x00$'
+                          b'\x00"'
+                          b'\x00\x00\x0bexample.com'
+                          b'\x00\x00\x11thisisnotyourname'])
+
+
 class TestSNIWithDifferentType(unittest.TestCase):
     def test_test(self):
         probe = SNIWithDifferentType()
