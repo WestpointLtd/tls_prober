@@ -314,6 +314,64 @@ class TestInvalidSessionID12PFS(unittest.TestCase):
                           b'\x00\x00'])
 
 
+class TestInvalidCiphersLength(unittest.TestCase):
+    def test_test(self):
+        probe = InvalidCiphersLength()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00<'
+                          b'\x01\x00\x008'
+                          b'\x03\01' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00\x0f' +
+                          DEFAULT_CIPHERS_STR + b'\x00'
+                          b'\x01\x00'
+                          b'\x00\x00'])
+
+
+class TestInvalidCiphersLength12(unittest.TestCase):
+    def test_test(self):
+        probe = InvalidCiphersLength12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00T'
+                          b'\x01\x00\x00P'
+                          b'\x03\03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b"\x00'" +
+                          DEFAULT_12_CIPHERS_STR + b'\x00'
+                          b'\x01\x00'
+                          b'\x00\x00'])
+
+
+class TestInvalidCiphersLength12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = InvalidCiphersLength12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00\x8c'
+                          b'\x01\x00\x00\x88'
+                          b'\x03\03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00_' +
+                          DEFAULT_PFS_CIPHERS_STR + b'\x00'
+                          b'\x01\x00'
+                          b'\x00\x00'])
+
 
 class TestDoubleClientHello(unittest.TestCase):
     def test_test(self):

@@ -256,6 +256,53 @@ class InvalidSessionID12PFS(InvalidSessionID):
         self.ciphers = DEFAULT_PFS_CIPHERS
 
 
+class InvalidCiphersLength(Probe):
+    '''Send client hello with length field of ciphers that is invalid (odd)'''
+
+    def __init__(self):
+        super(InvalidCiphersLength, self).__init__()
+        self.hello_version = TLSRecord.TLS1_0
+        self.ciphers = DEFAULT_CIPHERS
+
+    def make_hello(self, version, cipher_suites):
+        cipher_bytes = struct.pack('>{0}H'.format(len(cipher_suites)),
+                                   *cipher_suites) + b'\x00'
+        ciphers = struct.pack('>H', len(cipher_bytes)) + cipher_bytes
+        hello = (struct.pack('>H32sB', version,
+                             b'01234567890123456789012345678901',
+                             0) +
+                 ciphers + b'\x01\x00' + b'\x00\x00')
+
+        hello_msg = HandshakeMessage.create(HandshakeMessage.ClientHello,
+                                            hello)
+
+        record = TLSRecord.create(content_type=TLSRecord.Handshake,
+                                  version=TLSRecord.TLS1_0,
+                                  message=hello_msg.bytes)
+        return record.bytes
+
+    def test(self, sock):
+        logging.debug('Sending Client Helo...')
+        sock.write(self.make_hello(self.hello_version, self.ciphers))
+
+class InvalidCiphersLength12(InvalidCiphersLength):
+    '''As with InvalidCiphersLength but with TLSv1.2 helo'''
+
+    def __init__(self):
+        super(InvalidCiphersLength12, self).__init__()
+        self.hello_version = TLSRecord.TLS1_2
+        self.ciphers = DEFAULT_12_CIPHERS
+
+
+class InvalidCiphersLength12PFS(InvalidCiphersLength):
+    '''As with InvalidCiphersLength but with PFS TLSv1.2 hello'''
+
+    def __init__(self):
+        super(InvalidCiphersLength12PFS, self).__init__()
+        self.hello_version = TLSRecord.TLS1_2
+        self.ciphers = DEFAULT_PFS_CIPHERS
+
+
 class DoubleClientHello(NormalHandshake):
     '''Two client hellos'''
 
