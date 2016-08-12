@@ -430,6 +430,73 @@ class TestInvalidExtLength12PFS(unittest.TestCase):
                           b"\x00"])
 
 
+class TestExtensionsUnderflow(unittest.TestCase):
+    def test_test(self):
+        probe = ExtensionsUnderflow()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00@'
+                          b'\x01\x00\x00<'
+                          b'\x03\x01' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00\x0e' +
+                          DEFAULT_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x01'
+                          b'\xff\x01'
+                          b'\x00\x01'
+                          b'\x00'])
+
+
+class TestExtensionsUnderflow12(unittest.TestCase):
+    def test_test(self):
+        probe = ExtensionsUnderflow12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00X'
+                          b'\x01\x00\x00T'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x01'
+                          b'\xff\x01'
+                          b'\x00\x01'
+                          b'\x00'])
+
+
+class TestExtensionsUnderflow12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = ExtensionsUnderflow12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b"\x16\x03\x01\x00\x90"
+                          b"\x01\x00\x00\x8c"
+                          b"\x03\x03" +
+                          RANDOM_STR +
+                          b"\x00"
+                          b"\x00^" +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b"\x01\x00"
+                          b'\x00\x01'
+                          b'\xff\x01'
+                          b'\x00\x01'
+                          b'\x00'])
+
+
 class TestEmptyCompression(unittest.TestCase):
     def test_test(self):
         probe = EmptyCompression()

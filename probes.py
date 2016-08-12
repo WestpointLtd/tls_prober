@@ -311,6 +311,35 @@ class InvalidExtLength12PFS(InvalidExtLength, InvalidSessionID12PFS):
     pass
 
 
+class ExtensionsUnderflow(InvalidSessionID):
+    '''Send hello with data length lower than stated size'''
+
+    def make_hello_payload(self, version, cipher_suites):
+        ciphers = struct.pack('>H{0}H'.format(len(cipher_suites)),
+                              len(cipher_suites) * 2, *cipher_suites)
+        hello = (struct.pack('>H32sB',
+                             version,
+                             b'01234567890123456789012345678901',
+                             0) +
+                 ciphers + b'\x01\x00'
+                 b'\x00\x01'  # extensions length, just one byte
+                 b'\xff\x01'  # extension ID - secure renego indication
+                 b'\x00\x01'  # secure renego indication ext length
+                 b'\x00')  # valid payload for extension
+
+        return hello
+
+
+class ExtensionsUnderflow12(ExtensionsUnderflow, InvalidSessionID12):
+    '''As in ExtensionsUnderflow but in TLSv1.2 hello'''
+    pass
+
+
+class ExtensionsUnderflow12PFS(ExtensionsUnderflow, InvalidSessionID12PFS):
+    '''As in ExtensionsUnderflow but in PFS TLSv1.2 hello'''
+    pass
+
+
 class EmptyCompression(InvalidSessionID):
     '''Send hello with no compression methods'''
 
