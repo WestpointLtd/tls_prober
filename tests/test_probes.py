@@ -429,6 +429,64 @@ class TestInvalidExtLength12PFS(unittest.TestCase):
                           b"\x01\x00"
                           b"\x00"])
 
+
+class TestEmptyCompression(unittest.TestCase):
+    def test_test(self):
+        probe = EmptyCompression()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00:'
+                          b'\x01\x00\x006'
+                          b'\x03\x01' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00\x0e' +
+                          DEFAULT_CIPHERS_STR +
+                          b'\x00'
+                          b'\x00\x00'])
+
+
+class TestEmptyCompression12(unittest.TestCase):
+    def test_test(self):
+        probe = EmptyCompression12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00R'
+                          b'\x01\x00\x00N'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x00'
+                          b'\x00\x00'])
+
+
+class TestEmptyCompression12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = EmptyCompression12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b"\x16\x03\x01\x00\x8a"
+                          b"\x01\x00\x00\x86"
+                          b"\x03\x03" +
+                          RANDOM_STR +
+                          b"\x00"
+                          b"\x00^" +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b"\x00"
+                          b"\x00\x00"])
+
+
 class TestDoubleClientHello(unittest.TestCase):
     def test_test(self):
         probe = DoubleClientHello()

@@ -311,6 +311,31 @@ class InvalidExtLength12PFS(InvalidExtLength, InvalidSessionID12PFS):
     pass
 
 
+class EmptyCompression(InvalidSessionID):
+    '''Send hello with no compression methods'''
+
+    def make_hello_payload(self, version, cipher_suites):
+        ciphers = struct.pack('>H{0}H'.format(len(cipher_suites)),
+                              len(cipher_suites) * 2, *cipher_suites)
+        hello = (struct.pack('>H32sB',
+                             version,
+                             b'01234567890123456789012345678901',
+                             0) +
+                 ciphers + b'\x00' + b'\x00\x00')
+
+        return hello
+
+
+class EmptyCompression12(EmptyCompression, InvalidSessionID12):
+    '''As with EmptyCompression but in TLSv1.2 hello'''
+    pass
+
+
+class EmptyCompression12PFS(EmptyCompression, InvalidSessionID12PFS):
+    '''As with EmptyCompression but in PFS TLSv1.2 hello'''
+    pass
+
+
 class DoubleClientHello(NormalHandshake):
     '''Two client hellos'''
 
