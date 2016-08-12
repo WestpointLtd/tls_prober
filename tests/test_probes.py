@@ -1330,6 +1330,130 @@ class TestSNIEmptyName12PFS(unittest.TestCase):
                           b'\x00\x03\x00\x00\x00'])
 
 
+class TestSNIOneWrong(unittest.TestCase):
+    def test_test(self):
+        probe = SNIOneWrong()
+        probe.ipaddress = b'example.com'
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00c'
+                          b'\x01\x00\x00_'
+                          b'\x03\x01' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00\x0e' +
+                          DEFAULT_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00('
+                          b'\x00\x00\x00$'
+                          b'\x00"'
+                          b'\x00\x00\x0bexample.com'
+                          b'\x00\x00\x11thisisnotyourname'])
+
+
+class TestSNIWithDifferentType(unittest.TestCase):
+    def test_test(self):
+        probe = SNIWithDifferentType()
+        probe.ipaddress = b'example.com'
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00_'
+                          b'\x01\x00\x00['
+                          b'\x03\x01' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00\x0e' +
+                          DEFAULT_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00$'
+                          b'\x00\x00\x00 '
+                          b'\x00\x1e'
+                          b'\x00\x00\x0bexample.com'
+                          b'\x04\x00\r<binary-data>'])
+
+
+class TestSNIDifferentTypeRev(unittest.TestCase):
+    def test_test(self):
+        probe = SNIDifferentTypeRev()
+        probe.ipaddress = b'example.com'
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00_'
+                          b'\x01\x00\x00['
+                          b'\x03\x01' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00\x0e' +
+                          DEFAULT_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00$'
+                          b'\x00\x00\x00 '
+                          b'\x00\x1e'
+                          b'\x04\x00\r<binary-data>'
+                          b'\x00\x00\x0bexample.com'])
+
+
+class TestSNIOverflow(unittest.TestCase):
+    def test_test(self):
+        probe = SNIOverflow()
+        probe.ipaddress = b'example.com'
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00N'
+                          b'\x01\x00\x00J'
+                          b'\x03\x01' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00\x0e' +
+                          DEFAULT_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x13'
+                          b'\x00\x00\x00\x0f'
+                          b'\x00\x0e'
+                          b'\x00\x00\x0bexample.co'])
+
+
+class TestSNIUnderflow(unittest.TestCase):
+    def test_test(self):
+        probe = SNIUnderflow()
+        probe.ipaddress = b'example.com'
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00R'
+                          b'\x01\x00\x00N'
+                          b'\x03\x01' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00\x0e' +
+                          DEFAULT_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x17'
+                          b'\x00\x00\x00\x13'
+                          b'\x00\x0e'
+                          b'\x00\x00\x0bexample.com'
+                          b'\x00\x00\x00'])
+
+
 class TestSecureRenegoOverflow(unittest.TestCase):
     def test_test(self):
         probe = SecureRenegoOverflow()
