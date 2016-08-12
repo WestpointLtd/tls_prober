@@ -286,6 +286,31 @@ class InvalidCiphersLength12PFS(InvalidCiphersLength, InvalidSessionID12PFS):
     pass
 
 
+class InvalidExtLength(InvalidSessionID):
+    '''Send client hello with length of extensions filed truncated'''
+
+    def make_hello_payload(self, version, cipher_suites):
+        ciphers = struct.pack('>H{0}H'.format(len(cipher_suites)),
+                              len(cipher_suites) * 2, *cipher_suites)
+        hello = (struct.pack('>H32sB',
+                             version,
+                             b'01234567890123456789012345678901',
+                             0) +
+                 ciphers + b'\x01\x00' + b'\x00')
+
+        return hello
+
+
+class InvalidExtLength12(InvalidExtLength, InvalidSessionID12):
+    '''As with InvalidExtLength but in TLSv1.2 hello'''
+    pass
+
+
+class InvalidExtLength12PFS(InvalidExtLength, InvalidSessionID12PFS):
+    '''As with InvalidExtLength but in PFS TLSv1.2 hello'''
+    pass
+
+
 class DoubleClientHello(NormalHandshake):
     '''Two client hellos'''
 
