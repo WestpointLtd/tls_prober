@@ -1009,6 +1009,16 @@ class SNIOverflow(NormalHandshake):
         sock.write(self.make_sni_hello(self.ipaddress))
 
 
+class SNIOverflow12(SNIOverflow, NormalHandshake12):
+    '''as with SNIOverflow but in TLSv1.2 hello'''
+    pass
+
+
+class SNIOverflow12PFS(SNIOverflow, NormalHandshake12PFS):
+    '''as with SNIOverflow but in TLSv1.2 hello'''
+    pass
+
+
 class SNIUnderflow(SNIOverflow):
     '''Send server name indication with data length smaller than size inside'''
 

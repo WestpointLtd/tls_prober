@@ -97,6 +97,8 @@ probes = [
     SNIDifferentTypeRev12(),
     SNIDifferentTypeRev12PFS(),
     SNIOverflow(),
+    SNIOverflow12(),
+    SNIOverflow12PFS(),
     SNIUnderflow(),
     SecureRenegoOverflow(),
     SecureRenegoOverflow12(),
