@@ -1033,6 +1033,17 @@ class SNIUnderflow(SNIOverflow):
 
         return record
 
+
+class SNIUnderflow12(SNIUnderflow, NormalHandshake12):
+    '''As with SNIUnderflow, but in TLSv1.2 hello'''
+    pass
+
+
+class SNIUnderflow12PFS(SNIUnderflow, NormalHandshake12PFS):
+    '''As with SNIUnderflow, but in PFS TLSv1.2 hello'''
+    pass
+
+
 class SecureRenegoOverflow(NormalHandshake):
     '''Send secure renegotiation with data length exceeding stated size'''
 

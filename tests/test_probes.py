@@ -1652,6 +1652,56 @@ class TestSNIUnderflow(unittest.TestCase):
                           b'\x00\x00\x00'])
 
 
+class TestSNIUnderflow12(unittest.TestCase):
+    def test_test(self):
+        probe = SNIUnderflow12()
+        probe.ipaddress = b'example.com'
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00j'
+                          b'\x01\x00\x00f'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x17'
+                          b'\x00\x00\x00\x13'
+                          b'\x00\x0e'
+                          b'\x00\x00\x0bexample.com'
+                          b'\x00\x00\x00'])
+
+
+class TestSNIUnderflow12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = SNIUnderflow12PFS()
+        probe.ipaddress = b'example.com'
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b"\x16\x03\x01\x00\xa2"
+                          b"\x01\x00\x00\x9e"
+                          b"\x03\x03" +
+                          RANDOM_STR +
+                          b"\x00"
+                          b"\x00^" +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x17'
+                          b'\x00\x00\x00\x13'
+                          b'\x00\x0e'
+                          b'\x00\x00\x0bexample.com'
+                          b'\x00\x00\x00'])
+
+
 class TestSecureRenegoOverflow(unittest.TestCase):
     def test_test(self):
         probe = SecureRenegoOverflow()

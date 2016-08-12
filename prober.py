@@ -100,6 +100,8 @@ probes = [
     SNIOverflow12(),
     SNIOverflow12PFS(),
     SNIUnderflow(),
+    SNIUnderflow12(),
+    SNIUnderflow12PFS(),
     SecureRenegoOverflow(),
     SecureRenegoOverflow12(),
     SecureRenegoOverflow12PFS(),
