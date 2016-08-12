@@ -981,6 +981,16 @@ class SNIDifferentTypeRev(SNIWithDifferentType):
         sock.write(self.make_sni_hello(server_names))
 
 
+class SNIDifferentTypeRev12(SNIDifferentTypeRev, NormalHandshake12):
+    '''As with SNIDifferentTypeRev but in TLSv1.2 hello'''
+    pass
+
+
+class SNIDifferentTypeRev12PFS(SNIDifferentTypeRev, NormalHandshake12PFS):
+    '''As with SNIDifferentTypeRev but in PFS TLSv1.2 hello'''
+    pass
+
+
 class SNIOverflow(NormalHandshake):
     '''Send server name indication with data length exceeding stated size'''
 

@@ -1505,6 +1505,56 @@ class TestSNIDifferentTypeRev(unittest.TestCase):
                           b'\x00\x00\x0bexample.com'])
 
 
+class TestSNIDifferentTypeRev12(unittest.TestCase):
+    def test_test(self):
+        probe = SNIDifferentTypeRev12()
+        probe.ipaddress = b'example.com'
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00w'
+                          b'\x01\x00\x00s'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00$'
+                          b'\x00\x00\x00 '
+                          b'\x00\x1e'
+                          b'\x04\x00\r<binary-data>'
+                          b'\x00\x00\x0bexample.com'])
+
+
+class TestSNIDifferentTypeRev12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = SNIDifferentTypeRev12PFS()
+        probe.ipaddress = b'example.com'
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b"\x16\x03\x01\x00\xaf"
+                          b"\x01\x00\x00\xab"
+                          b"\x03\x03" +
+                          RANDOM_STR +
+                          b"\x00"
+                          b"\x00^" +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b"\x01\x00"
+                          b'\x00$'
+                          b'\x00\x00\x00 '
+                          b'\x00\x1e'
+                          b'\x04\x00\r<binary-data>'
+                          b'\x00\x00\x0bexample.com'])
+
+
 class TestSNIOverflow(unittest.TestCase):
     def test_test(self):
         probe = SNIOverflow()
