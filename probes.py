@@ -958,6 +958,16 @@ class SNIWithDifferentType(NormalHandshake):
         sock.write(self.make_sni_hello(server_names))
 
 
+class SNIWithDifferentType12(SNIWithDifferentType, NormalHandshake12):
+    '''As with SNIWithDifferentType but in TLSv1.2 hello'''
+    pass
+
+
+class SNIWithDifferentType12PFS(SNIWithDifferentType, NormalHandshake12PFS):
+    '''As with SNIWithDifferentType but in PFS TLSv1.2 hello'''
+    pass
+
+
 class SNIDifferentTypeRev(SNIWithDifferentType):
     '''Send hello like in SNIWithDifferentType but reverse order of names'''
 

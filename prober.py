@@ -91,6 +91,8 @@ probes = [
     SNIOneWrong12(),
     SNIOneWrong12PFS(),
     SNIWithDifferentType(),
+    SNIWithDifferentType12(),
+    SNIWithDifferentType12PFS(),
     SNIDifferentTypeRev(),
     SNIOverflow(),
     SNIUnderflow(),
