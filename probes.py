@@ -1753,3 +1753,28 @@ class CertTypeOverflow12(CertTypeOverflow, NormalHandshake12):
 class CertTypeOverflow12PFS(CertTypeOverflow, NormalHandshake12PFS):
     '''Send cert type extension with too large length in PFS TLSv1.2 hello'''
     pass
+
+
+class SupportedGroupsNull(NormalHandshake):
+    '''Send empty supported groups extension in hello'''
+
+    def make_supported_groups_hello(self, value):
+        supported_groups_ext = Extension.create(
+            extension_type=10,
+            data=value)
+        return self.make_hello([supported_groups_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal extension has an array, don't send anything
+        sock.write(self.make_supported_groups_hello(b''))
+
+
+class SupportedGroupsNull12(SupportedGroupsNull, NormalHandshake12):
+    '''Send empty supported groups extension in TLSv1.2 hello'''
+    pass
+
+
+class SupportedGroupsNull12PFS(SupportedGroupsNull, NormalHandshake12PFS):
+    '''Send empty supported groups extension in PFS TLSv1.2 hello'''
+    pass

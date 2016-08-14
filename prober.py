@@ -188,7 +188,10 @@ probes = [
     CertTypeNull12PFS(),
     CertTypeOverflow(),
     CertTypeOverflow12(),
-    CertTypeOverflow12PFS()
+    CertTypeOverflow12PFS(),
+    SupportedGroupsNull(),
+    SupportedGroupsNull12(),
+    SupportedGroupsNull12PFS()
 ]
 
 def probe(ipaddress, port, starttls, specified_probe):
