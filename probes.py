@@ -1778,3 +1778,23 @@ class SupportedGroupsNull12(SupportedGroupsNull, NormalHandshake12):
 class SupportedGroupsNull12PFS(SupportedGroupsNull, NormalHandshake12PFS):
     '''Send empty supported groups extension in PFS TLSv1.2 hello'''
     pass
+
+
+class SupportedGroupsOddLen(SupportedGroupsNull):
+    '''Send supported groups extension with invalid length in hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal extension has a two byte length and two byte elements,
+        # truncate the second element
+        sock.write(self.make_supported_groups_hello(b'\x00\x03\x00\x17\x00'))
+
+
+class SupportedGroupsOddLen12(SupportedGroupsOddLen, NormalHandshake12):
+    '''Send supported groups extension with invalid length in TLSv1.2 hello'''
+    pass
+
+
+class SupportedGroupsOddLen12PFS(SupportedGroupsOddLen, NormalHandshake12PFS):
+    '''As with SupportedGroupsOddLen but in PFS TLSv1.2 hello'''
+    pass
