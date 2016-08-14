@@ -105,6 +105,8 @@ probes = [
     SecureRenegoNull12(),
     SecureRenegoNull12PFS(),
     MaxFragmentNull(),
+    MaxFragmentNull12(),
+    MaxFragmentNull12PFS(),
     MaxFragmentInvalid(),
     ClientCertURLsNotNull(),
     TrustedCANull(),

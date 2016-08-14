@@ -1130,6 +1130,16 @@ class MaxFragmentNull(NormalHandshake):
         sock.write(self.make_fragment_hello(''))
 
 
+class MaxFragmentNull12(MaxFragmentNull, NormalHandshake12):
+    '''As with MaxFragmentNull, but in TLSv1.2 hello'''
+    pass
+
+
+class MaxFragmentNull12PFS(MaxFragmentNull, NormalHandshake12PFS):
+    '''As with MaxFragmentNull, but in PFS TLSv1.2 hello'''
+    pass
+
+
 class MaxFragmentInvalid(MaxFragmentNull):
     '''Send maximum fragment length extension with invalid value'''
 
