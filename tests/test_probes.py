@@ -3643,3 +3643,68 @@ class TestSupportedGroupsOddLen12PFS(unittest.TestCase):
                           b'\x00\x09'
                           b'\x00\x0a\x00\x05'
                           b'\x00\x03\x00\x17\x00'])
+
+
+class TestSupportedGroupsOverflow(unittest.TestCase):
+    def test_test(self):
+        probe = SupportedGroupsOverflow()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00C'
+                          b'\x01\x00\x00?'
+                          b'\x03\x01' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00\x0e' +
+                          DEFAULT_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x08'
+                          b'\x00\x0a\x00\x04'
+                          b'\x00\x04\x00\x17'])
+
+
+class TestSupportedGroupsOverflow12(unittest.TestCase):
+    def test_test(self):
+        probe = SupportedGroupsOverflow12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00['
+                          b'\x01\x00\x00W'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x08'
+                          b'\x00\x0a\x00\x04'
+                          b'\x00\x04\x00\x17'])
+
+
+class TestSupportedGroupsOverflow12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = SupportedGroupsOverflow12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b"\x16\x03\x01\x00\x93"
+                          b"\x01\x00\x00\x8f"
+                          b"\x03\x03" +
+                          RANDOM_STR +
+                          b"\x00"
+                          b"\x00^" +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b"\x01\x00"
+                          b'\x00\x08'
+                          b'\x00\x0a\x00\x04'
+                          b'\x00\x04\x00\x17'])

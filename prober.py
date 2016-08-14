@@ -194,7 +194,10 @@ probes = [
     SupportedGroupsNull12PFS(),
     SupportedGroupsOddLen(),
     SupportedGroupsOddLen12(),
-    SupportedGroupsOddLen12PFS()
+    SupportedGroupsOddLen12PFS(),
+    SupportedGroupsOverflow(),
+    SupportedGroupsOverflow12(),
+    SupportedGroupsOverflow12PFS()
 ]
 
 def probe(ipaddress, port, starttls, specified_probe):

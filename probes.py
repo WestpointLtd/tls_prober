@@ -1798,3 +1798,24 @@ class SupportedGroupsOddLen12(SupportedGroupsOddLen, NormalHandshake12):
 class SupportedGroupsOddLen12PFS(SupportedGroupsOddLen, NormalHandshake12PFS):
     '''As with SupportedGroupsOddLen but in PFS TLSv1.2 hello'''
     pass
+
+
+class SupportedGroupsOverflow(SupportedGroupsNull):
+    '''Send supported groups extension with length larger than data'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal extension has a two byte length and two byte elements,
+        # truncate the whole second element
+        sock.write(self.make_supported_groups_hello(b'\x00\x04\x00\x17'))
+
+
+class SupportedGroupsOverflow12(SupportedGroupsOverflow, NormalHandshake12):
+    '''As with SupportedGroupsOverflow but in TLSv1.2 hello'''
+    pass
+
+
+class SupportedGroupsOverflow12PFS(SupportedGroupsOverflow,
+        NormalHandshake12PFS):
+    '''As with SupportedGroupsOverflow but in PFS TLSv1.2 hello'''
+    pass
