@@ -114,6 +114,8 @@ probes = [
     ClientCertURLsNotNull12(),
     ClientCertURLsNotNull12PFS(),
     TrustedCANull(),
+    TrustedCANull12(),
+    TrustedCANull12PFS(),
     TrustedCAOverflow(),
     TrustedCAUnderflow(),
     TruncatedHMACNotNull(),
