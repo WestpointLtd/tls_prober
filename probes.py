@@ -1149,6 +1149,16 @@ class MaxFragmentInvalid(MaxFragmentNull):
         sock.write(self.make_fragment_hello('\x08'))
 
 
+class MaxFragmentInvalid12(MaxFragmentInvalid, NormalHandshake12):
+    '''As with MaxFragmentInvalid, but in TLSv1.2 hello'''
+    pass
+
+
+class MaxFragmentInvalid12PFS(MaxFragmentInvalid, NormalHandshake12PFS):
+    '''As with MaxFragmentInvalid, but in PFS TLSv1.2 hello'''
+    pass
+
+
 class ClientCertURLsNotNull(NormalHandshake):
     '''Send client certificate URL indication extension that is not empty'''
 
