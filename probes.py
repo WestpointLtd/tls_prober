@@ -1609,3 +1609,23 @@ class UserMappingNull12(UserMappingNull, NormalHandshake12):
 class UserMappingNull12PFS(UserMappingNull, NormalHandshake12PFS):
     '''Send empty user mapping extension in PFS TLSv1.2 hello'''
     pass
+
+
+class UserMappingOverflow(UserMappingNull):
+    '''Send user mapping extension with length longer than present in hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # extension consists of an array and the array needs at least one
+        # element, send the length of array (one byte) longer than payload size
+        sock.write(self.make_user_mapping_ext(b'\x02\x40'))
+
+
+class UserMappingOverflow12(UserMappingOverflow, NormalHandshake12):
+    '''As with UserMappingOverflow but in TLSv1.2 hello'''
+    pass
+
+
+class UserMappingOverflow12PFS(UserMappingOverflow, NormalHandshake12PFS):
+    '''As with UserMappingOverflow but in PFS TLSv1.2 hello'''
+    pass
