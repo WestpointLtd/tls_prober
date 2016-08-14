@@ -1224,6 +1224,16 @@ class TrustedCAOverflow(TrustedCANull):
         sock.write(self.make_trusted_ca_hello('\x00\x15'))
 
 
+class TrustedCAOverflow12(TrustedCAOverflow, NormalHandshake12):
+    '''As with TrustedCAOverflow but in TLSv1.2 hello'''
+    pass
+
+
+class TrustedCAOverflow12PFS(TrustedCAOverflow, NormalHandshake12PFS):
+    '''As with TrustedCAOverflow but in PFS TLSv1.2 hello'''
+    pass
+
+
 class TrustedCAUnderflow(TrustedCANull):
     '''Send trusted CA keys extension larger than length inside indicates'''
 

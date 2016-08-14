@@ -117,6 +117,8 @@ probes = [
     TrustedCANull12(),
     TrustedCANull12PFS(),
     TrustedCAOverflow(),
+    TrustedCAOverflow12(),
+    TrustedCAOverflow12PFS(),
     TrustedCAUnderflow(),
     TruncatedHMACNotNull(),
     OCSPNull(),
