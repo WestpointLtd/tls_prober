@@ -1345,6 +1345,16 @@ class OCSPUnderflow(OCSPNull):
         sock.write(self.make_ocsp_hello('\x01' + '\x00' * 6))
 
 
+class OCSPUnderflow12(OCSPUnderflow, NormalHandshake12):
+    '''As with OCSPUnderflow but in TLSv1.2 hello'''
+    pass
+
+
+class OCSPUnderflow12PFS(OCSPUnderflow, NormalHandshake12PFS):
+    '''As with OCSPUnderflow but in PFS TLSv1.2 hello'''
+    pass
+
+
 class DoubleExtension(NormalHandshake):
     '''Duplicate secure renegotiation extension'''
 

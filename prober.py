@@ -132,6 +132,8 @@ probes = [
     OCSPOverflow12(),
     OCSPOverflow12PFS(),
     OCSPUnderflow(),
+    OCSPUnderflow12(),
+    OCSPUnderflow12PFS(),
     DoubleExtension()
 ]
 

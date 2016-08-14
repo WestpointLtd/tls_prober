@@ -2171,6 +2171,50 @@ class TestOCSPUnderflow(unittest.TestCase):
                           b'\x01\x00\x00\x00\x00\x00\x00'])
 
 
+class TestOCSPUnderflow12(unittest.TestCase):
+    def test_test(self):
+        probe = OCSPUnderflow12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00^'
+                          b'\x01\x00\x00Z'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x0b'
+                          b'\x00\x05\x00\x07'
+                          b'\x01\x00\x00\x00\x00\x00\x00'])
+
+
+class TestOCSPUnderflow12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = OCSPUnderflow12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b"\x16\x03\x01\x00\x96"
+                          b"\x01\x00\x00\x92"
+                          b"\x03\x03" +
+                          RANDOM_STR +
+                          b"\x00"
+                          b"\x00^" +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b"\x01\x00"
+                          b'\x00\x0b'
+                          b'\x00\x05\x00\x07'
+                          b'\x01\x00\x00\x00\x00\x00\x00'])
+
+
 class TestDoubleExtension(unittest.TestCase):
     def test_test(self):
         probe = DoubleExtension()
