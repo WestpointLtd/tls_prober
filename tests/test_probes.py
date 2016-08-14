@@ -1726,6 +1726,49 @@ class TestClientCertURLsNotNull(unittest.TestCase):
                           b'\x08\x00'])
 
 
+class TestClientCertURLsNotNull12(unittest.TestCase):
+    def test_test(self):
+        probe = ClientCertURLsNotNull12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00Y'
+                          b'\x01\x00\x00U'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x06'
+                          b'\x00\x02\x00\x02'
+                          b'\x08\x00'])
+
+
+class TestClientCertURLsNotNull12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = ClientCertURLsNotNull12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b"\x16\x03\x01\x00\x91"
+                          b"\x01\x00\x00\x8d"
+                          b"\x03\x03" +
+                          RANDOM_STR +
+                          b"\x00"
+                          b"\x00^" +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b"\x01\x00"
+                          b'\x00\x06'
+                          b'\x00\x02\x00\x02'
+                          b'\x08\x00'])
+
+
 class TestTrustedCANull(unittest.TestCase):
     def test_test(self):
         probe = TrustedCANull()

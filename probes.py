@@ -1176,6 +1176,16 @@ class ClientCertURLsNotNull(NormalHandshake):
         sock.write(self.make_cert_urls_hello('\x08\x00'))
 
 
+class ClientCertURLsNotNull12(ClientCertURLsNotNull, NormalHandshake12):
+    '''As with ClientCertURLsNotNull, but in TLSv1.2 hello'''
+    pass
+
+
+class ClientCertURLsNotNull12PFS(ClientCertURLsNotNull, NormalHandshake12PFS):
+    '''As with ClientCertURLsNotNull, but in PFS TLSv1.2 hello'''
+    pass
+
+
 class TrustedCANull(NormalHandshake):
     '''Send trusted CA keys extension with completely empty payload'''
 

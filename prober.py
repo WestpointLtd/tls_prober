@@ -111,6 +111,8 @@ probes = [
     MaxFragmentInvalid12(),
     MaxFragmentInvalid12PFS(),
     ClientCertURLsNotNull(),
+    ClientCertURLsNotNull12(),
+    ClientCertURLsNotNull12PFS(),
     TrustedCANull(),
     TrustedCAOverflow(),
     TrustedCAUnderflow(),
