@@ -126,6 +126,8 @@ probes = [
     TruncatedHMACNotNull12(),
     TruncatedHMACNotNull12PFS(),
     OCSPNull(),
+    OCSPNull12(),
+    OCSPNull12PFS(),
     OCSPOverflow(),
     OCSPUnderflow(),
     DoubleExtension()

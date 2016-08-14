@@ -2044,6 +2044,47 @@ class TestOCSPNull(unittest.TestCase):
                           b'\x00\x05\x00\x00'])
 
 
+class TestOCSPNull12(unittest.TestCase):
+    def test_test(self):
+        probe = OCSPNull12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00W'
+                          b'\x01\x00\x00S'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x04'
+                          b'\x00\x05\x00\x00'])
+
+
+class TestOCSPNull12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = OCSPNull12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b"\x16\x03\x01\x00\x8f"
+                          b"\x01\x00\x00\x8b"
+                          b"\x03\x03" +
+                          RANDOM_STR +
+                          b"\x00"
+                          b"\x00^" +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b"\x01\x00"
+                          b'\x00\x04'
+                          b'\x00\x05\x00\x00'])
+
+
 class TestOCSPOverflow(unittest.TestCase):
     def test_test(self):
         probe = OCSPOverflow()
