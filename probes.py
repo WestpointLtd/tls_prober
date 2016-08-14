@@ -1629,3 +1629,28 @@ class UserMappingOverflow12(UserMappingOverflow, NormalHandshake12):
 class UserMappingOverflow12PFS(UserMappingOverflow, NormalHandshake12PFS):
     '''As with UserMappingOverflow but in PFS TLSv1.2 hello'''
     pass
+
+
+class ClientAuthzNull(NormalHandshake):
+    '''Send empty client authz extension in hello'''
+
+    def make_client_authz_hello(self, value):
+        client_authz_ext = Extension.create(
+            extension_type=7,
+            data=value)
+        return self.make_hello([client_authz_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal extension has an array, don't send anything
+        sock.write(self.make_client_authz_hello(b''))
+
+
+class ClientAuthzNull12(ClientAuthzNull, NormalHandshake12):
+    '''Send empty client authz extension in TLSv1.2 hello'''
+    pass
+
+
+class ClientAuthzNull12PFS(ClientAuthzNull, NormalHandshake12PFS):
+    '''Send empty client authz extension in PFS TLSv1.2 hello'''
+    pass

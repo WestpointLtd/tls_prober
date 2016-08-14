@@ -3139,3 +3139,64 @@ class TestUserMappingOverflow12PFS(unittest.TestCase):
                           b'\x00\x06'
                           b'\x00\x06\x00\x02'
                           b'\x02\x40'])
+
+
+class TestClientAuthzNull(unittest.TestCase):
+    def test_test(self):
+        probe = ClientAuthzNull()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00?'
+                          b'\x01\x00\x00;'
+                          b'\x03\x01' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00\x0e' +
+                          DEFAULT_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x04'
+                          b'\x00\x07\x00\x00'])
+
+
+class TestClientAuthzNull12(unittest.TestCase):
+    def test_test(self):
+        probe = ClientAuthzNull12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00W'
+                          b'\x01\x00\x00S'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x04'
+                          b'\x00\x07\x00\x00'])
+
+
+class TestClientAuthzNull12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = ClientAuthzNull12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b"\x16\x03\x01\x00\x8f"
+                          b"\x01\x00\x00\x8b"
+                          b"\x03\x03" +
+                          RANDOM_STR +
+                          b"\x00"
+                          b"\x00^" +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b"\x01\x00"
+                          b'\x00\x04'
+                          b'\x00\x07\x00\x00'])
