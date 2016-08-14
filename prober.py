@@ -134,7 +134,9 @@ probes = [
     OCSPUnderflow(),
     OCSPUnderflow12(),
     OCSPUnderflow12PFS(),
-    DoubleExtension()
+    DoubleExtension(),
+    DoubleExtension12(),
+    DoubleExtension12PFS()
 ]
 
 def probe(ipaddress, port, starttls, specified_probe):

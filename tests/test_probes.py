@@ -2236,3 +2236,50 @@ class TestDoubleExtension(unittest.TestCase):
                           b'\x00'
                           b'\xff\x01\x00\x01'
                           b'\x00'])
+
+
+class TestDoubleExtension12(unittest.TestCase):
+    def test_test(self):
+        probe = DoubleExtension12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00]'
+                          b'\x01\x00\x00Y'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x0a'
+                          b'\xff\x01\x00\x01'
+                          b'\x00'
+                          b'\xff\x01\x00\x01'
+                          b'\x00'])
+
+
+class TestDoubleExtension12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = DoubleExtension12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b"\x16\x03\x01\x00\x95"
+                          b"\x01\x00\x00\x91"
+                          b"\x03\x03" +
+                          RANDOM_STR +
+                          b"\x00"
+                          b"\x00^" +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b"\x01\x00"
+                          b'\x00\x0a'
+                          b'\xff\x01\x00\x01'
+                          b'\x00'
+                          b'\xff\x01\x00\x01'
+                          b'\x00'])

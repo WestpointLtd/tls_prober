@@ -1372,3 +1372,13 @@ class DoubleExtension(NormalHandshake):
         # correct Client Hello messages must not contain two extensions
         # of the same type
         sock.write(self.make_double_ext_hello())
+
+
+class DoubleExtension12(DoubleExtension, NormalHandshake12):
+    '''Duplicate secure renegotiation extension in TLSv1.2 hello'''
+    pass
+
+
+class DoubleExtension12PFS(DoubleExtension, NormalHandshake12PFS):
+    '''Duplicate secure renegotiation extension in PFS TLSv1.2 hello'''
+    pass
