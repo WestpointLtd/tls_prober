@@ -1674,3 +1674,38 @@ class ClientAuthzOverflow12(ClientAuthzOverflow, NormalHandshake12):
 class ClientAuthzOverflow12PFS(ClientAuthzOverflow, NormalHandshake12PFS):
     '''As with ClientAuthzOverflow but in PFS TLSv1.3 hello'''
     pass
+
+
+class ServerAuthzNull(ClientAuthzNull):
+    '''Send empty server authz extension in hello'''
+
+    def make_client_authz_hello(self, value):
+        server_authz_ext = Extension.create(
+            extension_type=8,
+            data=value)
+        return self.make_hello([server_authz_ext])
+
+
+class ServerAuthzNull12(ServerAuthzNull, NormalHandshake12):
+    '''Send empty server authz extension in TLSv1.2 hello'''
+    pass
+
+
+class ServerAuthzNull12PFS(ServerAuthzNull, NormalHandshake12PFS):
+    '''Send empty server authz extension in PFS TLSv1.2 hello'''
+    pass
+
+
+class ServerAuthzOverflow(ServerAuthzNull, ClientAuthzOverflow):
+    '''Send server authz extension with length longer than data in hello'''
+    pass
+
+
+class ServerAuthzOverflow12(ServerAuthzOverflow, NormalHandshake12):
+    '''As with ServerAuthzOverflow but in TLSv1.2 hello'''
+    pass
+
+
+class ServerAuthzOverflow12PFS(ServerAuthzOverflow, NormalHandshake12PFS):
+    '''As with ServerAuthzOverflow but in PFS TLSv1.2 hello'''
+    pass
