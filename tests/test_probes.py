@@ -3391,3 +3391,129 @@ class TestServerAuthzOverflow12FS(unittest.TestCase):
                           b'\x00\x07'
                           b'\x00\x08\x00\x03'
                           b'\x04\x00\x01'])
+
+
+class TestCertTypeNull(unittest.TestCase):
+    def test_test(self):
+        probe = CertTypeNull()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00?'
+                          b'\x01\x00\x00;'
+                          b'\x03\x01' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00\x0e' +
+                          DEFAULT_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x04'
+                          b'\x00\x09\x00\x00'])
+
+
+class TestCertTypeNull12(unittest.TestCase):
+    def test_test(self):
+        probe = CertTypeNull12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00W'
+                          b'\x01\x00\x00S'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x04'
+                          b'\x00\x09\x00\x00'])
+
+
+class TestCertTypeNull12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = CertTypeNull12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b"\x16\x03\x01\x00\x8f"
+                          b"\x01\x00\x00\x8b"
+                          b"\x03\x03" +
+                          RANDOM_STR +
+                          b"\x00"
+                          b"\x00^" +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b"\x01\x00"
+                          b'\x00\x04'
+                          b'\x00\x09\x00\x00'])
+
+
+class TestCertTypeOverflow(unittest.TestCase):
+    def test_test(self):
+        probe = CertTypeOverflow()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00A'
+                          b'\x01\x00\x00='
+                          b'\x03\x01' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00\x0e' +
+                          DEFAULT_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x06'
+                          b'\x00\x09\x00\x02'
+                          b'\x04\x01'])
+
+
+class TestCertTypeOverflow12(unittest.TestCase):
+    def test_test(self):
+        probe = CertTypeOverflow12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00Y'
+                          b'\x01\x00\x00U'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x06'
+                          b'\x00\x09\x00\x02'
+                          b'\x04\x01'])
+
+
+class TestCertTypeOverflow12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = CertTypeOverflow12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b"\x16\x03\x01\x00\x91"
+                          b"\x01\x00\x00\x8d"
+                          b"\x03\x03" +
+                          RANDOM_STR +
+                          b"\x00"
+                          b"\x00^" +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b"\x01\x00"
+                          b'\x00\x06'
+                          b'\x00\x09\x00\x02'
+                          b'\x04\x01'])

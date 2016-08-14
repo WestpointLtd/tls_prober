@@ -1709,3 +1709,47 @@ class ServerAuthzOverflow12(ServerAuthzOverflow, NormalHandshake12):
 class ServerAuthzOverflow12PFS(ServerAuthzOverflow, NormalHandshake12PFS):
     '''As with ServerAuthzOverflow but in PFS TLSv1.2 hello'''
     pass
+
+
+class CertTypeNull(NormalHandshake):
+    '''Send empty cert type extension in hello'''
+
+    def make_cert_type_hello(self, value):
+        cert_type_ext = Extension.create(
+            extension_type=9,
+            data=value)
+        return self.make_hello([cert_type_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal extension has an array, don't send anything
+        sock.write(self.make_cert_type_hello(b''))
+
+
+class CertTypeNull12(CertTypeNull, NormalHandshake12):
+    '''Send empty cert type extension in TLSv1.2 hello'''
+    pass
+
+
+class CertTypeNull12PFS(CertTypeNull, NormalHandshake12PFS):
+    '''Send empty cert type extension in PFS TLSv1.2 hello'''
+    pass
+
+
+class CertTypeOverflow(CertTypeNull):
+    '''Send cert type extension with too large length in hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # first byte is a length of array, send invalid one
+        sock.write(self.make_cert_type_hello(b'\x04\x01'))
+
+
+class CertTypeOverflow12(CertTypeOverflow, NormalHandshake12):
+    '''Send cert type extension with too large length in TLSv1.2 hello'''
+    pass
+
+
+class CertTypeOverflow12PFS(CertTypeOverflow, NormalHandshake12PFS):
+    '''Send cert type extension with too large length in PFS TLSv1.2 hello'''
+    pass
