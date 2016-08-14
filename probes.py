@@ -1277,6 +1277,16 @@ class TruncatedHMACNotNull(NormalHandshake):
         sock.write(self.make_truncated_hmac_hello('\x0c'))
 
 
+class TruncatedHMACNotNull12(TruncatedHMACNotNull, NormalHandshake12):
+    '''As with TruncatedHMACNotNull but in TLSv1.2 hello'''
+    pass
+
+
+class TruncatedHMACNotNull12PFS(TruncatedHMACNotNull, NormalHandshake12PFS):
+    '''As with TruncatedHMACNotNull but in PFS TLSv1.2 hello'''
+    pass
+
+
 class OCSPNull(NormalHandshake):
     '''Send status request extension with empty payload'''
 
