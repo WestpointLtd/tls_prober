@@ -120,6 +120,8 @@ probes = [
     TrustedCAOverflow12(),
     TrustedCAOverflow12PFS(),
     TrustedCAUnderflow(),
+    TrustedCAUnderflow12(),
+    TrustedCAUnderflow12PFS(),
     TruncatedHMACNotNull(),
     OCSPNull(),
     OCSPOverflow(),

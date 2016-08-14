@@ -1916,6 +1916,50 @@ class TestTrustedCAUnderflow(unittest.TestCase):
                           b'\x00\x15\x01' + 'a'*20 + b'\x00'])
 
 
+class TestTrustedCAUnderflow12(unittest.TestCase):
+    def test_test(self):
+        probe = TrustedCAUnderflow12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00o'
+                          b'\x01\x00\x00k'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x1c'
+                          b'\x00\x03\x00\x18'
+                          b'\x00\x15\x01' + 'a'*20 + b'\x00'])
+
+
+class TestTrustedCAUnderflow12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = TrustedCAUnderflow12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b"\x16\x03\x01\x00\xa7"
+                          b"\x01\x00\x00\xa3"
+                          b"\x03\x03" +
+                          RANDOM_STR +
+                          b"\x00"
+                          b"\x00^" +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b"\x01\x00"
+                          b'\x00\x1c'
+                          b'\x00\x03\x00\x18'
+                          b'\x00\x15\x01' + 'a'*20 + b'\x00'])
+
+
 class TestTruncatedHMACNotNull(unittest.TestCase):
     def test_test(self):
         probe = TruncatedHMACNotNull()

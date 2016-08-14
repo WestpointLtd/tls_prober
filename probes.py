@@ -1249,6 +1249,16 @@ class TrustedCAUnderflow(TrustedCANull):
         sock.write(self.make_trusted_ca_hello(ext_data))
 
 
+class TrustedCAUnderflow12(TrustedCAUnderflow, NormalHandshake12):
+    '''As with TrustedCAUnderflow but in TLSv1.2 hello'''
+    pass
+
+
+class TrustedCAUnderflow12PFS(TrustedCAUnderflow, NormalHandshake12PFS):
+    '''As with TrustedCAUnderflow but in PFS TLSv1.2 hello'''
+    pass
+
+
 class TruncatedHMACNotNull(NormalHandshake):
     '''Send a truncated HMAC extension with a non empty payload'''
 
