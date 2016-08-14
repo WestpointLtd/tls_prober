@@ -164,7 +164,10 @@ probes = [
     OCSPUnderflow12PFS(),
     DoubleExtension(),
     DoubleExtension12(),
-    DoubleExtension12PFS()
+    DoubleExtension12PFS(),
+    UserMappingNull(),
+    UserMappingNull12(),
+    UserMappingNull12PFS()
 ]
 
 def probe(ipaddress, port, starttls, specified_probe):

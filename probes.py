@@ -1583,3 +1583,29 @@ class DoubleExtension12(DoubleExtension, NormalHandshake12):
 class DoubleExtension12PFS(DoubleExtension, NormalHandshake12PFS):
     '''Duplicate secure renegotiation extension in PFS TLSv1.2 hello'''
     pass
+
+
+class UserMappingNull(NormalHandshake):
+    '''Send empty user mapping extension in hello'''
+
+    def make_user_mapping_ext(self, value):
+        user_mapping_ext = Extension.create(
+            extension_type=6,
+            data=value)
+        return self.make_hello([user_mapping_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # extension consists of an array and the array needs at least one
+        # element, don't send any
+        sock.write(self.make_user_mapping_ext(b''))
+
+
+class UserMappingNull12(UserMappingNull, NormalHandshake12):
+    '''Send empty user mapping extension in TLSv1.2 hello'''
+    pass
+
+
+class UserMappingNull12PFS(UserMappingNull, NormalHandshake12PFS):
+    '''Send empty user mapping extension in PFS TLSv1.2 hello'''
+    pass
