@@ -3200,3 +3200,68 @@ class TestClientAuthzNull12PFS(unittest.TestCase):
                           b"\x01\x00"
                           b'\x00\x04'
                           b'\x00\x07\x00\x00'])
+
+
+class TestClientAuthzOverflow(unittest.TestCase):
+    def test_test(self):
+        probe = ClientAuthzOverflow()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00B'
+                          b'\x01\x00\x00>'
+                          b'\x03\x01' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00\x0e' +
+                          DEFAULT_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x07'
+                          b'\x00\x07\x00\x03'
+                          b'\x04\x00\x01'])
+
+
+class TestClientAuthzOverflow12(unittest.TestCase):
+    def test_test(self):
+        probe = ClientAuthzOverflow12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00Z'
+                          b'\x01\x00\x00V'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x07'
+                          b'\x00\x07\x00\x03'
+                          b'\x04\x00\x01'])
+
+
+class TestClientAuthzOverflow12FS(unittest.TestCase):
+    def test_test(self):
+        probe = ClientAuthzOverflow12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b"\x16\x03\x01\x00\x92"
+                          b"\x01\x00\x00\x8e"
+                          b"\x03\x03" +
+                          RANDOM_STR +
+                          b"\x00"
+                          b"\x00^" +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b"\x01\x00"
+                          b'\x00\x07'
+                          b'\x00\x07\x00\x03'
+                          b'\x04\x00\x01'])

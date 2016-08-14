@@ -1654,3 +1654,23 @@ class ClientAuthzNull12(ClientAuthzNull, NormalHandshake12):
 class ClientAuthzNull12PFS(ClientAuthzNull, NormalHandshake12PFS):
     '''Send empty client authz extension in PFS TLSv1.2 hello'''
     pass
+
+
+class ClientAuthzOverflow(ClientAuthzNull):
+    '''Send client authz extension with length longer than data in hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal extension has one byte length as first element then
+        # the array, make the array length longer than real payload
+        sock.write(self.make_client_authz_hello(b'\x04\x00\x01'))
+
+
+class ClientAuthzOverflow12(ClientAuthzOverflow, NormalHandshake12):
+    '''As with ClientAuthzOverflow but in TLSv1.2 hello'''
+    pass
+
+
+class ClientAuthzOverflow12PFS(ClientAuthzOverflow, NormalHandshake12PFS):
+    '''As with ClientAuthzOverflow but in PFS TLSv1.3 hello'''
+    pass

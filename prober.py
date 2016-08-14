@@ -173,7 +173,10 @@ probes = [
     UserMappingOverflow12PFS(),
     ClientAuthzNull(),
     ClientAuthzNull12(),
-    ClientAuthzNull12PFS()
+    ClientAuthzNull12PFS(),
+    ClientAuthzOverflow(),
+    ClientAuthzOverflow12(),
+    ClientAuthzOverflow12PFS()
 ]
 
 def probe(ipaddress, port, starttls, specified_probe):
