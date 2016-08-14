@@ -129,6 +129,8 @@ probes = [
     OCSPNull12(),
     OCSPNull12PFS(),
     OCSPOverflow(),
+    OCSPOverflow12(),
+    OCSPOverflow12PFS(),
     OCSPUnderflow(),
     DoubleExtension()
 ]

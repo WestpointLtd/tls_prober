@@ -1326,6 +1326,16 @@ class OCSPOverflow(OCSPNull):
         sock.write(self.make_ocsp_hello('\x01\x00\x00\x00'))
 
 
+class OCSPOverflow12(OCSPOverflow, NormalHandshake12):
+    '''As with OCSPOverflow but in TLSv1.2 hello'''
+    pass
+
+
+class OCSPOverflow12PFS(OCSPOverflow, NormalHandshake12PFS):
+    '''As with OCSPOverflow but in PFS TLSv1.2 hello'''
+    pass
+
+
 class OCSPUnderflow(OCSPNull):
     '''Send status request ext larger than the length inside indicate'''
 
