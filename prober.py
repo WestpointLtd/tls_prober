@@ -206,7 +206,13 @@ probes = [
     ECPointFormatsOverflow12PFS(),
     ECPointFormatsCompOnly(),
     ECPointFormatsCompOnly12(),
-    ECPointFormatsCompOnly12PFS()
+    ECPointFormatsCompOnly12PFS(),
+    SRPNull(),
+    SRPNull12(),
+    SRPNull12PFS(),
+    SRPOverflow(),
+    SRPOverflow12(),
+    SRPOverflow12PFS()
 ]
 
 def probe(ipaddress, port, starttls, specified_probe):

@@ -1884,3 +1884,47 @@ class ECPointFormatsCompOnly12PFS(ECPointFormatsCompOnly,
                                    NormalHandshake12PFS):
     '''As with ECPointFormatsCompOnly but in PFS TLS v1.2 hello'''
     pass
+
+
+class SRPNull(NormalHandshake):
+    '''Send empty srp extension in hello'''
+
+    def make_srp_hello(self, value):
+        srp_ext = Extension.create(
+            extension_type=12,
+            data=value)
+        return self.make_hello([srp_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normally the extension has client's identity, don't include any
+        sock.write(self.make_srp_hello(b''))
+
+
+class SRPNull12(SRPNull, NormalHandshake12):
+    '''Send empty srp extension in TLSv1.2 hello'''
+    pass
+
+
+class SRPNull12PFS(SRPNull, NormalHandshake12PFS):
+    '''Send empty srp extension in PFS TLSv1.2 hello'''
+    pass
+
+
+class SRPOverflow(SRPNull):
+    '''Send srp extension with too large length in hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # first byte is the length, send too large
+        sock.write(self.make_srp_hello(b'\x06test'))
+
+
+class SRPOverflow12(SRPOverflow, NormalHandshake12):
+    '''Send srp extension with too large length in TLSv1.2 hello'''
+    pass
+
+
+class SRPOverflow12PFS(SRPOverflow, NormalHandshake12PFS):
+    '''Send srp extension with too large length in PFS TLSv1.2 hello'''
+    pass
