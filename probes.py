@@ -1819,3 +1819,68 @@ class SupportedGroupsOverflow12PFS(SupportedGroupsOverflow,
         NormalHandshake12PFS):
     '''As with SupportedGroupsOverflow but in PFS TLSv1.2 hello'''
     pass
+
+
+class ECPointFormatsNull(NormalHandshake):
+    '''Send empty ec point formats extension in hello'''
+
+    def make_point_formats_hello(self, value):
+        point_formats_ext = Extension.create(
+            extension_type=11,
+            data=value)
+        return self.make_hello([point_formats_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal extension has an array, don't send anything
+        sock.write(self.make_point_formats_hello(b''))
+
+
+class ECPointFormatsNull12(ECPointFormatsNull, NormalHandshake12):
+    '''Send empty ec point formats extension in TLSv1.2 hello'''
+    pass
+
+
+class ECPointFormatsNull12PFS(ECPointFormatsNull, NormalHandshake12PFS):
+    '''Send empty ec point formats extension in PFS TLSv1.2 hello'''
+    pass
+
+
+class ECPointFormatsOverflow(ECPointFormatsNull):
+    '''Send ec point formats extension with length larger than data in hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # first byte is the length of array, send too large one
+        sock.write(self.make_point_formats_hello(b'\x04\x00'))
+
+
+class ECPointFormatsOverflow12(ECPointFormatsOverflow, NormalHandshake12):
+    '''As with ECPointFormatsOverflow but in TLSv1.2 hello'''
+    pass
+
+
+class ECPointFormatsOverflow12PFS(ECPointFormatsOverflow,
+                                   NormalHandshake12PFS):
+    '''As with ECPointFormatsOverflow but in PFS TLSv1.2 hello'''
+    pass
+
+
+class ECPointFormatsCompOnly(ECPointFormatsNull):
+    '''Send ec point formats extension without uncompressed format'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # the uncompressed format is mandatory, send extension without it
+        sock.write(self.make_point_formats_hello(b'\x02\x01\x02'))
+
+
+class ECPointFormatsCompOnly12(ECPointFormatsCompOnly, NormalHandshake12):
+    '''As with ECPointFormatsCompOnly but in TLSv1.2 hello'''
+    pass
+
+
+class ECPointFormatsCompOnly12PFS(ECPointFormatsCompOnly,
+                                   NormalHandshake12PFS):
+    '''As with ECPointFormatsCompOnly but in PFS TLS v1.2 hello'''
+    pass
