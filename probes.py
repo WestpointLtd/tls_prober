@@ -1928,3 +1928,69 @@ class SRPOverflow12(SRPOverflow, NormalHandshake12):
 class SRPOverflow12PFS(SRPOverflow, NormalHandshake12PFS):
     '''Send srp extension with too large length in PFS TLSv1.2 hello'''
     pass
+
+
+class SigAlgsNull(NormalHandshake):
+    '''Send empty signature algorithms extension in hello'''
+
+    def make_signature_alg_hello(self, value):
+        sig_algs_ext = Extension.create(
+            extension_type=13,
+            data=value)
+        return self.make_hello([sig_algs_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal extension has an array, don't send anything
+        sock.write(self.make_signature_alg_hello(b''))
+
+
+class SigAlgsNull12(SigAlgsNull, NormalHandshake12):
+    '''Send empty signature algorithms extension in TLSv1.2 hello'''
+    pass
+
+
+class SigAlgsNull12PFS(SigAlgsNull, NormalHandshake12PFS):
+    '''Send empty signature algorithms extension in PFS TLSv1.2 hello'''
+    pass
+
+
+class SigAlgsOddLen(SigAlgsNull):
+    '''Send signature algorithms extensions with invalid length in hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal extension has two byte long elements, truncate the last one
+        sock.write(self.make_signature_alg_hello(b'\x00\x05'
+                                                 b'\x04\x01'
+                                                 b'\x04\x03\x04'))
+
+class SigAlgsOddLen12(SigAlgsOddLen, NormalHandshake12):
+    '''As in SigAlgsOddLen but in TLSv1.2 hello'''
+    pass
+
+
+class SigAlgsOddLen12PFS(SigAlgsOddLen, NormalHandshake12PFS):
+    '''As in SigAlgsOddLen but in PFS TLSv1.2 hello'''
+    pass
+
+
+class SigAlgsOverflow(SigAlgsNull):
+    '''Send signature algorithms extension with too large length in hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # the first two bytes are the length of the array, send too large one
+        sock.write(self.make_signature_alg_hello(b'\x00\x06'
+                                                 b'\x04\x01'
+                                                 b'\x04\x03'))
+
+
+class SigAlgsOverflow12(SigAlgsOverflow, NormalHandshake12):
+    '''As in SigAlgsOverflow but in TLSv1.2 hello'''
+    pass
+
+
+class SigAlgsOverflow12PFS(SigAlgsOverflow, NormalHandshake12PFS):
+    '''As in SigAlgsOverflow but in PFS TLSv1.2 hello'''
+    pass
