@@ -311,7 +311,10 @@ probes = [
     SessionTicketOverflow12PFS(),
     NPNNotNull(),
     NPNNotNull12(),
-    NPNNotNull12PFS()
+    NPNNotNull12PFS(),
+    TACKNotNull(),
+    TACKNotNull12(),
+    TACKNotNull12PFS()
 ]
 
 def probe(ipaddress, port, starttls, specified_probe):

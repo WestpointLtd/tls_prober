@@ -2765,3 +2765,28 @@ class NPNNotNull12(NPNNotNull, NormalHandshake12):
 class NPNNotNull12PFS(NPNNotNull, NormalHandshake12PFS):
     '''Send non empty NPN extension in PFS TLSv1.2 hello'''
     pass
+
+
+class TACKNotNull(NormalHandshake):
+    '''Send not empty TACK extension in hello'''
+
+    def make_tack_hello(self, value):
+        tack_ext = Extension.create(
+            extension_type=62208,
+            data=value)
+        return self.make_hello([tack_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal extension must be empty
+        sock.write(self.make_tack_hello(b'\x08'))
+
+
+class TACKNotNull12(TACKNotNull, NormalHandshake12):
+    '''Send not empty TACK extension in TLSv1.2 hello'''
+    pass
+
+
+class TACKNotNull12PFS(TACKNotNull, NormalHandshake12PFS):
+    '''Send not empty TACK extension in PFS TLSv1.2 hello'''
+    pass
