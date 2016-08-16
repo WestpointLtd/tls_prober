@@ -2170,3 +2170,55 @@ class ALPNOverflow12(ALPNOverflow, NormalHandshake12):
 class ALPNOverflow12PFS(ALPNOverflow, NormalHandshake12PFS):
     '''Send ALPN extension with too large length in PFS TLSv1.2 hello'''
     pass
+
+
+class OCSPv2Null(NormalHandshake):
+    '''Send empty OCSPv2 staple extension in hello'''
+
+    def make_ocspv2_hello(self, value):
+        ocspv2_ext = Extension.create(
+            extension_type=17,
+            data=value)
+        return self.make_hello([ocspv2_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal encoding has a list of complex items, don't include anything
+        sock.write(self.make_ocspv2_hello(b''))
+
+
+class OCSPv2Null12(OCSPv2Null, NormalHandshake12):
+    '''Send empty OCSPv2 staple extension in TLSv1.2 hello'''
+    pass
+
+
+class OCSPv2Null12PFS(OCSPv2Null, NormalHandshake12PFS):
+    '''Send empty OCSPv2 staple extension in PFS TLSv1.2 hello'''
+    pass
+
+
+class OCSPv2Overflow(OCSPv2Null):
+    '''Send OCSPv2 staple extension with too large length in hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        data = (b'\x00\x10'  # overall length of extension (too large)
+                b'\x01'  # first request type (ocsp)
+                b'\x00\x04'  # request length
+                b'\x00\x00'  # responder ID list length
+                b'\x00\x00'  # request extensions list length
+                b'\x02'  # second request type (ocsp_multi)
+                b'\x00\x04'  # request length
+                b'\x00\x00'  # responder ID list length
+                b'\x00\x00')  # request extensions list length
+        sock.write(self.make_ocspv2_hello(data))
+
+
+class OCSPv2Overflow12(OCSPv2Overflow, NormalHandshake12):
+    '''Send OCSPv2 staple extension with too large length in TLSv1.2 hello'''
+    pass
+
+
+class OCSPv2Overflow12PFS(OCSPv2Overflow, NormalHandshake12PFS):
+    '''As with OCSPv2Overflow but in PFS TLSv1.2 hello'''
+    pass

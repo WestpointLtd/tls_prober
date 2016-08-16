@@ -245,7 +245,13 @@ probes = [
     ALPNUnknown12PFS(),
     ALPNOverflow(),
     ALPNOverflow12(),
-    ALPNOverflow12PFS()
+    ALPNOverflow12PFS(),
+    OCSPv2Null(),
+    OCSPv2Null12(),
+    OCSPv2Null12PFS(),
+    OCSPv2Overflow(),
+    OCSPv2Overflow12(),
+    OCSPv2Overflow12PFS()
 ]
 
 def probe(ipaddress, port, starttls, specified_probe):
