@@ -2622,3 +2622,29 @@ class EtMNotNull12(EtMNotNull, NormalHandshake12):
 class EtMNotNull12PFS(EtMNotNull, NormalHandshake12PFS):
     '''Send not empty encrypt then mac extension in PFS TLSv1.2 hello'''
     pass
+
+
+class EMSNotNull(NormalHandshake):
+    '''Send not empty extended master secret extension in hello'''
+
+    def make_ems_hello(self, value):
+        ems_ext = Extension.create(
+            extension_type=23,
+            data=value)
+        return self.make_hello([ems_ext])
+
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal extension must be empty
+        sock.write(self.make_ems_hello(b'\x04'))
+
+
+class EMSNotNull12(EMSNotNull, NormalHandshake12):
+    '''Send not empty extended master secret extension in TLSv1.2 hello'''
+    pass
+
+
+class EMSNotNull12PFS(EMSNotNull, NormalHandshake12PFS):
+    '''Send not empty extended master secret extension in PFS TLSv1.2 hello'''
+    pass
