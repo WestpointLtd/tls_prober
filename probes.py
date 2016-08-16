@@ -2648,3 +2648,50 @@ class EMSNotNull12(EMSNotNull, NormalHandshake12):
 class EMSNotNull12PFS(EMSNotNull, NormalHandshake12PFS):
     '''Send not empty extended master secret extension in PFS TLSv1.2 hello'''
     pass
+
+
+class CachedInfoNull(NormalHandshake):
+    '''Send empty cached info extension in hello'''
+
+    def make_cached_info_hello(self, value):
+        cached_info_ext = Extension.create(
+            extension_type=25,
+            data=value)
+        return self.make_hello([cached_info_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal extension must include an array of complex objects
+        sock.write(self.make_cached_info_hello(b''))
+
+
+class CachedInfoNull12(CachedInfoNull, NormalHandshake12):
+    '''Send empty cached info extension in TLSv1.2 hello'''
+    pass
+
+
+class CachedInfoNull12PFS(CachedInfoNull, NormalHandshake12PFS):
+    '''Send empty cached info extension in PFS TLSv1.2 hello'''
+    pass
+
+
+class CachedInfoOverflow(CachedInfoNull):
+    '''Send cached info extension with invalid size in hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # first two bytes are the size of the array, send too large one
+        sock.write(self.make_cached_info_hello(b'\x00\x44'
+                                               b'\x02'  # type cert_req
+                                               b'\x20' +  # length of hash
+                                               b'\xaf' * 32))  # hash
+
+
+class CachedInfoOverflow12(CachedInfoOverflow, NormalHandshake12):
+    '''Send cached info extension with invalid size in TLSv1.2 hello'''
+    pass
+
+
+class CachedInfoOverflow12PFS(CachedInfoOverflow, NormalHandshake12PFS):
+    '''Send cached info extension with invalid size in PFS TLSv1.2 hello'''
+    pass
