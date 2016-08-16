@@ -2222,3 +2222,27 @@ class OCSPv2Overflow12(OCSPv2Overflow, NormalHandshake12):
 class OCSPv2Overflow12PFS(OCSPv2Overflow, NormalHandshake12PFS):
     '''As with OCSPv2Overflow but in PFS TLSv1.2 hello'''
     pass
+
+
+class SignedCertTSNotNull(NormalHandshake):
+    '''Send hello with signed certificate timestamp that is not empty'''
+
+    def make_signed_cert_ts_hello(self, value):
+        signed_cert_ts_ext = Extension.create(
+            extension_type=18,
+            data=value)
+        return self.make_hello([signed_cert_ts_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # valid extension should be empty
+        sock.write(self.make_signed_cert_ts_hello(b'\x04'))
+
+class SignedCertTSNotNull12(SignedCertTSNotNull, NormalHandshake12):
+    '''As with SignedCertTSNotNull but in TLSv1.2 hello'''
+    pass
+
+
+class SignedCertTSNotNull12PFS(SignedCertTSNotNull, NormalHandshake12PFS):
+    '''As with SignedCertTSNotNull but in PFS TLSv1.2 hello'''
+    pass

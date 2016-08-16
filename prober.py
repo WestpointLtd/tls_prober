@@ -251,7 +251,10 @@ probes = [
     OCSPv2Null12PFS(),
     OCSPv2Overflow(),
     OCSPv2Overflow12(),
-    OCSPv2Overflow12PFS()
+    OCSPv2Overflow12PFS(),
+    SignedCertTSNotNull(),
+    SignedCertTSNotNull12(),
+    SignedCertTSNotNull12PFS(),
 ]
 
 def probe(ipaddress, port, starttls, specified_probe):
