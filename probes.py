@@ -2336,3 +2336,264 @@ class ServerCertTypeOverflow12PFS(ServerCertTypeOverflow,
                                   NormalHandshake12PFS):
     '''As with ServerCertTypeOverflow but in PFS TLSv1.2 hello'''
     pass
+
+
+class PaddingNull(NormalHandshake):
+    '''Send empty padding extension in hello'''
+
+    def make_padding_hello(self, value):
+        padding_ext = Extension.create(
+            extension_type=21,
+            data=value)
+        return self.make_hello([padding_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # there is no invalid encoding of extension, send an empty one
+        sock.write(self.make_padding_hello(b''))
+
+
+class PaddingNull12(PaddingNull, NormalHandshake12):
+    '''Send empty padding extension in TLSv1.2 hello'''
+    pass
+
+
+class PaddingNull12PFS(PaddingNull, NormalHandshake12PFS):
+    '''Send empty padding extension in PFS TLSv1.2 hello'''
+    pass
+
+
+class Padding300Byte(PaddingNull):
+    '''Use padding extension to send 300 byte large hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal hello is 64 byte large with all headers, 5 of which are
+        # record layer overhead, extensions length is already included
+        # but extension id and extension length is not, totalling 4 bytes
+        sock.write(self.make_padding_hello(b'\x00' * (300 - (64 - 5) - 4)))
+
+
+class Padding300Byte12(PaddingNull, NormalHandshake12):
+    '''Use padding extension to send 300 byte large TLSv1.2 hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # TLSv1.2 hello is 88 byte large with all headers, 5 of which are
+        # record layer overhead, extensions length is already included
+        # but extension id and extension length is not, totalling 4 bytes
+        sock.write(self.make_padding_hello(b'\x00' * (300 - (88 - 5) - 4)))
+
+
+class Padding300Byte12PFS(PaddingNull, NormalHandshake12PFS):
+    '''Use padding extension to send 300 byte large PFS TLSv1.2 hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # PFS TLSv1.2 hello is 144 byte large with all headers, 5 of which are
+        # record layer overhead, extensions length is already included
+        # but extension id and extension length is not, totalling 4 bytes
+        sock.write(self.make_padding_hello(b'\x00' * (300 - (144 - 5) - 4)))
+
+
+class Padding600Byte(PaddingNull):
+    '''Use padding extension to send 600 byte large hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal hello is 64 byte large with all headers, 5 of which are
+        # record layer overhead, extensions length is already included
+        # but extension id and extension length is not, totalling 4 bytes
+        sock.write(self.make_padding_hello(b'\x00' * (600 - (64 - 5) - 4)))
+
+
+class Padding600Byte12(PaddingNull, NormalHandshake12):
+    '''Use padding extension to send 600 byte large TLSv1.2 hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # TLSv1.2 hello is 88 byte large with all headers, 5 of which are
+        # record layer overhead, extensions length is already included
+        # but extension id and extension length is not, totalling 4 bytes
+        sock.write(self.make_padding_hello(b'\x00' * (600 - (88 - 5) - 4)))
+
+
+class Padding600Byte12PFS(PaddingNull, NormalHandshake12PFS):
+    '''Use padding extension to send 600 byte large PFS TLSv1.2 hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # PFS TLSv1.2 hello is 144 byte large with all headers, 5 of which are
+        # record layer overhead, extensions length is already included
+        # but extension id and extension length is not, totalling 4 bytes
+        sock.write(self.make_padding_hello(b'\x00' * (600 - (144 - 5) - 4)))
+
+
+class Padding16384Byte(PaddingNull):
+    '''Use padding extension to send 16384 byte large hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal hello is 64 byte large with all headers, 5 of which are
+        # record layer overhead, extensions length is already included
+        # but extension id and extension length is not, totalling 4 bytes
+        # 16384 is the largest size that can be sent in a single record layer
+        sock.write(self.make_padding_hello(b'\x00' * (16384 - (64 - 5) - 4)))
+
+
+class Padding16384Byte12(PaddingNull, NormalHandshake12):
+    '''Use padding extension to send 16384 byte large TLSv1.2 hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # TLSv1.2 hello is 88 byte large with all headers, 5 of which are
+        # record layer overhead, extensions length is already included
+        # but extension id and extension length is not, totalling 4 bytes
+        sock.write(self.make_padding_hello(b'\x00' * (16384 - (88 - 5) - 4)))
+
+
+class Padding16384Byte12PFS(PaddingNull, NormalHandshake12PFS):
+    '''Use padding extension to send 16384 byte large PFS TLSv1.2 hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # PFS TLSv1.2 hello is 144 byte large with all headers, 5 of which are
+        # record layer overhead, extensions length is already included
+        # but extension id and extension length is not, totalling 4 bytes
+        sock.write(self.make_padding_hello(b'\x00' * (16384 - (144 - 5) - 4)))
+
+
+class Padding16385Byte(Probe):
+    '''Use padding extension to send 16385 byte large hello'''
+
+    def __init__(self):
+        super(Padding16385Byte, self).__init__()
+        self.hello_version = TLSRecord.TLS1_0
+        self.ciphers = DEFAULT_CIPHERS
+
+    def make_padding_hello(self, value):
+        padding_ext = Extension.create(
+            extension_type=21,
+            data=value)
+        RECORD_MAX=16384
+        hello = ClientHelloMessage.create(self.hello_version,
+                                          b'01234567890123456789012345678901',
+                                          self.ciphers,
+                                          extensions=[padding_ext])
+        hello_bytes = hello.bytes
+        records = [TLSRecord.create(content_type=TLSRecord.Handshake,
+                                    version=TLSRecord.TLS1_0,
+                                    message=hello_bytes[i:i+RECORD_MAX]).bytes
+                   for i in range(0, len(hello_bytes), RECORD_MAX)]
+        return b''.join(records)
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # hello is 64 byte large with all headers, 5 of which are
+        # record layer overhead, extensions length is already included
+        # but extension id and extension length is not, totalling 4 bytes
+        sock.write(self.make_padding_hello(b'\x00' * (16385 - (64 - 5) - 4)))
+
+
+class Padding16385Byte12(Padding16385Byte):
+    '''Use padding extension to send 16385 byte large TLSv1.2 hello'''
+
+    def __init__(self):
+        super(Padding16385Byte, self).__init__()
+        self.hello_version = TLSRecord.TLS1_2
+        self.ciphers = DEFAULT_12_CIPHERS
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # TLSv1.2 hello is 88 byte large with all headers, 5 of which are
+        # record layer overhead, extensions length is already included
+        # but extension id and extension length is not, totalling 4 bytes
+        sock.write(self.make_padding_hello(b'\x00' * (16385 - (88 - 5) - 4)))
+
+
+class Padding16385Byte12PFS(Padding16385Byte):
+    '''Use padding extension to send 16385 byte large PFS TLSv1.2 hello'''
+
+    def __init__(self):
+        super(Padding16385Byte, self).__init__()
+        self.hello_version = TLSRecord.TLS1_2
+        self.ciphers = DEFAULT_PFS_CIPHERS
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # PFS TLSv1.2 hello is 144 byte large with all headers, 5 of which are
+        # record layer overhead, extensions length is already included
+        # but extension id and extension length is not, totalling 4 bytes
+        sock.write(self.make_padding_hello(b'\x00' * (16385 - (144 - 5) - 4)))
+
+
+class Padding16387Byte(Padding16385Byte):
+    '''Use padding extension to send 16387 byte large hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        sock.write(self.make_padding_hello(b'\x00' * (16387 - (64 - 5) - 4)))
+
+
+class Padding16387Byte12(Padding16385Byte12):
+    '''Use padding extension to send 16387 byte large TLSv1.2 hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        sock.write(self.make_padding_hello(b'\x00' * (16387 - (88 - 5) - 4)))
+
+
+class Padding16387Byte12PFS(Padding16385Byte12PFS):
+    '''Use padding extension to send 16387 byte large PFS TLSv1.2 hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        sock.write(self.make_padding_hello(b'\x00' * (16387 - (144 - 5) - 4)))
+
+
+class Padding16389Byte(Padding16385Byte):
+    '''Use padding extension to send 16389 byte large hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        sock.write(self.make_padding_hello(b'\x00' * (16389 - (64 - 5) - 4)))
+
+
+class Padding16389Byte12(Padding16385Byte12):
+    '''Use padding extension to send 16389 byte large TLSv1.2 hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        sock.write(self.make_padding_hello(b'\x00' * (16389 - (88 - 5) - 4)))
+
+
+class Padding16389Byte12PFS(Padding16385Byte12PFS):
+    '''Use padding extension to send 16389 byte large PFS TLSv1.2 hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        sock.write(self.make_padding_hello(b'\x00' * (16389 - (144 - 5) - 4)))
+
+
+class Padding17520Byte(Padding16385Byte):
+    '''Use padding extension to send 17520 byte large hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        sock.write(self.make_padding_hello(b'\x00' * (17520 - (64 - 5) - 4)))
+
+
+class Padding17520Byte12(Padding16385Byte12):
+    '''Use padding extension to send 17520 byte large TLSv1.2 hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        sock.write(self.make_padding_hello(b'\x00' * (17520 - (88 - 5) - 4)))
+
+
+class Padding17520Byte12PFS(Padding16385Byte12PFS):
+    '''Use padding extension to send 17520 byte large PFS TLSv1.2 hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        sock.write(self.make_padding_hello(b'\x00' * (17520 - (144 - 5) - 4)))

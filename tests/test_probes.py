@@ -112,6 +112,7 @@ MAKE_HELLO_EMPTY_EXT = (b'\x16\x03\x01\x00;'
                         b'\x01\x00'
                         b'\x00\x00')
 
+assert len(MAKE_HELLO_EMPTY_EXT) == 64, len(MAKE_HELLO_EMPTY_EXT)
 
 MAKE_PFS_HELLO_EMPTY_EXT = (b"\x16\x03\x01\x00\x8b"
                             b"\x01\x00\x00\x87"
@@ -157,6 +158,9 @@ MAKE_12_HELLO_EMPTY_STR = (b'\x16\x03\x01\x00S'
                            b'\x00\x00')
 
 
+assert len(MAKE_12_HELLO_EMPTY_STR) == 88, len(MAKE_12_HELLO_EMPTY_STR)
+
+
 MAKE_12_PFS_HELLO_EMPTY_STR = (b"\x16\x03\x01\x00\x8b"
                                b"\x01\x00\x00\x87"
                                b"\x03\x03" +
@@ -167,6 +171,8 @@ MAKE_12_PFS_HELLO_EMPTY_STR = (b"\x16\x03\x01\x00\x8b"
                                b"\x01\x00"
                                b"\x00\x00")
 
+assert len(MAKE_12_PFS_HELLO_EMPTY_STR) == 144,\
+        len(MAKE_12_PFS_HELLO_EMPTY_STR)
 
 class TestNormalHandshake(unittest.TestCase):
     def test_test(self):
@@ -3708,3 +3714,159 @@ class TestSupportedGroupsOverflow12PFS(unittest.TestCase):
                           b'\x00\x08'
                           b'\x00\x0a\x00\x04'
                           b'\x00\x04\x00\x17'])
+
+
+class TestPadding16384Byte(unittest.TestCase):
+    def test_test(self):
+        probe = Padding16384Byte()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        expected = (b'\x16\x03\x01\x40\x00'
+                    b'\x01\x00\x3f\xfc'
+                    b'\x03\x01' +
+                    RANDOM_STR +
+                    b'\x00'
+                    b'\x00\x0e' +
+                    DEFAULT_CIPHERS_STR +
+                    b'\x01\x00'
+                    b'\x3f\xc5'
+                    b'\x00\x15\x3f\xc1' +
+                    b'\x00' * (16384 - (64-5) - 4))
+        self.assertEqual(repr(sock.sent_data[0][:70]),
+                         repr(expected[:70]))
+        self.assertEqual(sock.sent_data,
+                         [expected])
+
+
+class TestPadding16384Byte12(unittest.TestCase):
+    def test_test(self):
+        probe = Padding16384Byte12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        expected = (b'\x16\x03\x01\x40\x00'
+                    b'\x01\x00\x3f\xfc'
+                    b'\x03\x03' +
+                    RANDOM_STR +
+                    b'\x00'
+                    b'\x00&' +
+                    DEFAULT_12_CIPHERS_STR +
+                    b'\x01\x00'
+                    b'\x3f\xad'
+                    b'\x00\x15\x3f\xa9' +
+                    b'\x00' * (16384 - (88-5) - 4))
+        self.assertEqual(repr(sock.sent_data[0][:100]),
+                         repr(expected[:100]))
+        self.assertEqual(sock.sent_data,
+                         [expected])
+
+
+class TestPadding16384Byte12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = Padding16384Byte12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        expected = (b'\x16\x03\x01\x40\x00'
+                    b'\x01\x00\x3f\xfc'
+                    b'\x03\x03' +
+                    RANDOM_STR +
+                    b'\x00'
+                    b'\x00^' +
+                    DEFAULT_PFS_CIPHERS_STR +
+                    b'\x01\x00'
+                    b'\x3fu'
+                    b'\x00\x15\x3fq' +
+                    b'\x00' * (16384 - (144-5) - 4))
+        self.assertEqual(repr(sock.sent_data[0][:160]),
+                         repr(expected[:160]))
+        self.assertEqual(sock.sent_data,
+                         [expected])
+
+
+class TestPadding16385Byte(unittest.TestCase):
+    def test_test(self):
+        probe = Padding16385Byte()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        expected = (b'\x16\x03\x01\x40\x00'
+                    b'\x01\x00\x3f\xfd'
+                    b'\x03\x01' +
+                    RANDOM_STR +
+                    b'\x00'
+                    b'\x00\x0e' +
+                    DEFAULT_CIPHERS_STR +
+                    b'\x01\x00'
+                    b'\x3f\xc6'
+                    b'\x00\x15\x3f\xc2' +
+                    b'\x00' * (16385 - (64-5) - 4 - 1) +
+                    b'\x16\x03\x01\x00\x01'  # second record
+                    b'\x00')
+        self.assertEqual(repr(sock.sent_data[0][:70]),
+                         repr(expected[:70]))
+        self.assertEqual(sock.sent_data,
+                         [expected])
+
+
+class TestPadding16385Byte12(unittest.TestCase):
+    def test_test(self):
+        probe = Padding16385Byte12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        expected = (b'\x16\x03\x01\x40\x00'
+                    b'\x01\x00\x3f\xfd'
+                    b'\x03\x03' +
+                    RANDOM_STR +
+                    b'\x00'
+                    b'\x00&' +
+                    DEFAULT_12_CIPHERS_STR +
+                    b'\x01\x00'
+                    b'\x3f\xae'
+                    b'\x00\x15\x3f\xaa' +
+                    b'\x00' * (16385 - (88-5) - 4 -1 ) +
+                    b'\x16\x03\x01\x00\x01'  # second record
+                    b'\x00')
+        self.assertEqual(repr(sock.sent_data[0][:100]),
+                         repr(expected[:100]))
+        self.assertEqual(sock.sent_data,
+                         [expected])
+
+
+class TestPadding16385Byte12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = Padding16385Byte12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        expected = (b'\x16\x03\x01\x40\x00'
+                    b'\x01\x00\x3f\xfd'
+                    b'\x03\x03' +
+                    RANDOM_STR +
+                    b'\x00'
+                    b'\x00^' +
+                    DEFAULT_PFS_CIPHERS_STR +
+                    b'\x01\x00'
+                    b'\x3fv'
+                    b'\x00\x15\x3fr' +
+                    b'\x00' * (16385 - (144-5) - 4 - 1 ) +
+                    b'\x16\x03\x01\x00\x01'  # second record
+                    b'\x00')
+        self.assertEqual(repr(sock.sent_data[0][:160]),
+                         repr(expected[:160]))
+        self.assertEqual(sock.sent_data,
+                         [expected])

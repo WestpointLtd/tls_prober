@@ -266,7 +266,31 @@ probes = [
     ServerCertTypeNull12PFS(),
     ServerCertTypeOverflow(),
     ServerCertTypeOverflow12(),
-    ServerCertTypeOverflow12PFS()
+    ServerCertTypeOverflow12PFS(),
+    PaddingNull(),
+    PaddingNull12(),
+    PaddingNull12PFS(),
+    Padding300Byte(),
+    Padding300Byte12(),
+    Padding300Byte12PFS(),
+    Padding600Byte(),
+    Padding600Byte12(),
+    Padding600Byte12PFS(),
+    Padding16384Byte(),
+    Padding16384Byte12(),
+    Padding16384Byte12PFS(),
+    Padding16385Byte(),
+    Padding16385Byte12(),
+    Padding16385Byte12PFS(),
+    Padding16387Byte(),
+    Padding16387Byte12(),
+    Padding16387Byte12PFS(),
+    Padding16389Byte(),
+    Padding16389Byte12(),
+    Padding16389Byte12PFS(),
+    Padding17520Byte(),
+    Padding17520Byte12(),
+    Padding17520Byte12PFS()
 ]
 
 def probe(ipaddress, port, starttls, specified_probe):
