@@ -1994,3 +1994,68 @@ class SigAlgsOverflow12(SigAlgsOverflow, NormalHandshake12):
 class SigAlgsOverflow12PFS(SigAlgsOverflow, NormalHandshake12PFS):
     '''As in SigAlgsOverflow but in PFS TLSv1.2 hello'''
     pass
+
+
+class UseSrtpNull(NormalHandshake):
+    '''Send empty use srtp extension in hello'''
+
+    def make_use_srtp_hello(self, value):
+        use_srtp_ext = Extension.create(
+            extension_type=14,
+            data=value)
+        return self.make_hello([use_srtp_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal extension has an array, don't send anything
+        sock.write(self.make_use_srtp_hello(b''))
+
+
+class UseSrtpNull12(UseSrtpNull, NormalHandshake12):
+    '''Send empty use srtp extension in TLSv1.2 hello'''
+    pass
+
+class UseSrtpNull12PFS(UseSrtpNull, NormalHandshake12PFS):
+    '''Send empty use srtp extension in PFS TLSv1.2 hello'''
+    pass
+
+class UseSrtpOddLen(UseSrtpNull):
+    '''Send use srtp extension with too large length in hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # the extension starts with a two byte length of two-byte elements
+        # and the second array is optional with a simple binary string
+        sock.write(self.make_use_srtp_hello(b'\x00\x05'
+                                            b'\x00\x01\x00\x05\x00'
+                                            b'\x00'))
+
+class UseSrtpOddLen12(UseSrtpOddLen, NormalHandshake12):
+    '''Send use srtp extension with too large length in TLSv1.2 hello'''
+    pass
+
+
+class UseSrtpOddLen12PFS(UseSrtpOddLen, NormalHandshake12PFS):
+    '''Send use srtp extension with too large length in PFS TLSv1.2 hello'''
+    pass
+
+
+class UseSrtpOverflow(UseSrtpNull):
+    '''Send use srtp extension with length larger than payload'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # the extension has two arrays, one has a two byte length the other
+        # a one byte length, make the first array longer than payload
+        sock.write(self.make_use_srtp_hello(b'\x00\x06'
+                                            b'\x00\x01\x00\x05'))
+
+
+class UseSrtpOverflow12(UseSrtpOverflow, NormalHandshake12):
+    '''Send use srtp extension with length larger than payload in TLSv1.2'''
+    pass
+
+
+class UseSrtpOverflow12PFS(UseSrtpOverflow, NormalHandshake12PFS):
+    '''As in UseSrtpOverflow but in PFS TLSv1.2 hello'''
+    pass

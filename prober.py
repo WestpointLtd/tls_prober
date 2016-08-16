@@ -221,7 +221,16 @@ probes = [
     SigAlgsOddLen12PFS(),
     SigAlgsOverflow(),
     SigAlgsOverflow12(),
-    SigAlgsOverflow12PFS()
+    SigAlgsOverflow12PFS(),
+    UseSrtpNull(),
+    UseSrtpNull12(),
+    UseSrtpNull12PFS(),
+    UseSrtpOddLen(),
+    UseSrtpOddLen12(),
+    UseSrtpOddLen12PFS(),
+    UseSrtpOverflow(),
+    UseSrtpOverflow12(),
+    UseSrtpOverflow12PFS()
 ]
 
 def probe(ipaddress, port, starttls, specified_probe):
