@@ -255,6 +255,12 @@ probes = [
     SignedCertTSNotNull(),
     SignedCertTSNotNull12(),
     SignedCertTSNotNull12PFS(),
+    ClientCertTypeNull(),
+    ClientCertTypeNull12(),
+    ClientCertTypeNull12PFS(),
+    ClientCertTypeOverflow(),
+    ClientCertTypeOverflow12(),
+    ClientCertTypeOverflow12PFS()
 ]
 
 def probe(ipaddress, port, starttls, specified_probe):

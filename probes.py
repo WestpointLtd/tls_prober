@@ -2246,3 +2246,48 @@ class SignedCertTSNotNull12(SignedCertTSNotNull, NormalHandshake12):
 class SignedCertTSNotNull12PFS(SignedCertTSNotNull, NormalHandshake12PFS):
     '''As with SignedCertTSNotNull but in PFS TLSv1.2 hello'''
     pass
+
+
+class ClientCertTypeNull(NormalHandshake):
+    '''Send empty client certificate type extension in hello'''
+
+    def make_client_cert_type_hello(self, value):
+        client_cert_type_ext = Extension.create(
+            extension_type=19,
+            data=value)
+        return self.make_hello([client_cert_type_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # valid extension has an array
+        sock.write(self.make_client_cert_type_hello(b''))
+
+
+class ClientCertTypeNull12(ClientCertTypeNull, NormalHandshake12):
+    '''Send empty client certificate type extension in TLSv1.2 hello'''
+    pass
+
+
+class ClientCertTypeNull12PFS(ClientCertTypeNull, NormalHandshake12PFS):
+    '''Send empty client certificate type extension in PFS TLSv1.2 hello'''
+    pass
+
+
+class ClientCertTypeOverflow(ClientCertTypeNull):
+    '''Send client certificate type extension with too large length in hello'''
+
+    def test(self, sock):
+        logging.debug('sending Client Hello...')
+        # first byte is the length of the array, send too large
+        sock.write(self.make_client_cert_type_hello(b'\x04\x02\x01\x00'))
+
+
+class ClientCertTypeOverflow12(ClientCertTypeOverflow, NormalHandshake12):
+    '''As with ClientCertTypeOverflow, but in TLSv1.2 hello'''
+    pass
+
+
+class ClientCertTypeOverflow12PFS(ClientCertTypeOverflow,
+                                  NormalHandshake12PFS):
+    '''As with ClientCertTypeOverflow but in PFS TLSv1.2 hello'''
+    pass
