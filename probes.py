@@ -2059,3 +2059,46 @@ class UseSrtpOverflow12(UseSrtpOverflow, NormalHandshake12):
 class UseSrtpOverflow12PFS(UseSrtpOverflow, NormalHandshake12PFS):
     '''As in UseSrtpOverflow but in PFS TLSv1.2 hello'''
     pass
+
+
+class HeartbeatNull(NormalHandshake):
+    '''Send empty heartbeat extension in hello'''
+
+    def make_heartbeat_hello(self, value):
+        heartbeat_ext = Extension.create(
+            extension_type=15,
+            data=value)
+        return self.make_hello([heartbeat_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # the extension is a single byte value, don't include it
+        sock.write(self.make_heartbeat_hello(b''))
+
+
+class HeartbeatNull12(HeartbeatNull, NormalHandshake12):
+    '''Send empty heartbeat extension in TLSv1.2 hello'''
+    pass
+
+
+class HeartbeatNull12PFS(HeartbeatNull, NormalHandshake12PFS):
+    '''Send empty heartbeat extension in PFS TLSv1.2 hello'''
+    pass
+
+
+class HeartbeatInvalid(HeartbeatNull):
+    '''Send heartbeat extension with invalid value in hello'''
+
+    def test(self, sock):
+        # the valid values are 1 and 2, send something else
+        sock.write(self.make_heartbeat_hello(b'\x00'))
+
+
+class HeartbeatInvalid12(HeartbeatInvalid, NormalHandshake12):
+    '''Send heartbeat extension with invalid value in TLSv1.2 hello'''
+    pass
+
+
+class HeartbeatInvalid12PFS(HeartbeatInvalid, NormalHandshake12PFS):
+    '''Send heartbeat extension with invalid value in PFS TLSv1.2 hello'''
+    pass

@@ -230,7 +230,13 @@ probes = [
     UseSrtpOddLen12PFS(),
     UseSrtpOverflow(),
     UseSrtpOverflow12(),
-    UseSrtpOverflow12PFS()
+    UseSrtpOverflow12PFS(),
+    HeartbeatNull(),
+    HeartbeatNull12(),
+    HeartbeatNull12PFS(),
+    HeartbeatInvalid(),
+    HeartbeatInvalid12(),
+    HeartbeatInvalid12PFS()
 ]
 
 def probe(ipaddress, port, starttls, specified_probe):
