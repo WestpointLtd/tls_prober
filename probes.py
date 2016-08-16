@@ -2740,3 +2740,28 @@ class SessionTicketOverflow12(SessionTicketOverflow, NormalHandshake12):
 class SessionTicketOverflow12PFS(SessionTicketOverflow, NormalHandshake12PFS):
     '''Send session ticket ext with too large length in PFS TLSv1.2 hello'''
     pass
+
+
+class NPNNotNull(NormalHandshake):
+    '''Send non empty NPN extension in hello'''
+
+    def make_npn_hello(self, value):
+        npn_ext = Extension.create(
+            extension_type=13172,
+            data=value)
+        return self.make_hello([npn_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal extension has to be empty
+        sock.write(self.make_npn_hello(b'\x04'))
+
+
+class NPNNotNull12(NPNNotNull, NormalHandshake12):
+    '''Send non empty NPN extension in TLSv1.2 hello'''
+    pass
+
+
+class NPNNotNull12PFS(NPNNotNull, NormalHandshake12PFS):
+    '''Send non empty NPN extension in PFS TLSv1.2 hello'''
+    pass
