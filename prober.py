@@ -236,7 +236,16 @@ probes = [
     HeartbeatNull12PFS(),
     HeartbeatInvalid(),
     HeartbeatInvalid12(),
-    HeartbeatInvalid12PFS()
+    HeartbeatInvalid12PFS(),
+    ALPNNull(),
+    ALPNNull12(),
+    ALPNNull12PFS(),
+    ALPNUnknown(),
+    ALPNUnknown12(),
+    ALPNUnknown12PFS(),
+    ALPNOverflow(),
+    ALPNOverflow12(),
+    ALPNOverflow12PFS()
 ]
 
 def probe(ipaddress, port, starttls, specified_probe):

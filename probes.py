@@ -2102,3 +2102,71 @@ class HeartbeatInvalid12(HeartbeatInvalid, NormalHandshake12):
 class HeartbeatInvalid12PFS(HeartbeatInvalid, NormalHandshake12PFS):
     '''Send heartbeat extension with invalid value in PFS TLSv1.2 hello'''
     pass
+
+
+class ALPNNull(NormalHandshake):
+    '''Send empty ALPN extension in hello'''
+
+    def make_alpn_hello(self, value):
+        alpn_ext = Extension.create(
+            extension_type=16,
+            data=value)
+        return self.make_hello([alpn_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # valid extension has an array, don't send anything
+        sock.write(self.make_alpn_hello(b''))
+
+
+class ALPNNull12(ALPNNull, NormalHandshake12):
+    '''Send empty APLN extension in TLSv1.2 hello'''
+    pass
+
+
+class ALPNNull12PFS(ALPNNull, NormalHandshake12PFS):
+    '''Send empty ALPN extension in PFS TLSv1.2 hello'''
+    pass
+
+
+class ALPNUnknown(ALPNNull):
+    '''Send ALPN extension with only unknown protocol in hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # the extension is an array of arrays, the external array has
+        # two byte length header, the internal arrays have one byte length
+        sock.write(self.make_alpn_hello(b'\x00\x08'
+                                        b'\x07unknown'))
+
+
+class ALPNUnknown12(ALPNUnknown, NormalHandshake12):
+    '''Send ALPN extension with only unknown protocol in TLSv1.2 hello'''
+    pass
+
+
+class ALPNUnknown12PFS(ALPNUnknown, NormalHandshake12PFS):
+    '''Send ALPN extension with only unknown protocol in PFS TLSv1.2 hello'''
+    pass
+
+
+class ALPNOverflow(ALPNNull):
+    '''Send ALPN extension with too large length in hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # the extension is an array of arrays, the external array has
+        # two byte length header, the internal arrays have one byte length
+        # make the external length too large
+        sock.write(self.make_alpn_hello(b'\x00\x10'
+                                        b'\x08http/1.1'))
+
+
+class ALPNOverflow12(ALPNOverflow, NormalHandshake12):
+    '''Send ALPN extension with too large length in TLSv1.2 hello'''
+    pass
+
+
+class ALPNOverflow12PFS(ALPNOverflow, NormalHandshake12PFS):
+    '''Send ALPN extension with too large length in PFS TLSv1.2 hello'''
+    pass
