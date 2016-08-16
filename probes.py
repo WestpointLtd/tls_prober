@@ -2695,3 +2695,48 @@ class CachedInfoOverflow12(CachedInfoOverflow, NormalHandshake12):
 class CachedInfoOverflow12PFS(CachedInfoOverflow, NormalHandshake12PFS):
     '''Send cached info extension with invalid size in PFS TLSv1.2 hello'''
     pass
+
+
+class SessionTicketNull(NormalHandshake):
+    '''Send empty session ticket extension in hello'''
+
+    def make_session_ticket_hello(self, value):
+        session_ticket_ext = Extension.create(
+            extension_type=35,
+            data=value)
+        return self.make_hello([session_ticket_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # first two bytes of the extension are the length, don't include any
+        sock.write(self.make_session_ticket_hello(b''))
+
+
+class SessionTicketNull12(SessionTicketNull, NormalHandshake12):
+    '''Send empty session ticket extension in TLSv1.2 hello'''
+    pass
+
+
+class SessionTicketNull12PFS(SessionTicketNull, NormalHandshake12PFS):
+    '''Send empty session ticket extension in PFS TLSv1.2 hello'''
+    pass
+
+
+class SessionTicketOverflow(SessionTicketNull):
+    '''Send session ticket extension with too large length in hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # first two bytes are the length, send too large one
+        sock.write(self.make_session_ticket_hello(b'\x02\x00' +
+                                                  b'\xe7' * 0xff))
+
+
+class SessionTicketOverflow12(SessionTicketOverflow, NormalHandshake12):
+    '''Send session ticket extension with too large length in TLSv1.2 hello'''
+    pass
+
+
+class SessionTicketOverflow12PFS(SessionTicketOverflow, NormalHandshake12PFS):
+    '''Send session ticket ext with too large length in PFS TLSv1.2 hello'''
+    pass

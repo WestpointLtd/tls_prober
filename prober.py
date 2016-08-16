@@ -302,7 +302,13 @@ probes = [
     CachedInfoNull12PFS(),
     CachedInfoOverflow(),
     CachedInfoOverflow12(),
-    CachedInfoOverflow12PFS()
+    CachedInfoOverflow12PFS(),
+    SessionTicketNull(),
+    SessionTicketNull12(),
+    SessionTicketNull12PFS(),
+    SessionTicketOverflow(),
+    SessionTicketOverflow12(),
+    SessionTicketOverflow12PFS(),
 ]
 
 def probe(ipaddress, port, starttls, specified_probe):
