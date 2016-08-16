@@ -2597,3 +2597,28 @@ class Padding17520Byte12PFS(Padding16385Byte12PFS):
     def test(self, sock):
         logging.debug('Sending Client Hello...')
         sock.write(self.make_padding_hello(b'\x00' * (17520 - (144 - 5) - 4)))
+
+
+class EtMNotNull(NormalHandshake):
+    '''Send not empty encrypt then mac extension in hello'''
+
+    def make_etm_hello(self, value):
+        etm_ext = Extension.create(
+            extension_type=22,
+            data=value)
+        return self.make_hello([etm_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal extension must be empty
+        sock.write(self.make_etm_hello(b'\x04'))
+
+
+class EtMNotNull12(EtMNotNull, NormalHandshake12):
+    '''Send not empty encrypt then mac extension in TLSv1.2 hello'''
+    pass
+
+
+class EtMNotNull12PFS(EtMNotNull, NormalHandshake12PFS):
+    '''Send not empty encrypt then mac extension in PFS TLSv1.2 hello'''
+    pass

@@ -290,7 +290,10 @@ probes = [
     Padding16389Byte12PFS(),
     Padding17520Byte(),
     Padding17520Byte12(),
-    Padding17520Byte12PFS()
+    Padding17520Byte12PFS(),
+    EtMNotNull(),
+    EtMNotNull12(),
+    EtMNotNull12PFS()
 ]
 
 def probe(ipaddress, port, starttls, specified_probe):
