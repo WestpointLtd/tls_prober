@@ -32,8 +32,11 @@ class Probe(object):
     #
     # Reusable standard elements
     #
+    def __init__(self):
+        self.ipaddress = None
 
     def connect(self, ipaddress, port, starttls_mode):
+        self.ipaddress = ipaddress
         # Check if we're using socks
         if os.environ.has_key('socks_proxy'):
             socks_host, socks_port = os.environ['socks_proxy'].split(':')
@@ -611,6 +614,125 @@ class SNIEmptyName(SNIWrongName):
     def test(self, sock):
         logging.debug('Sending Client Hello...')
         sock.write(self.make_sni_hello(''))
+
+class SNIOneWrong(Probe):
+    '''Send server name indication with two names, one wrong'''
+
+    def make_sni_hello(self, name):
+        sni_extension = ServerNameExtension.create(None,
+                                                   (name, 'thisisnotyourname'))
+        hello = ClientHelloMessage.create(settings['default_hello_version'],
+                                          '01234567890123456789012345678901',
+                                          DEFAULT_CIPHERS,
+                                          extensions=[sni_extension])
+
+        record = TLSRecord.create(content_type=TLSRecord.Handshake,
+                                  version=settings['default_record_version'],
+                                  message=hello.bytes)
+
+        return record.bytes
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        sock.write(self.make_sni_hello(self.ipaddress))
+
+class SNIWithDifferentType(Probe):
+    '''Send server name indication with two names, one not of host_name type'''
+
+    def make_sni_ext(self, server_names):
+        encoded_names = ''.join(struct.pack('!BH', name_type, len(name))
+                                + name for name_type, name in server_names)
+        ext_data = struct.pack('!H', len(encoded_names)) + encoded_names
+        return Extension.create(extension_type=Extension.ServerName,
+                                data=ext_data)
+
+    def make_sni_hello(self, server_names):
+        sni_extension = self.make_sni_ext(server_names)
+
+        hello = ClientHelloMessage.create(settings['default_hello_version'],
+                                          '01234567890123456789012345678901',
+                                          DEFAULT_CIPHERS,
+                                          extensions=[sni_extension])
+
+        record = TLSRecord.create(content_type=TLSRecord.Handshake,
+                                  version=settings['default_record_version'],
+                                  message=hello.bytes)
+
+        return record.bytes
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        server_names = []
+        server_names += [(ServerNameExtension.HostName, self.ipaddress)]
+        # only type 0 (HostName) is defined, any other should be ignored
+        server_names += [(4, '<binary-data>')]
+
+        sock.write(self.make_sni_hello(server_names))
+
+
+class SNIDifferentTypeRev(SNIWithDifferentType):
+    '''Send hello like in SNIWithDifferentType but reverse order of names'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        server_names = []
+        # only type 0 (HostName) is defined, any other should be ignored
+        server_names += [(4, '<binary-data>')]
+        server_names += [(ServerNameExtension.HostName, self.ipaddress)]
+
+        sock.write(self.make_sni_hello(server_names))
+
+
+class SNIOverflow(Probe):
+    '''Send server name indication with data length exceeding stated size'''
+
+    def make_sni_hello(self, name):
+        sni_extension = ServerNameExtension.create(name)
+        # first four bytes are the header, last one we truncate to exceed size
+        ext_data = sni_extension.bytes[4:-1]
+        sni_extension = Extension.create(extension_type=Extension.ServerName,
+                                         data=ext_data)
+
+        hello = ClientHelloMessage.create(TLSRecord.TLS1_0,
+                                          '01234567890123456789012345678901',
+                                          DEFAULT_CIPHERS,
+                                          extensions=[sni_extension])
+
+        record = TLSRecord.create(content_type=TLSRecord.Handshake,
+                                  version=TLSRecord.TLS1_0,
+                                  message=hello.bytes)
+
+        return record.bytes
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        sock.write(self.make_sni_hello(self.ipaddress))
+
+
+class SNIUnderflow(Probe):
+    '''Send server name indication with data length smaller than size inside'''
+
+    def make_sni_hello(self, name):
+        sni_extension = ServerNameExtension.create(name)
+        # first four bytes are the header
+        ext_data = sni_extension.bytes[4:] + '\x00\x00\x00'
+        sni_extension = Extension.create(extension_type=Extension.ServerName,
+                                         data=ext_data)
+
+        hello = ClientHelloMessage.create(TLSRecord.TLS1_0,
+                                          '01234567890123456789012345678901',
+                                          DEFAULT_CIPHERS,
+                                          extensions=[sni_extension])
+
+        record = TLSRecord.create(content_type=TLSRecord.Handshake,
+                                  version=TLSRecord.TLS1_0,
+                                  message=hello.bytes)
+
+        return record.bytes
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        sock.write(self.make_sni_hello(self.ipaddress))
 
 class SecureRenegoOverflow(Probe):
     '''Send secure renegotiation with data length exceeding stated size'''
