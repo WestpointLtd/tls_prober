@@ -1313,29 +1313,32 @@ class SecureRenegoNull12PFS(SecureRenegoNull, NormalHandshake12PFS):
     pass
 
 
-class MaxFragmentNull(Probe):
+class MaxFragmentNull(NormalHandshake):
     '''Send maximum fragment length extension that is completely empty'''
 
-    def make_hello(self, payload):
+    def make_fragment_hello(self, payload):
         max_fragment = Extension.create(
             extension_type=Extension.MaxFragmentLength,
             data=payload)
 
-        hello = ClientHelloMessage.create(settings['default_hello_version'],
-                                          '01234567890123456789012345678901',
-                                          DEFAULT_CIPHERS,
-                                          extensions=[max_fragment])
+        record = self.make_hello([max_fragment])
 
-        record = TLSRecord.create(content_type=TLSRecord.Handshake,
-                                  version=settings['default_record_version'],
-                                  message=hello.bytes)
-
-        return record.bytes
+        return record
 
     def test(self, sock):
         logging.debug('Sending Client Hello...')
         # normal extension needs a single byte value, don't provide it
-        sock.write(self.make_hello(''))
+        sock.write(self.make_fragment_hello(''))
+
+
+class MaxFragmentNull12(MaxFragmentNull, NormalHandshake12):
+    '''As with MaxFragmentNull, but in TLSv1.2 hello'''
+    pass
+
+
+class MaxFragmentNull12PFS(MaxFragmentNull, NormalHandshake12PFS):
+    '''As with MaxFragmentNull, but in PFS TLSv1.2 hello'''
+    pass
 
 
 class MaxFragmentInvalid(MaxFragmentNull):
@@ -1344,57 +1347,71 @@ class MaxFragmentInvalid(MaxFragmentNull):
     def test(self, sock):
         logging.debug('Sending Client Hello...')
         # valid values are between 1 and 4 inclusive
-        sock.write(self.make_hello('\x08'))
+        sock.write(self.make_fragment_hello('\x08'))
 
 
-class ClientCertURLsNotNull(Probe):
+class MaxFragmentInvalid12(MaxFragmentInvalid, NormalHandshake12):
+    '''As with MaxFragmentInvalid, but in TLSv1.2 hello'''
+    pass
+
+
+class MaxFragmentInvalid12PFS(MaxFragmentInvalid, NormalHandshake12PFS):
+    '''As with MaxFragmentInvalid, but in PFS TLSv1.2 hello'''
+    pass
+
+
+class ClientCertURLsNotNull(NormalHandshake):
     '''Send client certificate URL indication extension that is not empty'''
 
-    def make_hello(self, payload):
+    def make_cert_urls_hello(self, payload):
         client_cert_url_ext = Extension.create(
             extension_type=Extension.ClientCertificateUrl,
             data=payload)
 
-        hello = ClientHelloMessage.create(settings['default_hello_version'],
-                                          '01234567890123456789012345678901',
-                                          DEFAULT_CIPHERS,
-                                          extensions=[client_cert_url_ext])
-
-        record = TLSRecord.create(content_type=TLSRecord.Handshake,
-                                  version=settings['default_record_version'],
-                                  message=hello.bytes)
-
-        return record.bytes
+        record = self.make_hello([client_cert_url_ext])
+        return record
 
     def test(self, sock):
         logging.debug('Sending Client Hello...')
         # correctly formatted does not include any data
-        sock.write(self.make_hello('\x08\x00'))
+        sock.write(self.make_cert_urls_hello('\x08\x00'))
 
 
-class TrustedCANull(Probe):
+class ClientCertURLsNotNull12(ClientCertURLsNotNull, NormalHandshake12):
+    '''As with ClientCertURLsNotNull, but in TLSv1.2 hello'''
+    pass
+
+
+class ClientCertURLsNotNull12PFS(ClientCertURLsNotNull, NormalHandshake12PFS):
+    '''As with ClientCertURLsNotNull, but in PFS TLSv1.2 hello'''
+    pass
+
+
+class TrustedCANull(NormalHandshake):
     '''Send trusted CA keys extension with completely empty payload'''
 
-    def make_hello(self, payload):
+    def make_trusted_ca_hello(self, payload):
         trusted_ca_ext = Extension.create(
             extension_type=Extension.TrustedCAKeys,
             data=payload)
 
-        hello = ClientHelloMessage.create(settings['default_hello_version'],
-                                          '01234567890123456789012345678901',
-                                          DEFAULT_CIPHERS,
-                                          extensions=[trusted_ca_ext])
-
-        record = TLSRecord.create(content_type=TLSRecord.Handshake,
-                                  version=settings['default_record_version'],
-                                  message=hello.bytes)
-
-        return record.bytes
+        record = self.make_hello([trusted_ca_ext])
+        return record
 
     def test(self, sock):
         logging.debug('Sending Client Hello...')
         # normal formatting is a complex structure
-        sock.write(self.make_hello(''))
+        sock.write(self.make_trusted_ca_hello(''))
+
+
+class TrustedCANull12(TrustedCANull, NormalHandshake12):
+    '''As with TrustedCANull but in TLSv1.2 hello'''
+    pass
+
+
+class TrustedCANull12PFS(TrustedCANull, NormalHandshake12PFS):
+    '''As with TrustedCANull, but in PFS TLSv1.2 hello'''
+    pass
 
 
 class TrustedCAOverflow(TrustedCANull):
@@ -1405,7 +1422,17 @@ class TrustedCAOverflow(TrustedCANull):
         # in a normal structure, the first two bytes are the overall length
         # of list with extension data
         # a typical payload includes type (1B) and sha1 hash (20B)
-        sock.write(self.make_hello('\x00\x15'))
+        sock.write(self.make_trusted_ca_hello('\x00\x15'))
+
+
+class TrustedCAOverflow12(TrustedCAOverflow, NormalHandshake12):
+    '''As with TrustedCAOverflow but in TLSv1.2 hello'''
+    pass
+
+
+class TrustedCAOverflow12PFS(TrustedCAOverflow, NormalHandshake12PFS):
+    '''As with TrustedCAOverflow but in PFS TLSv1.2 hello'''
+    pass
 
 
 class TrustedCAUnderflow(TrustedCANull):
@@ -1420,55 +1447,74 @@ class TrustedCAUnderflow(TrustedCANull):
         # add null byte at end to cause the underflow
         ext_data = struct.pack('!H', len(authority)) + authority + '\x00'
 
-        sock.write(self.make_hello(ext_data))
+        sock.write(self.make_trusted_ca_hello(ext_data))
 
 
-class TruncatedHMACNotNull(Probe):
+class TrustedCAUnderflow12(TrustedCAUnderflow, NormalHandshake12):
+    '''As with TrustedCAUnderflow but in TLSv1.2 hello'''
+    pass
+
+
+class TrustedCAUnderflow12PFS(TrustedCAUnderflow, NormalHandshake12PFS):
+    '''As with TrustedCAUnderflow but in PFS TLSv1.2 hello'''
+    pass
+
+
+class TruncatedHMACNotNull(NormalHandshake):
     '''Send a truncated HMAC extension with a non empty payload'''
 
-    def make_hello(self, payload):
+    def make_truncated_hmac_hello(self, payload):
         truncated_hmac = Extension.create(
             extension_type=Extension.TruncateHMAC,
             data=payload)
-        hello = ClientHelloMessage.create(settings['default_hello_version'],
-                                          '01234567890123456789012345678901',
-                                          DEFAULT_CIPHERS,
-                                          extensions=[truncated_hmac])
 
-        record = TLSRecord.create(content_type=TLSRecord.Handshake,
-                                  version=settings['default_record_version'],
-                                  message=hello.bytes)
+        record = self.make_hello([truncated_hmac])
 
-        return record.bytes
+        return record
 
     def test(self, sock):
         logging.debug('Sending Client Hello...')
         # properly formatted extension has no data at all
-        sock.write(self.make_hello('\x0c'))
+        sock.write(self.make_truncated_hmac_hello('\x0c'))
 
-class OCSPNull(Probe):
+
+class TruncatedHMACNotNull12(TruncatedHMACNotNull, NormalHandshake12):
+    '''As with TruncatedHMACNotNull but in TLSv1.2 hello'''
+    pass
+
+
+class TruncatedHMACNotNull12PFS(TruncatedHMACNotNull, NormalHandshake12PFS):
+    '''As with TruncatedHMACNotNull but in PFS TLSv1.2 hello'''
+    pass
+
+
+class OCSPNull(NormalHandshake):
     '''Send status request extension with empty payload'''
 
-    def make_hello(self, payload):
+    def make_ocsp_hello(self, payload):
         status_request = Extension.create(
             extension_type=Extension.StatusRequest,
             data=payload)
-        hello = ClientHelloMessage.create(settings['default_hello_version'],
-                                          '01234567890123456789012345678901',
-                                          DEFAULT_CIPHERS,
-                                          extensions=[status_request])
 
-        record = TLSRecord.create(content_type=TLSRecord.Handshake,
-                                  version=settings['default_record_version'],
-                                  message=hello.bytes)
+        record = self.make_hello([status_request])
 
-        return record.bytes
+        return record
 
     def test(self, sock):
         logging.debug('Sending Client Hello...')
         # normally the status request is a complex structure, don't include
         # it
-        sock.write(self.make_hello(''))
+        sock.write(self.make_ocsp_hello(''))
+
+
+class OCSPNull12(OCSPNull, NormalHandshake12):
+    '''As with OCSPNull but in TLSv1.2 hello'''
+    pass
+
+
+class OCSPNull12PFS(OCSPNull, NormalHandshake12PFS):
+    '''As with OCSPNull but in PFS TLSv1.2 hello'''
+    pass
 
 
 class OCSPOverflow(OCSPNull):
@@ -1478,7 +1524,17 @@ class OCSPOverflow(OCSPNull):
         logging.debug('Sending Client Hello...')
         # the request has three fields - type (one byte) and two arrays
         # with 2 byte long headers, truncate the second length header
-        sock.write(self.make_hello('\x01\x00\x00\x00'))
+        sock.write(self.make_ocsp_hello('\x01\x00\x00\x00'))
+
+
+class OCSPOverflow12(OCSPOverflow, NormalHandshake12):
+    '''As with OCSPOverflow but in TLSv1.2 hello'''
+    pass
+
+
+class OCSPOverflow12PFS(OCSPOverflow, NormalHandshake12PFS):
+    '''As with OCSPOverflow but in PFS TLSv1.2 hello'''
+    pass
 
 
 class OCSPUnderflow(OCSPNull):
@@ -1487,30 +1543,43 @@ class OCSPUnderflow(OCSPNull):
     def test(self, sock):
         logging.debug('Sending Client Hello...')
         # correctly formed request, two extra zero bytes
-        sock.write(self.make_hello('\x01' + '\x00' * 6))
+        sock.write(self.make_ocsp_hello('\x01' + '\x00' * 6))
 
 
-class DoubleExtension(Probe):
+class OCSPUnderflow12(OCSPUnderflow, NormalHandshake12):
+    '''As with OCSPUnderflow but in TLSv1.2 hello'''
+    pass
+
+
+class OCSPUnderflow12PFS(OCSPUnderflow, NormalHandshake12PFS):
+    '''As with OCSPUnderflow but in PFS TLSv1.2 hello'''
+    pass
+
+
+class DoubleExtension(NormalHandshake):
     '''Duplicate secure renegotiation extension'''
 
-    def make_hello(self):
+    def make_double_ext_hello(self):
         secure_renego = Extension.create(
             extension_type=Extension.RenegotiationInfo,
             data='\x00')
-        hello = ClientHelloMessage.create(settings['default_hello_version'],
-                                          '01234567890123456789012345678901',
-                                          DEFAULT_CIPHERS,
-                                          extensions=[secure_renego,
-                                                      secure_renego])
 
-        record = TLSRecord.create(content_type=TLSRecord.Handshake,
-                                  version=settings['default_record_version'],
-                                  message=hello.bytes)
-
-        return record.bytes
+        record = self.make_hello([secure_renego,
+                                  secure_renego])
+        return record
 
     def test(self, sock):
         logging.debug('Sending Client Hello...')
         # correct Client Hello messages must not contain two extensions
         # of the same type
-        sock.write(self.make_hello())
+        sock.write(self.make_double_ext_hello())
+
+
+class DoubleExtension12(DoubleExtension, NormalHandshake12):
+    '''Duplicate secure renegotiation extension in TLSv1.2 hello'''
+    pass
+
+
+class DoubleExtension12PFS(DoubleExtension, NormalHandshake12PFS):
+    '''Duplicate secure renegotiation extension in PFS TLSv1.2 hello'''
+    pass
