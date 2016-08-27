@@ -3,7 +3,7 @@ Description: MatrixSSL 3.1.2
 ZeroHelloVersion: *(0)alert:ProtocolVersion:fatal|
 BadContentType: *(0)alert:UnexpectedMesage:fatal|
 SNIEmptyName: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|
-SplitHelloRecords: *(0)alert:UnexpectedMesage:fatal|
+TwoInvalidPackets: *(0)alert:UnexpectedMesage:fatal|
 EmptyRecord: *(0)alert:IllegalParameter:fatal|
 RecordLengthUnderflow: writeerror:EPIPE|
 Heartbleed: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|*(301)alert:UnexpectedMesage:fatal|

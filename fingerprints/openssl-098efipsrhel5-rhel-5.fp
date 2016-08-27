@@ -3,7 +3,7 @@ Description: OpenSSL 0.9.8e-fips-rhel5 RHEL 5
 ZeroHelloVersion: error:Unexpected EOF receiving record header - server closed connection|
 BadContentType: error:Unexpected EOF receiving record header - server closed connection|
 SNIEmptyName: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|
-SplitHelloRecords: error:ECONNRESET|
+TwoInvalidPackets: error:ECONNRESET|
 EmptyRecord: error:Unexpected EOF receiving record header - server closed connection|
 RecordLengthUnderflow: *(301)alert:RecordOveflow:fatal|
 Heartbleed: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|

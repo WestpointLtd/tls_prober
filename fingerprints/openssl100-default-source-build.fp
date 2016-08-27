@@ -3,7 +3,7 @@ Description: openssl-1.0.0 default source build
 ZeroHelloVersion: error:Unexpected EOF receiving record header - server closed connection|
 BadContentType: error:Unexpected EOF receiving record header - server closed connection|
 SNIEmptyName: *(301)alert:DecodeError:fatal|
-SplitHelloRecords: error:Unexpected EOF receiving record header - server closed connection|
+TwoInvalidPackets: error:Unexpected EOF receiving record header - server closed connection|
 EmptyRecord: error:Unexpected EOF receiving record header - server closed connection|
 RecordLengthUnderflow: *(301)alert:RecordOveflow:fatal|
 Heartbleed: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|

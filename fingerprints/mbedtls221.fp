@@ -3,7 +3,7 @@ Description: mbedtls-2.2.1
 ZeroHelloVersion: *(0)alert:ProtocolVersion:fatal|
 BadContentType: error:ECONNRESET|
 SNIEmptyName: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|
-SplitHelloRecords: error:ECONNRESET|
+TwoInvalidPackets: error:ECONNRESET|
 EmptyRecord: error:ECONNRESET|
 RecordLengthUnderflow: error:ECONNRESET|
 Heartbleed: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|*(301)alert:UnexpectedMesage:fatal|

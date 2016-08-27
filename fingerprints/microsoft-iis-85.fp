@@ -3,7 +3,7 @@ Description: Microsoft IIS 8.5
 ZeroHelloVersion: error:ECONNRESET|
 BadContentType: error:ECONNRESET|
 SNIEmptyName: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|
-SplitHelloRecords: error:timeout
+TwoInvalidPackets: error:timeout
 EmptyRecord: error:ECONNRESET|
 RecordLengthUnderflow: error:timeout
 Heartbleed: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|error:ECONNRESET|

@@ -3,7 +3,7 @@ Description: Apache Tomcat 7.0.54 (Tomcat Native 1.1.30; APR 1.4.8)
 ZeroHelloVersion: *(301)alert:ProtocolVersion:fatal|
 BadContentType: error:timeout
 SNIEmptyName: *(301)alert:DecodeError:fatal|
-SplitHelloRecords: error:ECONNRESET|
+TwoInvalidPackets: error:ECONNRESET|
 EmptyRecord: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|
 RecordLengthUnderflow: writeerror:ECONNRESET|
 Heartbleed: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|

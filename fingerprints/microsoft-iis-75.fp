@@ -3,7 +3,7 @@ Description: Microsoft IIS 7.5
 ZeroHelloVersion: error:ECONNRESET|
 BadContentType: error:ECONNRESET|
 SNIEmptyName: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|
-SplitHelloRecords: error:ECONNRESET|
+TwoInvalidPackets: error:ECONNRESET|
 EmptyRecord: error:ECONNRESET|
 RecordLengthUnderflow: error:ECONNRESET|
 Heartbleed: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|error:ECONNRESET|

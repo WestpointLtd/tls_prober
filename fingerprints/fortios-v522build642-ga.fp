@@ -3,7 +3,7 @@ Description: FortiOS v5.2.2,build642 (GA)
 ZeroHelloVersion: error:ECONNRESET|
 BadContentType: error:ECONNRESET|
 SNIEmptyName: *(301)alert:DecodeError:fatal|
-SplitHelloRecords: error:ECONNRESET|
+TwoInvalidPackets: error:ECONNRESET|
 EmptyRecord: error:ECONNRESET|
 RecordLengthUnderflow: *(301)alert:RecordOveflow:fatal|
 Heartbleed: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|
