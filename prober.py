@@ -214,7 +214,7 @@ def main():
             if count > opts.matches:
                 break
 
-        print '%20s\t%s' % (server, score)
+        print("{0:>65}: {1:6.2f}%".format(server, score*100))
 
 if __name__ == '__main__':
     main()
