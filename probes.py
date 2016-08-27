@@ -208,6 +208,188 @@ class NormalHandshake12PFSw13(Probe):
         sock.write(self.make_hello())
 
 
+class InvalidSessionID(Probe):
+    '''Send session ID that is too long'''
+
+    def __init__(self):
+        self.hello_version = TLSRecord.TLS1_0
+        self.ciphers = DEFAULT_CIPHERS
+
+    def make_hello_payload(self, version, cipher_suites):
+        session_id = b'0123456789' * 4  # session ID is up to 32 bytes long
+        ciphers = struct.pack('>H{0}H'.format(len(cipher_suites)),
+                              len(cipher_suites) * 2, *cipher_suites)
+        hello = (struct.pack('>H32sB',
+                             version,
+                             b'01234567890123456789012345678901',
+                             len(session_id)) +
+                 session_id + ciphers + b'\x01\x00' + b'\x00\x00')
+
+        return hello
+
+    def make_hello(self, version, cipher_suites):
+        hello = self.make_hello_payload(version, cipher_suites)
+
+        hello_msg = HandshakeMessage.create(HandshakeMessage.ClientHello,
+                                            hello)
+
+        record = TLSRecord.create(content_type=TLSRecord.Handshake,
+                                  version=TLSRecord.TLS1_0,
+                                  message=hello_msg.bytes)
+        return record.bytes
+
+    def test(self, sock):
+        logging.debug('Sending Client Helo...')
+        sock.write(self.make_hello(self.hello_version, self.ciphers))
+
+
+class InvalidSessionID12(InvalidSessionID):
+    '''Send session ID that is too long in TLSv1.2 hello'''
+
+    def __init__(self):
+        super(InvalidSessionID12, self).__init__()
+        self.hello_version = TLSRecord.TLS1_2
+        self.ciphers = DEFAULT_12_CIPHERS
+
+
+class InvalidSessionID12PFS(InvalidSessionID):
+    '''Send session ID that is too long in PFS TLSv1.2 hello'''
+
+    def __init__(self):
+        super(InvalidSessionID12PFS, self).__init__()
+        self.hello_version = TLSRecord.TLS1_2
+        self.ciphers = DEFAULT_PFS_CIPHERS
+
+
+class InvalidCiphersLength(InvalidSessionID):
+    '''Send client hello with length field of ciphers that is invalid (odd)'''
+
+    def make_hello_payload(self, version, cipher_suites):
+        cipher_bytes = struct.pack('>{0}H'.format(len(cipher_suites)),
+                                   *cipher_suites) + b'\x00'
+        ciphers = struct.pack('>H', len(cipher_bytes)) + cipher_bytes
+        hello = (struct.pack('>H32sB', version,
+                             b'01234567890123456789012345678901',
+                             0) +
+                 ciphers + b'\x01\x00' + b'\x00\x00')
+
+        return hello
+
+
+class InvalidCiphersLength12(InvalidCiphersLength, InvalidSessionID12):
+    '''As with InvalidCiphersLength but with TLSv1.2 helo'''
+    pass
+
+
+class InvalidCiphersLength12PFS(InvalidCiphersLength, InvalidSessionID12PFS):
+    '''As with InvalidCiphersLength but with PFS TLSv1.2 hello'''
+    pass
+
+
+class InvalidExtLength(InvalidSessionID):
+    '''Send client hello with length of extensions filed truncated'''
+
+    def make_hello_payload(self, version, cipher_suites):
+        ciphers = struct.pack('>H{0}H'.format(len(cipher_suites)),
+                              len(cipher_suites) * 2, *cipher_suites)
+        hello = (struct.pack('>H32sB',
+                             version,
+                             b'01234567890123456789012345678901',
+                             0) +
+                 ciphers + b'\x01\x00' + b'\x00')
+
+        return hello
+
+
+class InvalidExtLength12(InvalidExtLength, InvalidSessionID12):
+    '''As with InvalidExtLength but in TLSv1.2 hello'''
+    pass
+
+
+class InvalidExtLength12PFS(InvalidExtLength, InvalidSessionID12PFS):
+    '''As with InvalidExtLength but in PFS TLSv1.2 hello'''
+    pass
+
+
+class ExtensionsUnderflow(InvalidSessionID):
+    '''Send hello with data length lower than stated size'''
+
+    def make_hello_payload(self, version, cipher_suites):
+        ciphers = struct.pack('>H{0}H'.format(len(cipher_suites)),
+                              len(cipher_suites) * 2, *cipher_suites)
+        hello = (struct.pack('>H32sB',
+                             version,
+                             b'01234567890123456789012345678901',
+                             0) +
+                 ciphers + b'\x01\x00'
+                 b'\x00\x01'  # extensions length, just one byte
+                 b'\xff\x01'  # extension ID - secure renego indication
+                 b'\x00\x01'  # secure renego indication ext length
+                 b'\x00')  # valid payload for extension
+
+        return hello
+
+
+class ExtensionsUnderflow12(ExtensionsUnderflow, InvalidSessionID12):
+    '''As in ExtensionsUnderflow but in TLSv1.2 hello'''
+    pass
+
+
+class ExtensionsUnderflow12PFS(ExtensionsUnderflow, InvalidSessionID12PFS):
+    '''As in ExtensionsUnderflow but in PFS TLSv1.2 hello'''
+    pass
+
+
+class EmptyCompression(InvalidSessionID):
+    '''Send hello with no compression methods'''
+
+    def make_hello_payload(self, version, cipher_suites):
+        ciphers = struct.pack('>H{0}H'.format(len(cipher_suites)),
+                              len(cipher_suites) * 2, *cipher_suites)
+        hello = (struct.pack('>H32sB',
+                             version,
+                             b'01234567890123456789012345678901',
+                             0) +
+                 ciphers + b'\x00' + b'\x00\x00')
+
+        return hello
+
+
+class EmptyCompression12(EmptyCompression, InvalidSessionID12):
+    '''As with EmptyCompression but in TLSv1.2 hello'''
+    pass
+
+
+class EmptyCompression12PFS(EmptyCompression, InvalidSessionID12PFS):
+    '''As with EmptyCompression but in PFS TLSv1.2 hello'''
+    pass
+
+
+class CompressOnly(InvalidSessionID):
+    '''Send hello with no support for uncompressed communication'''
+
+    def make_hello_payload(self, version, cipher_suites):
+        ciphers = struct.pack('>H{0}H'.format(len(cipher_suites)),
+                              len(cipher_suites) * 2, *cipher_suites)
+        hello = (struct.pack('>H32sB',
+                             version,
+                             b'01234567890123456789012345678901',
+                             0) +
+                 ciphers + b'\x02\x01\x40' + b'\x00\x00')
+
+        return hello
+
+
+class CompressOnly12(CompressOnly, InvalidSessionID12):
+    '''As with CompressOnly but in TLSv1.2 hello'''
+    pass
+
+
+class CompressOnly12PFS(CompressOnly, InvalidSessionID12PFS):
+    '''As with CompressOnly but in PFS TLSv1.2 hello'''
+    pass
+
+
 class DoubleClientHello(NormalHandshake):
     '''Two client hellos'''
 
