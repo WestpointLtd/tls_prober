@@ -112,6 +112,7 @@ MAKE_HELLO_EMPTY_EXT = (b'\x16\x03\x01\x00;'
                         b'\x01\x00'
                         b'\x00\x00')
 
+assert len(MAKE_HELLO_EMPTY_EXT) == 64, len(MAKE_HELLO_EMPTY_EXT)
 
 MAKE_PFS_HELLO_EMPTY_EXT = (b"\x16\x03\x01\x00\x8b"
                             b"\x01\x00\x00\x87"
@@ -157,6 +158,9 @@ MAKE_12_HELLO_EMPTY_STR = (b'\x16\x03\x01\x00S'
                            b'\x00\x00')
 
 
+assert len(MAKE_12_HELLO_EMPTY_STR) == 88, len(MAKE_12_HELLO_EMPTY_STR)
+
+
 MAKE_12_PFS_HELLO_EMPTY_STR = (b"\x16\x03\x01\x00\x8b"
                                b"\x01\x00\x00\x87"
                                b"\x03\x03" +
@@ -167,6 +171,8 @@ MAKE_12_PFS_HELLO_EMPTY_STR = (b"\x16\x03\x01\x00\x8b"
                                b"\x01\x00"
                                b"\x00\x00")
 
+assert len(MAKE_12_PFS_HELLO_EMPTY_STR) == 144,\
+        len(MAKE_12_PFS_HELLO_EMPTY_STR)
 
 class TestNormalHandshake(unittest.TestCase):
     def test_test(self):
@@ -3013,3 +3019,854 @@ class TestDoubleExtension12PFS(unittest.TestCase):
                           b'\x00'
                           b'\xff\x01\x00\x01'
                           b'\x00'])
+
+
+class TestUserMappingNull(unittest.TestCase):
+    def test_test(self):
+        probe = UserMappingNull()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00?'
+                          b'\x01\x00\x00;'
+                          b'\x03\x01' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00\x0e' +
+                          DEFAULT_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x04'
+                          b'\x00\x06\x00\x00'])
+
+
+class TestUserMappingNull12(unittest.TestCase):
+    def test_test(self):
+        probe = UserMappingNull12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00W'
+                          b'\x01\x00\x00S'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x04'
+                          b'\x00\x06\x00\x00'])
+
+
+class TestUserMappingNull12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = UserMappingNull12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b"\x16\x03\x01\x00\x8f"
+                          b"\x01\x00\x00\x8b"
+                          b"\x03\x03" +
+                          RANDOM_STR +
+                          b"\x00"
+                          b"\x00^" +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b"\x01\x00"
+                          b'\x00\x04'
+                          b'\x00\x06\x00\x00'])
+
+
+class TestUserMappingOverflow(unittest.TestCase):
+    def test_test(self):
+        probe = UserMappingOverflow()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00A'
+                          b'\x01\x00\x00='
+                          b'\x03\x01' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00\x0e' +
+                          DEFAULT_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x06'
+                          b'\x00\x06\x00\x02'
+                          b'\x02\x40'])
+
+
+class TestUserMappingOverflow12(unittest.TestCase):
+    def test_test(self):
+        probe = UserMappingOverflow12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00Y'
+                          b'\x01\x00\x00U'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x06'
+                          b'\x00\x06\x00\x02'
+                          b'\x02\x40'])
+
+
+class TestUserMappingOverflow12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = UserMappingOverflow12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b"\x16\x03\x01\x00\x91"
+                          b"\x01\x00\x00\x8d"
+                          b"\x03\x03" +
+                          RANDOM_STR +
+                          b"\x00"
+                          b"\x00^" +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b"\x01\x00"
+                          b'\x00\x06'
+                          b'\x00\x06\x00\x02'
+                          b'\x02\x40'])
+
+
+class TestClientAuthzNull(unittest.TestCase):
+    def test_test(self):
+        probe = ClientAuthzNull()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00?'
+                          b'\x01\x00\x00;'
+                          b'\x03\x01' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00\x0e' +
+                          DEFAULT_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x04'
+                          b'\x00\x07\x00\x00'])
+
+
+class TestClientAuthzNull12(unittest.TestCase):
+    def test_test(self):
+        probe = ClientAuthzNull12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00W'
+                          b'\x01\x00\x00S'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x04'
+                          b'\x00\x07\x00\x00'])
+
+
+class TestClientAuthzNull12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = ClientAuthzNull12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b"\x16\x03\x01\x00\x8f"
+                          b"\x01\x00\x00\x8b"
+                          b"\x03\x03" +
+                          RANDOM_STR +
+                          b"\x00"
+                          b"\x00^" +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b"\x01\x00"
+                          b'\x00\x04'
+                          b'\x00\x07\x00\x00'])
+
+
+class TestClientAuthzOverflow(unittest.TestCase):
+    def test_test(self):
+        probe = ClientAuthzOverflow()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00B'
+                          b'\x01\x00\x00>'
+                          b'\x03\x01' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00\x0e' +
+                          DEFAULT_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x07'
+                          b'\x00\x07\x00\x03'
+                          b'\x04\x00\x01'])
+
+
+class TestClientAuthzOverflow12(unittest.TestCase):
+    def test_test(self):
+        probe = ClientAuthzOverflow12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00Z'
+                          b'\x01\x00\x00V'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x07'
+                          b'\x00\x07\x00\x03'
+                          b'\x04\x00\x01'])
+
+
+class TestClientAuthzOverflow12FS(unittest.TestCase):
+    def test_test(self):
+        probe = ClientAuthzOverflow12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b"\x16\x03\x01\x00\x92"
+                          b"\x01\x00\x00\x8e"
+                          b"\x03\x03" +
+                          RANDOM_STR +
+                          b"\x00"
+                          b"\x00^" +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b"\x01\x00"
+                          b'\x00\x07'
+                          b'\x00\x07\x00\x03'
+                          b'\x04\x00\x01'])
+
+
+class TestServerAuthzNull(unittest.TestCase):
+    def test_test(self):
+        probe = ServerAuthzNull()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00?'
+                          b'\x01\x00\x00;'
+                          b'\x03\x01' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00\x0e' +
+                          DEFAULT_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x04'
+                          b'\x00\x08\x00\x00'])
+
+
+class TestServerAuthzNull12(unittest.TestCase):
+    def test_test(self):
+        probe = ServerAuthzNull12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00W'
+                          b'\x01\x00\x00S'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x04'
+                          b'\x00\x08\x00\x00'])
+
+
+class TestServerAuthzNull12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = ServerAuthzNull12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b"\x16\x03\x01\x00\x8f"
+                          b"\x01\x00\x00\x8b"
+                          b"\x03\x03" +
+                          RANDOM_STR +
+                          b"\x00"
+                          b"\x00^" +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b"\x01\x00"
+                          b'\x00\x04'
+                          b'\x00\x08\x00\x00'])
+
+
+class TestServerAuthzOverflow(unittest.TestCase):
+    def test_test(self):
+        probe = ServerAuthzOverflow()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00B'
+                          b'\x01\x00\x00>'
+                          b'\x03\x01' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00\x0e' +
+                          DEFAULT_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x07'
+                          b'\x00\x08\x00\x03'
+                          b'\x04\x00\x01'])
+
+
+class TestServerAuthzOverflow12(unittest.TestCase):
+    def test_test(self):
+        probe = ServerAuthzOverflow12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00Z'
+                          b'\x01\x00\x00V'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x07'
+                          b'\x00\x08\x00\x03'
+                          b'\x04\x00\x01'])
+
+
+class TestServerAuthzOverflow12FS(unittest.TestCase):
+    def test_test(self):
+        probe = ServerAuthzOverflow12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b"\x16\x03\x01\x00\x92"
+                          b"\x01\x00\x00\x8e"
+                          b"\x03\x03" +
+                          RANDOM_STR +
+                          b"\x00"
+                          b"\x00^" +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b"\x01\x00"
+                          b'\x00\x07'
+                          b'\x00\x08\x00\x03'
+                          b'\x04\x00\x01'])
+
+
+class TestCertTypeNull(unittest.TestCase):
+    def test_test(self):
+        probe = CertTypeNull()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00?'
+                          b'\x01\x00\x00;'
+                          b'\x03\x01' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00\x0e' +
+                          DEFAULT_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x04'
+                          b'\x00\x09\x00\x00'])
+
+
+class TestCertTypeNull12(unittest.TestCase):
+    def test_test(self):
+        probe = CertTypeNull12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00W'
+                          b'\x01\x00\x00S'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x04'
+                          b'\x00\x09\x00\x00'])
+
+
+class TestCertTypeNull12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = CertTypeNull12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b"\x16\x03\x01\x00\x8f"
+                          b"\x01\x00\x00\x8b"
+                          b"\x03\x03" +
+                          RANDOM_STR +
+                          b"\x00"
+                          b"\x00^" +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b"\x01\x00"
+                          b'\x00\x04'
+                          b'\x00\x09\x00\x00'])
+
+
+class TestCertTypeOverflow(unittest.TestCase):
+    def test_test(self):
+        probe = CertTypeOverflow()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00A'
+                          b'\x01\x00\x00='
+                          b'\x03\x01' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00\x0e' +
+                          DEFAULT_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x06'
+                          b'\x00\x09\x00\x02'
+                          b'\x04\x01'])
+
+
+class TestCertTypeOverflow12(unittest.TestCase):
+    def test_test(self):
+        probe = CertTypeOverflow12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00Y'
+                          b'\x01\x00\x00U'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x06'
+                          b'\x00\x09\x00\x02'
+                          b'\x04\x01'])
+
+
+class TestCertTypeOverflow12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = CertTypeOverflow12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b"\x16\x03\x01\x00\x91"
+                          b"\x01\x00\x00\x8d"
+                          b"\x03\x03" +
+                          RANDOM_STR +
+                          b"\x00"
+                          b"\x00^" +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b"\x01\x00"
+                          b'\x00\x06'
+                          b'\x00\x09\x00\x02'
+                          b'\x04\x01'])
+
+
+class TestSupportedGroupsNull(unittest.TestCase):
+    def test_test(self):
+        probe = SupportedGroupsNull()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00?'
+                          b'\x01\x00\x00;'
+                          b'\x03\x01' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00\x0e' +
+                          DEFAULT_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x04'
+                          b'\x00\x0a\x00\x00'])
+
+
+class TestSupportedGroupsNull12(unittest.TestCase):
+    def test_test(self):
+        probe = SupportedGroupsNull12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00W'
+                          b'\x01\x00\x00S'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x04'
+                          b'\x00\x0a\x00\x00'])
+
+
+class TestSupportedGroupsNull12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = SupportedGroupsNull12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00\x8f'
+                          b'\x01\x00\x00\x8b'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00^' +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x04'
+                          b'\x00\x0a\x00\x00'])
+
+
+class TestSupportedGroupsOddLen(unittest.TestCase):
+    def test_test(self):
+        probe = SupportedGroupsOddLen()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00D'
+                          b'\x01\x00\x00@'
+                          b'\x03\x01' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00\x0e' +
+                          DEFAULT_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x09'
+                          b'\x00\x0a\x00\x05'
+                          b'\x00\x03\x00\x17\x00'])
+
+
+class TestSupportedGroupsOddLen12(unittest.TestCase):
+    def test_test(self):
+        probe = SupportedGroupsOddLen12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00\\'
+                          b'\x01\x00\x00X'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x09'
+                          b'\x00\x0a\x00\x05'
+                          b'\x00\x03\x00\x17\x00'])
+
+
+class TestSupportedGroupsOddLen12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = SupportedGroupsOddLen12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b"\x16\x03\x01\x00\x94"
+                          b"\x01\x00\x00\x90"
+                          b"\x03\x03" +
+                          RANDOM_STR +
+                          b"\x00"
+                          b"\x00^" +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b"\x01\x00"
+                          b'\x00\x09'
+                          b'\x00\x0a\x00\x05'
+                          b'\x00\x03\x00\x17\x00'])
+
+
+class TestSupportedGroupsOverflow(unittest.TestCase):
+    def test_test(self):
+        probe = SupportedGroupsOverflow()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00C'
+                          b'\x01\x00\x00?'
+                          b'\x03\x01' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00\x0e' +
+                          DEFAULT_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x08'
+                          b'\x00\x0a\x00\x04'
+                          b'\x00\x04\x00\x17'])
+
+
+class TestSupportedGroupsOverflow12(unittest.TestCase):
+    def test_test(self):
+        probe = SupportedGroupsOverflow12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.assertEqual(sock.sent_data,
+                         [b'\x16\x03\x01\x00['
+                          b'\x01\x00\x00W'
+                          b'\x03\x03' +
+                          RANDOM_STR +
+                          b'\x00'
+                          b'\x00&' +
+                          DEFAULT_12_CIPHERS_STR +
+                          b'\x01\x00'
+                          b'\x00\x08'
+                          b'\x00\x0a\x00\x04'
+                          b'\x00\x04\x00\x17'])
+
+
+class TestSupportedGroupsOverflow12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = SupportedGroupsOverflow12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        self.assertEqual(sock.sent_data,
+                         [b"\x16\x03\x01\x00\x93"
+                          b"\x01\x00\x00\x8f"
+                          b"\x03\x03" +
+                          RANDOM_STR +
+                          b"\x00"
+                          b"\x00^" +
+                          DEFAULT_PFS_CIPHERS_STR +
+                          b"\x01\x00"
+                          b'\x00\x08'
+                          b'\x00\x0a\x00\x04'
+                          b'\x00\x04\x00\x17'])
+
+
+class TestPadding16384Byte(unittest.TestCase):
+    def test_test(self):
+        probe = Padding16384Byte()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        expected = (b'\x16\x03\x01\x40\x00'
+                    b'\x01\x00\x3f\xfc'
+                    b'\x03\x01' +
+                    RANDOM_STR +
+                    b'\x00'
+                    b'\x00\x0e' +
+                    DEFAULT_CIPHERS_STR +
+                    b'\x01\x00'
+                    b'\x3f\xc5'
+                    b'\x00\x15\x3f\xc1' +
+                    b'\x00' * (16384 - (64-5) - 4))
+        self.assertEqual(repr(sock.sent_data[0][:70]),
+                         repr(expected[:70]))
+        self.assertEqual(sock.sent_data,
+                         [expected])
+
+
+class TestPadding16384Byte12(unittest.TestCase):
+    def test_test(self):
+        probe = Padding16384Byte12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        expected = (b'\x16\x03\x01\x40\x00'
+                    b'\x01\x00\x3f\xfc'
+                    b'\x03\x03' +
+                    RANDOM_STR +
+                    b'\x00'
+                    b'\x00&' +
+                    DEFAULT_12_CIPHERS_STR +
+                    b'\x01\x00'
+                    b'\x3f\xad'
+                    b'\x00\x15\x3f\xa9' +
+                    b'\x00' * (16384 - (88-5) - 4))
+        self.assertEqual(repr(sock.sent_data[0][:100]),
+                         repr(expected[:100]))
+        self.assertEqual(sock.sent_data,
+                         [expected])
+
+
+class TestPadding16384Byte12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = Padding16384Byte12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        expected = (b'\x16\x03\x01\x40\x00'
+                    b'\x01\x00\x3f\xfc'
+                    b'\x03\x03' +
+                    RANDOM_STR +
+                    b'\x00'
+                    b'\x00^' +
+                    DEFAULT_PFS_CIPHERS_STR +
+                    b'\x01\x00'
+                    b'\x3fu'
+                    b'\x00\x15\x3fq' +
+                    b'\x00' * (16384 - (144-5) - 4))
+        self.assertEqual(repr(sock.sent_data[0][:160]),
+                         repr(expected[:160]))
+        self.assertEqual(sock.sent_data,
+                         [expected])
+
+
+class TestPadding16385Byte(unittest.TestCase):
+    def test_test(self):
+        probe = Padding16385Byte()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        expected = (b'\x16\x03\x01\x40\x00'
+                    b'\x01\x00\x3f\xfd'
+                    b'\x03\x01' +
+                    RANDOM_STR +
+                    b'\x00'
+                    b'\x00\x0e' +
+                    DEFAULT_CIPHERS_STR +
+                    b'\x01\x00'
+                    b'\x3f\xc6'
+                    b'\x00\x15\x3f\xc2' +
+                    b'\x00' * (16385 - (64-5) - 4 - 1) +
+                    b'\x16\x03\x01\x00\x01'  # second record
+                    b'\x00')
+        self.assertEqual(repr(sock.sent_data[0][:70]),
+                         repr(expected[:70]))
+        self.assertEqual(sock.sent_data,
+                         [expected])
+
+
+class TestPadding16385Byte12(unittest.TestCase):
+    def test_test(self):
+        probe = Padding16385Byte12()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        expected = (b'\x16\x03\x01\x40\x00'
+                    b'\x01\x00\x3f\xfd'
+                    b'\x03\x03' +
+                    RANDOM_STR +
+                    b'\x00'
+                    b'\x00&' +
+                    DEFAULT_12_CIPHERS_STR +
+                    b'\x01\x00'
+                    b'\x3f\xae'
+                    b'\x00\x15\x3f\xaa' +
+                    b'\x00' * (16385 - (88-5) - 4 -1 ) +
+                    b'\x16\x03\x01\x00\x01'  # second record
+                    b'\x00')
+        self.assertEqual(repr(sock.sent_data[0][:100]),
+                         repr(expected[:100]))
+        self.assertEqual(sock.sent_data,
+                         [expected])
+
+
+class TestPadding16385Byte12PFS(unittest.TestCase):
+    def test_test(self):
+        probe = Padding16385Byte12PFS()
+        sock = MockSock()
+
+        probe.test(sock)
+
+        self.maxDiff = None
+        expected = (b'\x16\x03\x01\x40\x00'
+                    b'\x01\x00\x3f\xfd'
+                    b'\x03\x03' +
+                    RANDOM_STR +
+                    b'\x00'
+                    b'\x00^' +
+                    DEFAULT_PFS_CIPHERS_STR +
+                    b'\x01\x00'
+                    b'\x3fv'
+                    b'\x00\x15\x3fr' +
+                    b'\x00' * (16385 - (144-5) - 4 - 1 ) +
+                    b'\x16\x03\x01\x00\x01'  # second record
+                    b'\x00')
+        self.assertEqual(repr(sock.sent_data[0][:160]),
+                         repr(expected[:160]))
+        self.assertEqual(sock.sent_data,
+                         [expected])

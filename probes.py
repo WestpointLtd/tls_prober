@@ -1583,3 +1583,1210 @@ class DoubleExtension12(DoubleExtension, NormalHandshake12):
 class DoubleExtension12PFS(DoubleExtension, NormalHandshake12PFS):
     '''Duplicate secure renegotiation extension in PFS TLSv1.2 hello'''
     pass
+
+
+class UserMappingNull(NormalHandshake):
+    '''Send empty user mapping extension in hello'''
+
+    def make_user_mapping_ext(self, value):
+        user_mapping_ext = Extension.create(
+            extension_type=6,
+            data=value)
+        return self.make_hello([user_mapping_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # extension consists of an array and the array needs at least one
+        # element, don't send any
+        sock.write(self.make_user_mapping_ext(b''))
+
+
+class UserMappingNull12(UserMappingNull, NormalHandshake12):
+    '''Send empty user mapping extension in TLSv1.2 hello'''
+    pass
+
+
+class UserMappingNull12PFS(UserMappingNull, NormalHandshake12PFS):
+    '''Send empty user mapping extension in PFS TLSv1.2 hello'''
+    pass
+
+
+class UserMappingOverflow(UserMappingNull):
+    '''Send user mapping extension with length longer than present in hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # extension consists of an array and the array needs at least one
+        # element, send the length of array (one byte) longer than payload size
+        sock.write(self.make_user_mapping_ext(b'\x02\x40'))
+
+
+class UserMappingOverflow12(UserMappingOverflow, NormalHandshake12):
+    '''As with UserMappingOverflow but in TLSv1.2 hello'''
+    pass
+
+
+class UserMappingOverflow12PFS(UserMappingOverflow, NormalHandshake12PFS):
+    '''As with UserMappingOverflow but in PFS TLSv1.2 hello'''
+    pass
+
+
+class ClientAuthzNull(NormalHandshake):
+    '''Send empty client authz extension in hello'''
+
+    def make_client_authz_hello(self, value):
+        client_authz_ext = Extension.create(
+            extension_type=7,
+            data=value)
+        return self.make_hello([client_authz_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal extension has an array, don't send anything
+        sock.write(self.make_client_authz_hello(b''))
+
+
+class ClientAuthzNull12(ClientAuthzNull, NormalHandshake12):
+    '''Send empty client authz extension in TLSv1.2 hello'''
+    pass
+
+
+class ClientAuthzNull12PFS(ClientAuthzNull, NormalHandshake12PFS):
+    '''Send empty client authz extension in PFS TLSv1.2 hello'''
+    pass
+
+
+class ClientAuthzOverflow(ClientAuthzNull):
+    '''Send client authz extension with length longer than data in hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal extension has one byte length as first element then
+        # the array, make the array length longer than real payload
+        sock.write(self.make_client_authz_hello(b'\x04\x00\x01'))
+
+
+class ClientAuthzOverflow12(ClientAuthzOverflow, NormalHandshake12):
+    '''As with ClientAuthzOverflow but in TLSv1.2 hello'''
+    pass
+
+
+class ClientAuthzOverflow12PFS(ClientAuthzOverflow, NormalHandshake12PFS):
+    '''As with ClientAuthzOverflow but in PFS TLSv1.3 hello'''
+    pass
+
+
+class ServerAuthzNull(ClientAuthzNull):
+    '''Send empty server authz extension in hello'''
+
+    def make_client_authz_hello(self, value):
+        server_authz_ext = Extension.create(
+            extension_type=8,
+            data=value)
+        return self.make_hello([server_authz_ext])
+
+
+class ServerAuthzNull12(ServerAuthzNull, NormalHandshake12):
+    '''Send empty server authz extension in TLSv1.2 hello'''
+    pass
+
+
+class ServerAuthzNull12PFS(ServerAuthzNull, NormalHandshake12PFS):
+    '''Send empty server authz extension in PFS TLSv1.2 hello'''
+    pass
+
+
+class ServerAuthzOverflow(ServerAuthzNull, ClientAuthzOverflow):
+    '''Send server authz extension with length longer than data in hello'''
+    pass
+
+
+class ServerAuthzOverflow12(ServerAuthzOverflow, NormalHandshake12):
+    '''As with ServerAuthzOverflow but in TLSv1.2 hello'''
+    pass
+
+
+class ServerAuthzOverflow12PFS(ServerAuthzOverflow, NormalHandshake12PFS):
+    '''As with ServerAuthzOverflow but in PFS TLSv1.2 hello'''
+    pass
+
+
+class CertTypeNull(NormalHandshake):
+    '''Send empty cert type extension in hello'''
+
+    def make_cert_type_hello(self, value):
+        cert_type_ext = Extension.create(
+            extension_type=9,
+            data=value)
+        return self.make_hello([cert_type_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal extension has an array, don't send anything
+        sock.write(self.make_cert_type_hello(b''))
+
+
+class CertTypeNull12(CertTypeNull, NormalHandshake12):
+    '''Send empty cert type extension in TLSv1.2 hello'''
+    pass
+
+
+class CertTypeNull12PFS(CertTypeNull, NormalHandshake12PFS):
+    '''Send empty cert type extension in PFS TLSv1.2 hello'''
+    pass
+
+
+class CertTypeOverflow(CertTypeNull):
+    '''Send cert type extension with too large length in hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # first byte is a length of array, send invalid one
+        sock.write(self.make_cert_type_hello(b'\x04\x01'))
+
+
+class CertTypeOverflow12(CertTypeOverflow, NormalHandshake12):
+    '''Send cert type extension with too large length in TLSv1.2 hello'''
+    pass
+
+
+class CertTypeOverflow12PFS(CertTypeOverflow, NormalHandshake12PFS):
+    '''Send cert type extension with too large length in PFS TLSv1.2 hello'''
+    pass
+
+
+class SupportedGroupsNull(NormalHandshake):
+    '''Send empty supported groups extension in hello'''
+
+    def make_supported_groups_hello(self, value):
+        supported_groups_ext = Extension.create(
+            extension_type=10,
+            data=value)
+        return self.make_hello([supported_groups_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal extension has an array, don't send anything
+        sock.write(self.make_supported_groups_hello(b''))
+
+
+class SupportedGroupsNull12(SupportedGroupsNull, NormalHandshake12):
+    '''Send empty supported groups extension in TLSv1.2 hello'''
+    pass
+
+
+class SupportedGroupsNull12PFS(SupportedGroupsNull, NormalHandshake12PFS):
+    '''Send empty supported groups extension in PFS TLSv1.2 hello'''
+    pass
+
+
+class SupportedGroupsOddLen(SupportedGroupsNull):
+    '''Send supported groups extension with invalid length in hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal extension has a two byte length and two byte elements,
+        # truncate the second element
+        sock.write(self.make_supported_groups_hello(b'\x00\x03\x00\x17\x00'))
+
+
+class SupportedGroupsOddLen12(SupportedGroupsOddLen, NormalHandshake12):
+    '''Send supported groups extension with invalid length in TLSv1.2 hello'''
+    pass
+
+
+class SupportedGroupsOddLen12PFS(SupportedGroupsOddLen, NormalHandshake12PFS):
+    '''As with SupportedGroupsOddLen but in PFS TLSv1.2 hello'''
+    pass
+
+
+class SupportedGroupsOverflow(SupportedGroupsNull):
+    '''Send supported groups extension with length larger than data'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal extension has a two byte length and two byte elements,
+        # truncate the whole second element
+        sock.write(self.make_supported_groups_hello(b'\x00\x04\x00\x17'))
+
+
+class SupportedGroupsOverflow12(SupportedGroupsOverflow, NormalHandshake12):
+    '''As with SupportedGroupsOverflow but in TLSv1.2 hello'''
+    pass
+
+
+class SupportedGroupsOverflow12PFS(SupportedGroupsOverflow,
+        NormalHandshake12PFS):
+    '''As with SupportedGroupsOverflow but in PFS TLSv1.2 hello'''
+    pass
+
+
+class ECPointFormatsNull(NormalHandshake):
+    '''Send empty ec point formats extension in hello'''
+
+    def make_point_formats_hello(self, value):
+        point_formats_ext = Extension.create(
+            extension_type=11,
+            data=value)
+        return self.make_hello([point_formats_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal extension has an array, don't send anything
+        sock.write(self.make_point_formats_hello(b''))
+
+
+class ECPointFormatsNull12(ECPointFormatsNull, NormalHandshake12):
+    '''Send empty ec point formats extension in TLSv1.2 hello'''
+    pass
+
+
+class ECPointFormatsNull12PFS(ECPointFormatsNull, NormalHandshake12PFS):
+    '''Send empty ec point formats extension in PFS TLSv1.2 hello'''
+    pass
+
+
+class ECPointFormatsOverflow(ECPointFormatsNull):
+    '''Send ec point formats extension with length larger than data in hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # first byte is the length of array, send too large one
+        sock.write(self.make_point_formats_hello(b'\x04\x00'))
+
+
+class ECPointFormatsOverflow12(ECPointFormatsOverflow, NormalHandshake12):
+    '''As with ECPointFormatsOverflow but in TLSv1.2 hello'''
+    pass
+
+
+class ECPointFormatsOverflow12PFS(ECPointFormatsOverflow,
+                                   NormalHandshake12PFS):
+    '''As with ECPointFormatsOverflow but in PFS TLSv1.2 hello'''
+    pass
+
+
+class ECPointFormatsCompOnly(ECPointFormatsNull):
+    '''Send ec point formats extension without uncompressed format'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # the uncompressed format is mandatory, send extension without it
+        sock.write(self.make_point_formats_hello(b'\x02\x01\x02'))
+
+
+class ECPointFormatsCompOnly12(ECPointFormatsCompOnly, NormalHandshake12):
+    '''As with ECPointFormatsCompOnly but in TLSv1.2 hello'''
+    pass
+
+
+class ECPointFormatsCompOnly12PFS(ECPointFormatsCompOnly,
+                                   NormalHandshake12PFS):
+    '''As with ECPointFormatsCompOnly but in PFS TLS v1.2 hello'''
+    pass
+
+
+class SRPNull(NormalHandshake):
+    '''Send empty srp extension in hello'''
+
+    def make_srp_hello(self, value):
+        srp_ext = Extension.create(
+            extension_type=12,
+            data=value)
+        return self.make_hello([srp_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normally the extension has client's identity, don't include any
+        sock.write(self.make_srp_hello(b''))
+
+
+class SRPNull12(SRPNull, NormalHandshake12):
+    '''Send empty srp extension in TLSv1.2 hello'''
+    pass
+
+
+class SRPNull12PFS(SRPNull, NormalHandshake12PFS):
+    '''Send empty srp extension in PFS TLSv1.2 hello'''
+    pass
+
+
+class SRPOverflow(SRPNull):
+    '''Send srp extension with too large length in hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # first byte is the length, send too large
+        sock.write(self.make_srp_hello(b'\x06test'))
+
+
+class SRPOverflow12(SRPOverflow, NormalHandshake12):
+    '''Send srp extension with too large length in TLSv1.2 hello'''
+    pass
+
+
+class SRPOverflow12PFS(SRPOverflow, NormalHandshake12PFS):
+    '''Send srp extension with too large length in PFS TLSv1.2 hello'''
+    pass
+
+
+class SigAlgsNull(NormalHandshake):
+    '''Send empty signature algorithms extension in hello'''
+
+    def make_signature_alg_hello(self, value):
+        sig_algs_ext = Extension.create(
+            extension_type=13,
+            data=value)
+        return self.make_hello([sig_algs_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal extension has an array, don't send anything
+        sock.write(self.make_signature_alg_hello(b''))
+
+
+class SigAlgsNull12(SigAlgsNull, NormalHandshake12):
+    '''Send empty signature algorithms extension in TLSv1.2 hello'''
+    pass
+
+
+class SigAlgsNull12PFS(SigAlgsNull, NormalHandshake12PFS):
+    '''Send empty signature algorithms extension in PFS TLSv1.2 hello'''
+    pass
+
+
+class SigAlgsOddLen(SigAlgsNull):
+    '''Send signature algorithms extensions with invalid length in hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal extension has two byte long elements, truncate the last one
+        sock.write(self.make_signature_alg_hello(b'\x00\x05'
+                                                 b'\x04\x01'
+                                                 b'\x04\x03\x04'))
+
+class SigAlgsOddLen12(SigAlgsOddLen, NormalHandshake12):
+    '''As in SigAlgsOddLen but in TLSv1.2 hello'''
+    pass
+
+
+class SigAlgsOddLen12PFS(SigAlgsOddLen, NormalHandshake12PFS):
+    '''As in SigAlgsOddLen but in PFS TLSv1.2 hello'''
+    pass
+
+
+class SigAlgsOverflow(SigAlgsNull):
+    '''Send signature algorithms extension with too large length in hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # the first two bytes are the length of the array, send too large one
+        sock.write(self.make_signature_alg_hello(b'\x00\x06'
+                                                 b'\x04\x01'
+                                                 b'\x04\x03'))
+
+
+class SigAlgsOverflow12(SigAlgsOverflow, NormalHandshake12):
+    '''As in SigAlgsOverflow but in TLSv1.2 hello'''
+    pass
+
+
+class SigAlgsOverflow12PFS(SigAlgsOverflow, NormalHandshake12PFS):
+    '''As in SigAlgsOverflow but in PFS TLSv1.2 hello'''
+    pass
+
+
+class UseSrtpNull(NormalHandshake):
+    '''Send empty use srtp extension in hello'''
+
+    def make_use_srtp_hello(self, value):
+        use_srtp_ext = Extension.create(
+            extension_type=14,
+            data=value)
+        return self.make_hello([use_srtp_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal extension has an array, don't send anything
+        sock.write(self.make_use_srtp_hello(b''))
+
+
+class UseSrtpNull12(UseSrtpNull, NormalHandshake12):
+    '''Send empty use srtp extension in TLSv1.2 hello'''
+    pass
+
+class UseSrtpNull12PFS(UseSrtpNull, NormalHandshake12PFS):
+    '''Send empty use srtp extension in PFS TLSv1.2 hello'''
+    pass
+
+class UseSrtpOddLen(UseSrtpNull):
+    '''Send use srtp extension with too large length in hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # the extension starts with a two byte length of two-byte elements
+        # and the second array is optional with a simple binary string
+        sock.write(self.make_use_srtp_hello(b'\x00\x05'
+                                            b'\x00\x01\x00\x05\x00'
+                                            b'\x00'))
+
+class UseSrtpOddLen12(UseSrtpOddLen, NormalHandshake12):
+    '''Send use srtp extension with too large length in TLSv1.2 hello'''
+    pass
+
+
+class UseSrtpOddLen12PFS(UseSrtpOddLen, NormalHandshake12PFS):
+    '''Send use srtp extension with too large length in PFS TLSv1.2 hello'''
+    pass
+
+
+class UseSrtpOverflow(UseSrtpNull):
+    '''Send use srtp extension with length larger than payload'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # the extension has two arrays, one has a two byte length the other
+        # a one byte length, make the first array longer than payload
+        sock.write(self.make_use_srtp_hello(b'\x00\x06'
+                                            b'\x00\x01\x00\x05'))
+
+
+class UseSrtpOverflow12(UseSrtpOverflow, NormalHandshake12):
+    '''Send use srtp extension with length larger than payload in TLSv1.2'''
+    pass
+
+
+class UseSrtpOverflow12PFS(UseSrtpOverflow, NormalHandshake12PFS):
+    '''As in UseSrtpOverflow but in PFS TLSv1.2 hello'''
+    pass
+
+
+class HeartbeatNull(NormalHandshake):
+    '''Send empty heartbeat extension in hello'''
+
+    def make_heartbeat_hello(self, value):
+        heartbeat_ext = Extension.create(
+            extension_type=15,
+            data=value)
+        return self.make_hello([heartbeat_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # the extension is a single byte value, don't include it
+        sock.write(self.make_heartbeat_hello(b''))
+
+
+class HeartbeatNull12(HeartbeatNull, NormalHandshake12):
+    '''Send empty heartbeat extension in TLSv1.2 hello'''
+    pass
+
+
+class HeartbeatNull12PFS(HeartbeatNull, NormalHandshake12PFS):
+    '''Send empty heartbeat extension in PFS TLSv1.2 hello'''
+    pass
+
+
+class HeartbeatInvalid(HeartbeatNull):
+    '''Send heartbeat extension with invalid value in hello'''
+
+    def test(self, sock):
+        # the valid values are 1 and 2, send something else
+        sock.write(self.make_heartbeat_hello(b'\x00'))
+
+
+class HeartbeatInvalid12(HeartbeatInvalid, NormalHandshake12):
+    '''Send heartbeat extension with invalid value in TLSv1.2 hello'''
+    pass
+
+
+class HeartbeatInvalid12PFS(HeartbeatInvalid, NormalHandshake12PFS):
+    '''Send heartbeat extension with invalid value in PFS TLSv1.2 hello'''
+    pass
+
+
+class ALPNNull(NormalHandshake):
+    '''Send empty ALPN extension in hello'''
+
+    def make_alpn_hello(self, value):
+        alpn_ext = Extension.create(
+            extension_type=16,
+            data=value)
+        return self.make_hello([alpn_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # valid extension has an array, don't send anything
+        sock.write(self.make_alpn_hello(b''))
+
+
+class ALPNNull12(ALPNNull, NormalHandshake12):
+    '''Send empty APLN extension in TLSv1.2 hello'''
+    pass
+
+
+class ALPNNull12PFS(ALPNNull, NormalHandshake12PFS):
+    '''Send empty ALPN extension in PFS TLSv1.2 hello'''
+    pass
+
+
+class ALPNUnknown(ALPNNull):
+    '''Send ALPN extension with only unknown protocol in hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # the extension is an array of arrays, the external array has
+        # two byte length header, the internal arrays have one byte length
+        sock.write(self.make_alpn_hello(b'\x00\x08'
+                                        b'\x07unknown'))
+
+
+class ALPNUnknown12(ALPNUnknown, NormalHandshake12):
+    '''Send ALPN extension with only unknown protocol in TLSv1.2 hello'''
+    pass
+
+
+class ALPNUnknown12PFS(ALPNUnknown, NormalHandshake12PFS):
+    '''Send ALPN extension with only unknown protocol in PFS TLSv1.2 hello'''
+    pass
+
+
+class ALPNOverflow(ALPNNull):
+    '''Send ALPN extension with too large length in hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # the extension is an array of arrays, the external array has
+        # two byte length header, the internal arrays have one byte length
+        # make the external length too large
+        sock.write(self.make_alpn_hello(b'\x00\x10'
+                                        b'\x08http/1.1'))
+
+
+class ALPNOverflow12(ALPNOverflow, NormalHandshake12):
+    '''Send ALPN extension with too large length in TLSv1.2 hello'''
+    pass
+
+
+class ALPNOverflow12PFS(ALPNOverflow, NormalHandshake12PFS):
+    '''Send ALPN extension with too large length in PFS TLSv1.2 hello'''
+    pass
+
+
+class OCSPv2Null(NormalHandshake):
+    '''Send empty OCSPv2 staple extension in hello'''
+
+    def make_ocspv2_hello(self, value):
+        ocspv2_ext = Extension.create(
+            extension_type=17,
+            data=value)
+        return self.make_hello([ocspv2_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal encoding has a list of complex items, don't include anything
+        sock.write(self.make_ocspv2_hello(b''))
+
+
+class OCSPv2Null12(OCSPv2Null, NormalHandshake12):
+    '''Send empty OCSPv2 staple extension in TLSv1.2 hello'''
+    pass
+
+
+class OCSPv2Null12PFS(OCSPv2Null, NormalHandshake12PFS):
+    '''Send empty OCSPv2 staple extension in PFS TLSv1.2 hello'''
+    pass
+
+
+class OCSPv2Overflow(OCSPv2Null):
+    '''Send OCSPv2 staple extension with too large length in hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        data = (b'\x00\x10'  # overall length of extension (too large)
+                b'\x01'  # first request type (ocsp)
+                b'\x00\x04'  # request length
+                b'\x00\x00'  # responder ID list length
+                b'\x00\x00'  # request extensions list length
+                b'\x02'  # second request type (ocsp_multi)
+                b'\x00\x04'  # request length
+                b'\x00\x00'  # responder ID list length
+                b'\x00\x00')  # request extensions list length
+        sock.write(self.make_ocspv2_hello(data))
+
+
+class OCSPv2Overflow12(OCSPv2Overflow, NormalHandshake12):
+    '''Send OCSPv2 staple extension with too large length in TLSv1.2 hello'''
+    pass
+
+
+class OCSPv2Overflow12PFS(OCSPv2Overflow, NormalHandshake12PFS):
+    '''As with OCSPv2Overflow but in PFS TLSv1.2 hello'''
+    pass
+
+
+class SignedCertTSNotNull(NormalHandshake):
+    '''Send hello with signed certificate timestamp that is not empty'''
+
+    def make_signed_cert_ts_hello(self, value):
+        signed_cert_ts_ext = Extension.create(
+            extension_type=18,
+            data=value)
+        return self.make_hello([signed_cert_ts_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # valid extension should be empty
+        sock.write(self.make_signed_cert_ts_hello(b'\x04'))
+
+class SignedCertTSNotNull12(SignedCertTSNotNull, NormalHandshake12):
+    '''As with SignedCertTSNotNull but in TLSv1.2 hello'''
+    pass
+
+
+class SignedCertTSNotNull12PFS(SignedCertTSNotNull, NormalHandshake12PFS):
+    '''As with SignedCertTSNotNull but in PFS TLSv1.2 hello'''
+    pass
+
+
+class ClientCertTypeNull(NormalHandshake):
+    '''Send empty client certificate type extension in hello'''
+
+    def make_client_cert_type_hello(self, value):
+        client_cert_type_ext = Extension.create(
+            extension_type=19,
+            data=value)
+        return self.make_hello([client_cert_type_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # valid extension has an array
+        sock.write(self.make_client_cert_type_hello(b''))
+
+
+class ClientCertTypeNull12(ClientCertTypeNull, NormalHandshake12):
+    '''Send empty client certificate type extension in TLSv1.2 hello'''
+    pass
+
+
+class ClientCertTypeNull12PFS(ClientCertTypeNull, NormalHandshake12PFS):
+    '''Send empty client certificate type extension in PFS TLSv1.2 hello'''
+    pass
+
+
+class ClientCertTypeOverflow(ClientCertTypeNull):
+    '''Send client certificate type extension with too large length in hello'''
+
+    def test(self, sock):
+        logging.debug('sending Client Hello...')
+        # first byte is the length of the array, send too large
+        sock.write(self.make_client_cert_type_hello(b'\x04\x02\x01\x00'))
+
+
+class ClientCertTypeOverflow12(ClientCertTypeOverflow, NormalHandshake12):
+    '''As with ClientCertTypeOverflow, but in TLSv1.2 hello'''
+    pass
+
+
+class ClientCertTypeOverflow12PFS(ClientCertTypeOverflow,
+                                  NormalHandshake12PFS):
+    '''As with ClientCertTypeOverflow but in PFS TLSv1.2 hello'''
+    pass
+
+
+class ServerCertTypeNull(NormalHandshake):
+    '''Send empty server certificate type extension in hello'''
+
+    def make_server_cert_type_hello(self, value):
+        server_cert_type_ext = Extension.create(
+            extension_type=20,
+            data=value)
+        return self.make_hello([server_cert_type_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # valid extension has an array
+        sock.write(self.make_server_cert_type_hello(b''))
+
+
+class ServerCertTypeNull12(ServerCertTypeNull, NormalHandshake12):
+    '''Send empty server certificate type extension in TLSv1.2 hello'''
+    pass
+
+
+class ServerCertTypeNull12PFS(ServerCertTypeNull, NormalHandshake12PFS):
+    '''Send empty server certificate type extension in PFS TLSv1.2 hello'''
+    pass
+
+
+class ServerCertTypeOverflow(ServerCertTypeNull):
+    '''Send server certificate type extension with too large length in hello'''
+
+    def test(self, sock):
+        logging.debug('sending Client Hello...')
+        # first byte is the length of the array, send too large
+        sock.write(self.make_server_cert_type_hello(b'\x04\x02\x01\x00'))
+
+
+class ServerCertTypeOverflow12(ServerCertTypeOverflow, NormalHandshake12):
+    '''As with ServerCertTypeOverflow, but in TLSv1.2 hello'''
+    pass
+
+
+class ServerCertTypeOverflow12PFS(ServerCertTypeOverflow,
+                                  NormalHandshake12PFS):
+    '''As with ServerCertTypeOverflow but in PFS TLSv1.2 hello'''
+    pass
+
+
+class PaddingNull(NormalHandshake):
+    '''Send empty padding extension in hello'''
+
+    def make_padding_hello(self, value):
+        padding_ext = Extension.create(
+            extension_type=21,
+            data=value)
+        return self.make_hello([padding_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # there is no invalid encoding of extension, send an empty one
+        sock.write(self.make_padding_hello(b''))
+
+
+class PaddingNull12(PaddingNull, NormalHandshake12):
+    '''Send empty padding extension in TLSv1.2 hello'''
+    pass
+
+
+class PaddingNull12PFS(PaddingNull, NormalHandshake12PFS):
+    '''Send empty padding extension in PFS TLSv1.2 hello'''
+    pass
+
+
+class Padding300Byte(PaddingNull):
+    '''Use padding extension to send 300 byte large hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal hello is 64 byte large with all headers, 5 of which are
+        # record layer overhead, extensions length is already included
+        # but extension id and extension length is not, totalling 4 bytes
+        sock.write(self.make_padding_hello(b'\x00' * (300 - (64 - 5) - 4)))
+
+
+class Padding300Byte12(PaddingNull, NormalHandshake12):
+    '''Use padding extension to send 300 byte large TLSv1.2 hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # TLSv1.2 hello is 88 byte large with all headers, 5 of which are
+        # record layer overhead, extensions length is already included
+        # but extension id and extension length is not, totalling 4 bytes
+        sock.write(self.make_padding_hello(b'\x00' * (300 - (88 - 5) - 4)))
+
+
+class Padding300Byte12PFS(PaddingNull, NormalHandshake12PFS):
+    '''Use padding extension to send 300 byte large PFS TLSv1.2 hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # PFS TLSv1.2 hello is 144 byte large with all headers, 5 of which are
+        # record layer overhead, extensions length is already included
+        # but extension id and extension length is not, totalling 4 bytes
+        sock.write(self.make_padding_hello(b'\x00' * (300 - (144 - 5) - 4)))
+
+
+class Padding600Byte(PaddingNull):
+    '''Use padding extension to send 600 byte large hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal hello is 64 byte large with all headers, 5 of which are
+        # record layer overhead, extensions length is already included
+        # but extension id and extension length is not, totalling 4 bytes
+        sock.write(self.make_padding_hello(b'\x00' * (600 - (64 - 5) - 4)))
+
+
+class Padding600Byte12(PaddingNull, NormalHandshake12):
+    '''Use padding extension to send 600 byte large TLSv1.2 hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # TLSv1.2 hello is 88 byte large with all headers, 5 of which are
+        # record layer overhead, extensions length is already included
+        # but extension id and extension length is not, totalling 4 bytes
+        sock.write(self.make_padding_hello(b'\x00' * (600 - (88 - 5) - 4)))
+
+
+class Padding600Byte12PFS(PaddingNull, NormalHandshake12PFS):
+    '''Use padding extension to send 600 byte large PFS TLSv1.2 hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # PFS TLSv1.2 hello is 144 byte large with all headers, 5 of which are
+        # record layer overhead, extensions length is already included
+        # but extension id and extension length is not, totalling 4 bytes
+        sock.write(self.make_padding_hello(b'\x00' * (600 - (144 - 5) - 4)))
+
+
+class Padding16384Byte(PaddingNull):
+    '''Use padding extension to send 16384 byte large hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal hello is 64 byte large with all headers, 5 of which are
+        # record layer overhead, extensions length is already included
+        # but extension id and extension length is not, totalling 4 bytes
+        # 16384 is the largest size that can be sent in a single record layer
+        sock.write(self.make_padding_hello(b'\x00' * (16384 - (64 - 5) - 4)))
+
+
+class Padding16384Byte12(PaddingNull, NormalHandshake12):
+    '''Use padding extension to send 16384 byte large TLSv1.2 hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # TLSv1.2 hello is 88 byte large with all headers, 5 of which are
+        # record layer overhead, extensions length is already included
+        # but extension id and extension length is not, totalling 4 bytes
+        sock.write(self.make_padding_hello(b'\x00' * (16384 - (88 - 5) - 4)))
+
+
+class Padding16384Byte12PFS(PaddingNull, NormalHandshake12PFS):
+    '''Use padding extension to send 16384 byte large PFS TLSv1.2 hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # PFS TLSv1.2 hello is 144 byte large with all headers, 5 of which are
+        # record layer overhead, extensions length is already included
+        # but extension id and extension length is not, totalling 4 bytes
+        sock.write(self.make_padding_hello(b'\x00' * (16384 - (144 - 5) - 4)))
+
+
+class Padding16385Byte(Probe):
+    '''Use padding extension to send 16385 byte large hello'''
+
+    def __init__(self):
+        super(Padding16385Byte, self).__init__()
+        self.hello_version = TLSRecord.TLS1_0
+        self.ciphers = DEFAULT_CIPHERS
+
+    def make_padding_hello(self, value):
+        padding_ext = Extension.create(
+            extension_type=21,
+            data=value)
+        RECORD_MAX=16384
+        hello = ClientHelloMessage.create(self.hello_version,
+                                          b'01234567890123456789012345678901',
+                                          self.ciphers,
+                                          extensions=[padding_ext])
+        hello_bytes = hello.bytes
+        records = [TLSRecord.create(content_type=TLSRecord.Handshake,
+                                    version=TLSRecord.TLS1_0,
+                                    message=hello_bytes[i:i+RECORD_MAX]).bytes
+                   for i in range(0, len(hello_bytes), RECORD_MAX)]
+        return b''.join(records)
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # hello is 64 byte large with all headers, 5 of which are
+        # record layer overhead, extensions length is already included
+        # but extension id and extension length is not, totalling 4 bytes
+        sock.write(self.make_padding_hello(b'\x00' * (16385 - (64 - 5) - 4)))
+
+
+class Padding16385Byte12(Padding16385Byte):
+    '''Use padding extension to send 16385 byte large TLSv1.2 hello'''
+
+    def __init__(self):
+        super(Padding16385Byte, self).__init__()
+        self.hello_version = TLSRecord.TLS1_2
+        self.ciphers = DEFAULT_12_CIPHERS
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # TLSv1.2 hello is 88 byte large with all headers, 5 of which are
+        # record layer overhead, extensions length is already included
+        # but extension id and extension length is not, totalling 4 bytes
+        sock.write(self.make_padding_hello(b'\x00' * (16385 - (88 - 5) - 4)))
+
+
+class Padding16385Byte12PFS(Padding16385Byte):
+    '''Use padding extension to send 16385 byte large PFS TLSv1.2 hello'''
+
+    def __init__(self):
+        super(Padding16385Byte, self).__init__()
+        self.hello_version = TLSRecord.TLS1_2
+        self.ciphers = DEFAULT_PFS_CIPHERS
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # PFS TLSv1.2 hello is 144 byte large with all headers, 5 of which are
+        # record layer overhead, extensions length is already included
+        # but extension id and extension length is not, totalling 4 bytes
+        sock.write(self.make_padding_hello(b'\x00' * (16385 - (144 - 5) - 4)))
+
+
+class Padding16387Byte(Padding16385Byte):
+    '''Use padding extension to send 16387 byte large hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        sock.write(self.make_padding_hello(b'\x00' * (16387 - (64 - 5) - 4)))
+
+
+class Padding16387Byte12(Padding16385Byte12):
+    '''Use padding extension to send 16387 byte large TLSv1.2 hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        sock.write(self.make_padding_hello(b'\x00' * (16387 - (88 - 5) - 4)))
+
+
+class Padding16387Byte12PFS(Padding16385Byte12PFS):
+    '''Use padding extension to send 16387 byte large PFS TLSv1.2 hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        sock.write(self.make_padding_hello(b'\x00' * (16387 - (144 - 5) - 4)))
+
+
+class Padding16389Byte(Padding16385Byte):
+    '''Use padding extension to send 16389 byte large hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        sock.write(self.make_padding_hello(b'\x00' * (16389 - (64 - 5) - 4)))
+
+
+class Padding16389Byte12(Padding16385Byte12):
+    '''Use padding extension to send 16389 byte large TLSv1.2 hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        sock.write(self.make_padding_hello(b'\x00' * (16389 - (88 - 5) - 4)))
+
+
+class Padding16389Byte12PFS(Padding16385Byte12PFS):
+    '''Use padding extension to send 16389 byte large PFS TLSv1.2 hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        sock.write(self.make_padding_hello(b'\x00' * (16389 - (144 - 5) - 4)))
+
+
+class Padding17520Byte(Padding16385Byte):
+    '''Use padding extension to send 17520 byte large hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        sock.write(self.make_padding_hello(b'\x00' * (17520 - (64 - 5) - 4)))
+
+
+class Padding17520Byte12(Padding16385Byte12):
+    '''Use padding extension to send 17520 byte large TLSv1.2 hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        sock.write(self.make_padding_hello(b'\x00' * (17520 - (88 - 5) - 4)))
+
+
+class Padding17520Byte12PFS(Padding16385Byte12PFS):
+    '''Use padding extension to send 17520 byte large PFS TLSv1.2 hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        sock.write(self.make_padding_hello(b'\x00' * (17520 - (144 - 5) - 4)))
+
+
+class EtMNotNull(NormalHandshake):
+    '''Send not empty encrypt then mac extension in hello'''
+
+    def make_etm_hello(self, value):
+        etm_ext = Extension.create(
+            extension_type=22,
+            data=value)
+        return self.make_hello([etm_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal extension must be empty
+        sock.write(self.make_etm_hello(b'\x04'))
+
+
+class EtMNotNull12(EtMNotNull, NormalHandshake12):
+    '''Send not empty encrypt then mac extension in TLSv1.2 hello'''
+    pass
+
+
+class EtMNotNull12PFS(EtMNotNull, NormalHandshake12PFS):
+    '''Send not empty encrypt then mac extension in PFS TLSv1.2 hello'''
+    pass
+
+
+class EMSNotNull(NormalHandshake):
+    '''Send not empty extended master secret extension in hello'''
+
+    def make_ems_hello(self, value):
+        ems_ext = Extension.create(
+            extension_type=23,
+            data=value)
+        return self.make_hello([ems_ext])
+
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal extension must be empty
+        sock.write(self.make_ems_hello(b'\x04'))
+
+
+class EMSNotNull12(EMSNotNull, NormalHandshake12):
+    '''Send not empty extended master secret extension in TLSv1.2 hello'''
+    pass
+
+
+class EMSNotNull12PFS(EMSNotNull, NormalHandshake12PFS):
+    '''Send not empty extended master secret extension in PFS TLSv1.2 hello'''
+    pass
+
+
+class CachedInfoNull(NormalHandshake):
+    '''Send empty cached info extension in hello'''
+
+    def make_cached_info_hello(self, value):
+        cached_info_ext = Extension.create(
+            extension_type=25,
+            data=value)
+        return self.make_hello([cached_info_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal extension must include an array of complex objects
+        sock.write(self.make_cached_info_hello(b''))
+
+
+class CachedInfoNull12(CachedInfoNull, NormalHandshake12):
+    '''Send empty cached info extension in TLSv1.2 hello'''
+    pass
+
+
+class CachedInfoNull12PFS(CachedInfoNull, NormalHandshake12PFS):
+    '''Send empty cached info extension in PFS TLSv1.2 hello'''
+    pass
+
+
+class CachedInfoOverflow(CachedInfoNull):
+    '''Send cached info extension with invalid size in hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # first two bytes are the size of the array, send too large one
+        sock.write(self.make_cached_info_hello(b'\x00\x44'
+                                               b'\x02'  # type cert_req
+                                               b'\x20' +  # length of hash
+                                               b'\xaf' * 32))  # hash
+
+
+class CachedInfoOverflow12(CachedInfoOverflow, NormalHandshake12):
+    '''Send cached info extension with invalid size in TLSv1.2 hello'''
+    pass
+
+
+class CachedInfoOverflow12PFS(CachedInfoOverflow, NormalHandshake12PFS):
+    '''Send cached info extension with invalid size in PFS TLSv1.2 hello'''
+    pass
+
+
+class SessionTicketNull(NormalHandshake):
+    '''Send empty session ticket extension in hello'''
+
+    def make_session_ticket_hello(self, value):
+        session_ticket_ext = Extension.create(
+            extension_type=35,
+            data=value)
+        return self.make_hello([session_ticket_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # first two bytes of the extension are the length, don't include any
+        sock.write(self.make_session_ticket_hello(b''))
+
+
+class SessionTicketNull12(SessionTicketNull, NormalHandshake12):
+    '''Send empty session ticket extension in TLSv1.2 hello'''
+    pass
+
+
+class SessionTicketNull12PFS(SessionTicketNull, NormalHandshake12PFS):
+    '''Send empty session ticket extension in PFS TLSv1.2 hello'''
+    pass
+
+
+class SessionTicketOverflow(SessionTicketNull):
+    '''Send session ticket extension with too large length in hello'''
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # first two bytes are the length, send too large one
+        sock.write(self.make_session_ticket_hello(b'\x02\x00' +
+                                                  b'\xe7' * 0xff))
+
+
+class SessionTicketOverflow12(SessionTicketOverflow, NormalHandshake12):
+    '''Send session ticket extension with too large length in TLSv1.2 hello'''
+    pass
+
+
+class SessionTicketOverflow12PFS(SessionTicketOverflow, NormalHandshake12PFS):
+    '''Send session ticket ext with too large length in PFS TLSv1.2 hello'''
+    pass
+
+
+class NPNNotNull(NormalHandshake):
+    '''Send non empty NPN extension in hello'''
+
+    def make_npn_hello(self, value):
+        npn_ext = Extension.create(
+            extension_type=13172,
+            data=value)
+        return self.make_hello([npn_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal extension has to be empty
+        sock.write(self.make_npn_hello(b'\x04'))
+
+
+class NPNNotNull12(NPNNotNull, NormalHandshake12):
+    '''Send non empty NPN extension in TLSv1.2 hello'''
+    pass
+
+
+class NPNNotNull12PFS(NPNNotNull, NormalHandshake12PFS):
+    '''Send non empty NPN extension in PFS TLSv1.2 hello'''
+    pass
+
+
+class TACKNotNull(NormalHandshake):
+    '''Send not empty TACK extension in hello'''
+
+    def make_tack_hello(self, value):
+        tack_ext = Extension.create(
+            extension_type=62208,
+            data=value)
+        return self.make_hello([tack_ext])
+
+    def test(self, sock):
+        logging.debug('Sending Client Hello...')
+        # normal extension must be empty
+        sock.write(self.make_tack_hello(b'\x08'))
+
+
+class TACKNotNull12(TACKNotNull, NormalHandshake12):
+    '''Send not empty TACK extension in TLSv1.2 hello'''
+    pass
+
+
+class TACKNotNull12PFS(TACKNotNull, NormalHandshake12PFS):
+    '''Send not empty TACK extension in PFS TLSv1.2 hello'''
+    pass
