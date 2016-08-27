@@ -1088,28 +1088,32 @@ class SNIEmptyName12PFS(NormalHandshake12PFS, SNIEmptyName):
     pass
 
 
-class SNIOneWrong(Probe):
+class SNIOneWrong(NormalHandshake):
     '''Send server name indication with two names, one wrong'''
 
     def make_sni_hello(self, name):
         sni_extension = ServerNameExtension.create(None,
                                                    (name, 'thisisnotyourname'))
-        hello = ClientHelloMessage.create(settings['default_hello_version'],
-                                          '01234567890123456789012345678901',
-                                          DEFAULT_CIPHERS,
-                                          extensions=[sni_extension])
+        record = self.make_hello([sni_extension])
 
-        record = TLSRecord.create(content_type=TLSRecord.Handshake,
-                                  version=settings['default_record_version'],
-                                  message=hello.bytes)
-
-        return record.bytes
+        return record
 
     def test(self, sock):
         logging.debug('Sending Client Hello...')
         sock.write(self.make_sni_hello(self.ipaddress))
 
-class SNIWithDifferentType(Probe):
+
+class SNIOneWrong12(SNIOneWrong, NormalHandshake12):
+    '''Send server name indication with two names, one wrong in TLS1.2 hello'''
+    pass
+
+
+class SNIOneWrong12PFS(SNIOneWrong, NormalHandshake12PFS):
+    '''As in SNIOneWrong but in PFS TLS1.2 hello'''
+    pass
+
+
+class SNIWithDifferentType(NormalHandshake):
     '''Send server name indication with two names, one not of host_name type'''
 
     def make_sni_ext(self, server_names):
@@ -1122,16 +1126,9 @@ class SNIWithDifferentType(Probe):
     def make_sni_hello(self, server_names):
         sni_extension = self.make_sni_ext(server_names)
 
-        hello = ClientHelloMessage.create(settings['default_hello_version'],
-                                          '01234567890123456789012345678901',
-                                          DEFAULT_CIPHERS,
-                                          extensions=[sni_extension])
+        record = self.make_hello([sni_extension])
 
-        record = TLSRecord.create(content_type=TLSRecord.Handshake,
-                                  version=settings['default_record_version'],
-                                  message=hello.bytes)
-
-        return record.bytes
+        return record
 
     def test(self, sock):
         logging.debug('Sending Client Hello...')
@@ -1141,6 +1138,16 @@ class SNIWithDifferentType(Probe):
         server_names += [(4, '<binary-data>')]
 
         sock.write(self.make_sni_hello(server_names))
+
+
+class SNIWithDifferentType12(SNIWithDifferentType, NormalHandshake12):
+    '''As with SNIWithDifferentType but in TLSv1.2 hello'''
+    pass
+
+
+class SNIWithDifferentType12PFS(SNIWithDifferentType, NormalHandshake12PFS):
+    '''As with SNIWithDifferentType but in PFS TLSv1.2 hello'''
+    pass
 
 
 class SNIDifferentTypeRev(SNIWithDifferentType):
@@ -1156,7 +1163,17 @@ class SNIDifferentTypeRev(SNIWithDifferentType):
         sock.write(self.make_sni_hello(server_names))
 
 
-class SNIOverflow(Probe):
+class SNIDifferentTypeRev12(SNIDifferentTypeRev, NormalHandshake12):
+    '''As with SNIDifferentTypeRev but in TLSv1.2 hello'''
+    pass
+
+
+class SNIDifferentTypeRev12PFS(SNIDifferentTypeRev, NormalHandshake12PFS):
+    '''As with SNIDifferentTypeRev but in PFS TLSv1.2 hello'''
+    pass
+
+
+class SNIOverflow(NormalHandshake):
     '''Send server name indication with data length exceeding stated size'''
 
     def make_sni_hello(self, name):
@@ -1166,23 +1183,25 @@ class SNIOverflow(Probe):
         sni_extension = Extension.create(extension_type=Extension.ServerName,
                                          data=ext_data)
 
-        hello = ClientHelloMessage.create(TLSRecord.TLS1_0,
-                                          '01234567890123456789012345678901',
-                                          DEFAULT_CIPHERS,
-                                          extensions=[sni_extension])
-
-        record = TLSRecord.create(content_type=TLSRecord.Handshake,
-                                  version=TLSRecord.TLS1_0,
-                                  message=hello.bytes)
-
-        return record.bytes
+        record = self.make_hello([sni_extension])
+        return record
 
     def test(self, sock):
         logging.debug('Sending Client Hello...')
         sock.write(self.make_sni_hello(self.ipaddress))
 
 
-class SNIUnderflow(Probe):
+class SNIOverflow12(SNIOverflow, NormalHandshake12):
+    '''as with SNIOverflow but in TLSv1.2 hello'''
+    pass
+
+
+class SNIOverflow12PFS(SNIOverflow, NormalHandshake12PFS):
+    '''as with SNIOverflow but in TLSv1.2 hello'''
+    pass
+
+
+class SNIUnderflow(SNIOverflow):
     '''Send server name indication with data length smaller than size inside'''
 
     def make_sni_hello(self, name):
@@ -1192,20 +1211,20 @@ class SNIUnderflow(Probe):
         sni_extension = Extension.create(extension_type=Extension.ServerName,
                                          data=ext_data)
 
-        hello = ClientHelloMessage.create(TLSRecord.TLS1_0,
-                                          '01234567890123456789012345678901',
-                                          DEFAULT_CIPHERS,
-                                          extensions=[sni_extension])
+        record = self.make_hello([sni_extension])
 
-        record = TLSRecord.create(content_type=TLSRecord.Handshake,
-                                  version=TLSRecord.TLS1_0,
-                                  message=hello.bytes)
+        return record
 
-        return record.bytes
 
-    def test(self, sock):
-        logging.debug('Sending Client Hello...')
-        sock.write(self.make_sni_hello(self.ipaddress))
+class SNIUnderflow12(SNIUnderflow, NormalHandshake12):
+    '''As with SNIUnderflow, but in TLSv1.2 hello'''
+    pass
+
+
+class SNIUnderflow12PFS(SNIUnderflow, NormalHandshake12PFS):
+    '''As with SNIUnderflow, but in PFS TLSv1.2 hello'''
+    pass
+
 
 class SecureRenegoOverflow(NormalHandshake):
     '''Send secure renegotiation with data length exceeding stated size'''
