@@ -7,12 +7,12 @@ SplitHelloPackets: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|
 BadContentType: error:Unexpected EOF receiving record header - server closed connection|
 VeryHighTLSVersion: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|
 RecordLengthOverflow: error:Unexpected EOF receiving record header - server closed connection|
-Heartbleed: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|*(301)alert:UnexpectedMesage:fatal|
+Heartbleed: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|*(301)alert:UnexpectedMessage:fatal|
 TwoInvalidPackets: writeerror:EPIPE|
 VeryHighHelloVersion: *(303)handshake:ServerHello(303)|*(303)handshake:Certificate|*(303)handshake:ServerHelloDone|
 ChangeCipherSpec: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|error:Unexpected EOF receiving record header - server closed connection|
 NormalHandshake: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|
-Heartbeat: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|*(301)alert:UnexpectedMesage:fatal|
+Heartbeat: *(301)handshake:ServerHello(301)|*(301)handshake:Certificate|*(301)handshake:ServerHelloDone|*(301)alert:UnexpectedMessage:fatal|
 EmptyRecord: error:Unexpected EOF receiving record header - server closed connection|
 ZeroTLSVersion: error:Unexpected EOF receiving record header - server closed connection|
 OnlyECCipherSuites: *(301)alert:HandshakeFailure:fatal|

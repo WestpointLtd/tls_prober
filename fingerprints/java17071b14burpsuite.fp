@@ -11,8 +11,8 @@ RecordLengthOverflow: error:timeout
 Heartbleed: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|
 TwoInvalidPackets: error:timeout
 VeryHighHelloVersion: *(303)handshake:ServerHello(303)|handshake:Certificate|handshake:ServerHelloDone|
-EmptyChangeCipherSpec: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|*(301)alert:UnexpectedMesage:fatal|
-ChangeCipherSpec: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|*(301)alert:UnexpectedMesage:fatal|
+EmptyChangeCipherSpec: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|*(301)alert:UnexpectedMessage:fatal|
+ChangeCipherSpec: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|*(301)alert:UnexpectedMessage:fatal|
 NormalHandshake: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|
 Heartbeat: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|
 EmptyRecord: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|
@@ -20,4 +20,4 @@ ZeroTLSVersion: error:timeout
 OnlyECCipherSuites: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerKeyExchange|handshake:ServerHelloDone|
 HighTLSVersion: error:timeout
 RecordLengthUnderflow: writeerror:EPIPE|
-DoubleClientHello: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|*(301)alert:UnexpectedMesage:fatal|
+DoubleClientHello: *(301)handshake:ServerHello(301)|handshake:Certificate|handshake:ServerHelloDone|*(301)alert:UnexpectedMessage:fatal|
