@@ -78,8 +78,8 @@ def add_fingerprint(description, probes):
     f = open(os.path.join(fingerprint_dir, filename), 'w')
     f.write('Description: %s\n' % description)
     f.write('\n')
-    for probe in probes.keys():
-        f.write('%s: %s\n' % (probe, probes[probe]))
+    for probe, result in sorted(probes.items()):
+        f.write('%s: %s\n' % (probe, result))
     f.close()
 
     return os.path.join(fingerprint_dir, filename)
