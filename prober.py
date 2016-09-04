@@ -346,10 +346,18 @@ def list_probes():
         else:
             print '%s: %s' % (type(probe).__name__, type(probe).__doc__)
 
-def probe_strength(db):
+def probe_strength(db, raw_scores):
     # return how diverse are the expected results of probes in the
     # provided database (which probe is most likely to provide
     # unique fingerprint)
+    if raw_scores:
+        max_score = max(raw_scores.items(), key=itemgetter(1))
+    else:
+        max_score = (None, 0)
+
+    # fingerprints that have the same, best, score
+    tied_fingerprints = set(name for name, val in raw_scores.items()
+                            if val == max_score[1])
     probe_matches = {}
     probe_presence = {}
     for fingerprint in db:
@@ -357,7 +365,10 @@ def probe_strength(db):
             probe_matches.setdefault(probe_name, set()).add(probe_result)
             if probe_name not in probe_presence:
                 probe_presence[probe_name] = 0
-            probe_presence[probe_name] += 1
+            if fingerprint.metadata['Description'] in tied_fingerprints:
+                probe_presence[probe_name] += 2
+            else:
+                probe_presence[probe_name] += 1
 
     max_len = max(len(val) for val in probe_matches.values())
     max_hits = max(probe_presence.values())
@@ -368,12 +379,14 @@ def probe_strength(db):
 def quick_probe(ipaddress, port, starttls, db):
     # try to as quickly as possible reach 10 matching probes
     results = {}
+    raw_scores = {}
+    best_score = 0
     filtered_db = list(db)
 
     while True:
         # get list of probes that are most likely to provide unique
         # response from server
-        scored_probes = probe_strength(filtered_db)
+        scored_probes = probe_strength(filtered_db, raw_scores)
         probes_iter = (name for name, _ in
                        sorted(scored_probes.items(), key=itemgetter(1),
                               reverse=True)
