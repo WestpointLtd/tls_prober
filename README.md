@@ -23,7 +23,7 @@ include:
 
 # Installation
 
-Clone the repository and the pytls submoduel then run it!
+Clone the repository and the pytls submodule then run it!
 
 ```
 git clone https://github.com/WestpointLtd/tls_prober.git
