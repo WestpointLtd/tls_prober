@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 
+from __future__ import division
+
 import sys
 import logging
 import os.path
 
 from optparse import OptionParser
+from operator import itemgetter
 
 # Ensure we can see the pytls/tls subdir for the pytls submodule
 sys.path.insert(1, os.path.join(os.path.dirname(__file__), 'pytls'))
@@ -317,14 +320,19 @@ probes = [
     TACKNotNull12PFS()
 ]
 
-def probe(ipaddress, port, starttls, specified_probe):
+def run_one_probe(ipaddress, port, starttls, specified_probe):
+    for probe in probes:
+        if specified_probe != type(probe).__name__:
+            continue
+
+        logging.info('Probing... %s', type(probe).__name__)
+        return {type(probe).__name__: probe.probe(ipaddress, port, starttls)}
+
+def probe(ipaddress, port, starttls):
 
     results = {}
 
     for probe in probes:
-        if specified_probe and specified_probe != type(probe).__name__:
-            continue
-
         logging.info('Probing... %s', type(probe).__name__)
         result = probe.probe(ipaddress, port, starttls)
         results[type(probe).__name__] = result
@@ -337,6 +345,72 @@ def list_probes():
             print type(probe).__name__
         else:
             print '%s: %s' % (type(probe).__name__, type(probe).__doc__)
+
+def probe_strength(db, raw_scores):
+    # return how diverse are the expected results of probes in the
+    # provided database (which probe is most likely to provide
+    # unique fingerprint)
+    if raw_scores:
+        max_score = max(raw_scores.items(), key=itemgetter(1))
+    else:
+        max_score = (None, 0)
+
+    # fingerprints that have the same, best, score
+    tied_fingerprints = set(name for name, val in raw_scores.items()
+                            if val == max_score[1])
+    probe_matches = {}
+    probe_presence = {}
+    for fingerprint in db:
+        for probe_name, probe_result in fingerprint.probes.items():
+            probe_matches.setdefault(probe_name, set()).add(probe_result)
+            if probe_name not in probe_presence:
+                probe_presence[probe_name] = 0
+            if fingerprint.metadata['Description'] in tied_fingerprints:
+                probe_presence[probe_name] += 2
+            else:
+                probe_presence[probe_name] += 1
+
+    max_len = max(len(val) for val in probe_matches.values())
+    max_hits = max(probe_presence.values())
+
+    return dict((name, len(val) / max_len * probe_presence.get(name, 0) / max_hits)
+                for name, val in probe_matches.items())
+
+def quick_probe(ipaddress, port, starttls, db):
+    # try to as quickly as possible reach 10 matching probes
+    results = {}
+    raw_scores = {}
+    best_score = 0
+    filtered_db = list(db)
+
+    while True:
+        # get list of probes that are most likely to provide unique
+        # response from server
+        scored_probes = probe_strength(filtered_db, raw_scores)
+        probes_iter = (name for name, _ in
+                       sorted(scored_probes.items(), key=itemgetter(1),
+                              reverse=True)
+                       if name not in results)
+        # run probes against target until we get at least one match
+        for best_probe in probes_iter:
+            results.update(run_one_probe(ipaddress, port, starttls, best_probe))
+
+            raw_scores = probe_db.find_raw_matches(db, results)
+            if raw_scores:
+                break
+        else:
+            break
+        # repeat until the best match has more than 10 matching probes
+        best_score = max(raw_scores.items(), key=itemgetter(1))
+        if best_score[1] >= 10:
+            break
+        # in next iteration look for best probes given the already matching
+        # libraries (to try breaking ties)
+        filtered_db = [fp for fp in db
+                       if fp.description() in raw_scores]
+
+    return results
+
 
 def main():
     options = OptionParser(usage='%prog server [options]',
@@ -365,6 +439,10 @@ def main():
                        help='List the fingerprints of the target')
     options.add_option('--list-probes', dest='list_probes', action='store_true',
                        help='List the available probes')
+    options.add_option('-n', '--thorough', dest='thorough',
+                       action='store_true',
+                       help="Run all probes against target, don't perform a "
+                            "quick scan")
     options.add_option('-v', '--version', dest='version', action='store_true',
                        help='Display the version information')
 
@@ -386,7 +464,14 @@ def main():
         logging.basicConfig(level=logging.DEBUG)
 
     # Probe the server
-    results = probe(args[0], opts.port, opts.starttls, opts.probe)
+    if opts.probe:
+        results = run_one_probe(args[0], opts.port, opts.starttls, opts.probe)
+    elif opts.add or opts.thorough:
+        results = probe(args[0], opts.port, opts.starttls)
+    else:
+        print 'Running quick scan, results may be unreliable...'
+        db = probe_db.read_database()
+        results = quick_probe(args[0], opts.port, opts.starttls, db)
 
     # Add a fingerprint to the db
     if opts.add:
